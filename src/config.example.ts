@@ -1,7 +1,6 @@
 export const config = {
     token: '',
     clientID: '',
-    inviteURL: '',
     asfAPI: '',
     asfWS: '',
     alphaVantageAPI: '',
