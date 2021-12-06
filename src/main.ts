@@ -19,13 +19,14 @@ for (const file of files) {
     const command = require(`./commands/${file}`);
     botCommands.set(command.data.name, command);
     commandsToDeploy.push(command.data.toJSON());
+
+    logger.debug(`Found command ${command}`);
 }
 
 const rest: REST = new REST({version: '9'}).setToken(config.token);
 for (const guild of config.guildIDs) {
     rest.put(Routes.applicationGuildCommands(config.clientID, guild), {body: commandsToDeploy})
-        .catch()
-        .then(() => logger.debug(`Successfully deployed commands in ${guild}.`))
+        .then(() => logger.debug(`Successfully deployed commands in ${guild}`))
         .catch((error) => logger.error(error));
 }
 
@@ -37,12 +38,13 @@ client.on('interactionCreate', async (interaction) => {
             return;
         }
 
+        logger.info(`${interaction.user.tag}: ${interaction.toString()}`);
+
         try {
-            logger.info(`${interaction.user.tag}: ${interaction.toString()}`);
             await command.execute(interaction);
         } catch (error) {
-            logger.error(error);
             await replyToInteraction(interaction, strings.unknownError);
+            logger.error(error);
         }
     }
 });
@@ -59,5 +61,9 @@ client.once('ready', () => {
         logger.debug('Established WS connection to ASF');
     });
 });
+
+export function ping() {
+    return client.ws.ping;
+}
 
 client.login(config.token);

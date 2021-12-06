@@ -14,7 +14,7 @@ module.exports = {
             .setRequired(true)),
 
     async execute(interaction: CommandInteraction) {
-        const output = await ASFThenMail(interaction, '2fa', interaction.options.getString('accounts') ?? '') ?? '';
+        const output: string = await ASFThenMail(interaction, '2fa', `${interaction.options.getString('accounts')}`);
 
         await replyToInteraction(interaction, output);
     },
