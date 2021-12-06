@@ -1,8 +1,9 @@
-export const config = {
+export const config: { [index: string]: any } = {
     token: '',
     clientID: '',
     asfAPI: '',
     asfWS: '',
+    logLevel: '',
     alphaVantageAPI: '',
     asfChannels: [
         ''

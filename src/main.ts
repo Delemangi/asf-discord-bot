@@ -2,12 +2,17 @@ import {Client, Collection, Intents} from 'discord.js';
 import {REST} from '@discordjs/rest';
 import {Routes} from 'discord-api-types/v9';
 import {readdirSync} from 'fs';
+import {replyToInteraction} from './utils/functions';
+import {logger} from './utils/logger';
+import {strings} from './utils/strings';
 import {config} from './config';
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 const client: Client = new Client({intents: [Intents.FLAGS.GUILDS]});
-const files: string[] = readdirSync('./dist/commands').filter(f => f.endsWith('.js'));
-const botCommands: Collection<any, any> = new Collection();
-const commandsToDeploy: any[] = [];
+const files: string[] = readdirSync('./dist/commands').filter((file) => file.endsWith('.js'));
+const botCommands: Collection<string, NodeJS.Require> = new Collection();
+const commandsToDeploy: string[] = [];
 
 for (const file of files) {
     const command = require(`./commands/${file}`);
@@ -15,40 +20,39 @@ for (const file of files) {
     commandsToDeploy.push(command.data.toJSON());
 }
 
-const rest = new REST({version: '9'}).setToken(config.token);
+const rest: REST = new REST({version: '9'}).setToken(config.token);
 for (const guild of config.guildIDs) {
     rest.put(Routes.applicationGuildCommands(config.clientID, guild), {body: commandsToDeploy})
-        .then(() => console.log(`Successfully deployed commands in ${guild}.`))
-        .catch(console.error);
+        .catch()
+        .then(() => logger.debug(`Successfully deployed commands in ${guild}.`))
+        .catch((error) => logger.error(error));
 }
 
 client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isCommand()) {
-        return;
-    }
+    if (interaction.isCommand()) {
+        const command: any = botCommands.get(interaction.commandName);
 
-    const command: any = botCommands.get(interaction.commandName);
-    if (!command) {
-        return;
-    }
+        if (!command) {
+            return;
+        }
 
-    try {
-        await command.execute(interaction);
-        console.log(`${interaction.user.id} [${interaction.user.username}#${interaction.user.discriminator}]: ${interaction.command?.toJSON}`);
-    } catch (e) {
-        console.error(e);
-        await interaction.reply({content: 'An error occurred.', ephemeral: false});
+        try {
+            logger.info(`${interaction.user.username}#${interaction.user.discriminator}: ${interaction.toString()}`);
+            await command.execute(interaction);
+        } catch (error) {
+            logger.error(error);
+            await replyToInteraction(interaction, strings.unknownError);
+        }
     }
 });
 
 client.once('ready', () => {
-    const guilds = client.guilds.cache.map(guild => `${guild.id}\t-\t${guild.name}`);
+    const guilds: string[] = client.guilds.cache.map((guild) => `${guild.id} - ${guild.name}`);
 
-    console.log(`Servers:`);
+    logger.info('Servers:');
     for (const guild of guilds) {
-        console.log(guild);
+        logger.info(guild);
     }
-    console.log();
 });
 
 client.login(config.token);

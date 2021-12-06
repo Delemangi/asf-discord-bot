@@ -22,7 +22,7 @@
     "importHelpers": true,
     "importsNotUsedAsValues": "error",
     "inlineSources": false,
-    "newLine": "lf",
+    "newLine": "CRLF",
     "noEmitHelpers": true,
     "outDir": "dist",
     "preserveConstEnums": true,
@@ -36,7 +36,7 @@
     "lib": [
       "ESNext"
     ],
-    "target": "ES2021",
+    "target": "esnext",
     "useDefineForClassFields": true,
     // Output Formatting
     "pretty": true,
