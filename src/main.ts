@@ -2,14 +2,15 @@ import {Client, Collection, Intents} from 'discord.js';
 import {REST} from '@discordjs/rest';
 import {Routes} from 'discord-api-types/v9';
 import {readdirSync} from 'fs';
-import {replyToInteraction} from './utils/functions';
+import {replyToInteraction} from './utils/printing';
 import {logger} from './utils/logger';
+import {startWS} from "./utils/ws";
 import {strings} from './utils/strings';
 import {config} from './config';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-const client: Client = new Client({intents: [Intents.FLAGS.GUILDS]});
+export const client: Client = new Client({intents: [Intents.FLAGS.GUILDS]});
 const files: string[] = readdirSync('./dist/commands').filter((file) => file.endsWith('.js'));
 const botCommands: Collection<string, NodeJS.Require> = new Collection();
 const commandsToDeploy: string[] = [];
@@ -37,7 +38,7 @@ client.on('interactionCreate', async (interaction) => {
         }
 
         try {
-            logger.info(`${interaction.user.username}#${interaction.user.discriminator}: ${interaction.toString()}`);
+            logger.info(`${interaction.user.tag}: ${interaction.toString()}`);
             await command.execute(interaction);
         } catch (error) {
             logger.error(error);
@@ -53,6 +54,10 @@ client.once('ready', () => {
     for (const guild of guilds) {
         logger.info(guild);
     }
+
+    startWS(client).then(() => {
+        logger.debug('Established WS connection to ASF');
+    });
 });
 
 client.login(config.token);

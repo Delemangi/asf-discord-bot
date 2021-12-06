@@ -1,10 +1,35 @@
-import type {CommandInteraction} from 'discord.js';
+import type {CommandInteraction, Channel} from 'discord.js';
 
 export async function replyToInteraction(interaction: CommandInteraction, message: string, language: string = ''): Promise<void> {
+    let reply: boolean = false;
+
+    for (const output of splitMessage(message, language)) {
+        if (reply) {
+            await interaction.followUp(output);
+        } else {
+            if (interaction.deferred) {
+                await interaction.editReply(output);
+            } else {
+                await interaction.reply(output);
+            }
+        }
+
+        reply = true;
+    }
+}
+
+export async function printLog(channel: Channel, message: string) {
+    if (channel.isText()) {
+        for (const output of splitMessage(message)) {
+            await channel.send(`${output}`);
+        }
+    }
+}
+
+function* splitMessage(message: string, language: string = ''): Generator<string, void> {
     const delimiters: string[] = ['\n', ' ', ','];
     let output: string;
     let index: number = message.length;
-    let reply: boolean = false;
     let split: boolean;
 
     while (message) {
@@ -30,16 +55,6 @@ export async function replyToInteraction(interaction: CommandInteraction, messag
             message = '';
         }
 
-        if (reply) {
-            await interaction.followUp(output);
-        } else {
-            if (interaction.deferred) {
-                await interaction.editReply(output);
-            } else {
-                await interaction.reply(output);
-            }
-        }
-
-        reply = true;
+        yield output;
     }
 }

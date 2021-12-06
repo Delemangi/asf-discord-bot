@@ -1,6 +1,6 @@
 import type {CommandInteraction} from 'discord.js';
 import {SlashCommandBuilder} from '@discordjs/builders';
-import {replyToInteraction} from '../utils/functions';
+import {replyToInteraction} from '../utils/printing';
 import {ASFThenMail} from '../utils/asf';
 import {descriptions} from '../utils/strings';
 

@@ -1,6 +1,6 @@
 import type {CommandInteraction} from 'discord.js';
 import {SlashCommandBuilder} from '@discordjs/builders';
-import {replyToInteraction} from '../utils/functions';
+import {replyToInteraction} from '../utils/printing';
 import {ASFRequest, permissionCheck} from '../utils/asf';
 import {strings, descriptions} from '../utils/strings';
 
