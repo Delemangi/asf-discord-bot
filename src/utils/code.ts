@@ -51,7 +51,7 @@ function checkNumber(number: number): boolean {
         assert(d.sort() !== [1, 3, 7, 9]);
         // no plus pattern
         assert(d.sort() !== [2, 4, 6, 8]);
-        // no L pattern
+        // no touching digits
         assert(!isTouching(d[0], d[1]) && !isTouching(d[1], d[2]) && !isTouching(d[2], d[3]));
 
         return true;

@@ -5,12 +5,19 @@ import {logger} from './logger';
 import {strings} from './strings';
 import {config} from '../config';
 
+const cases: string[] = [
+    `Couldn't find any bot named`,
+    `This bot doesn't have ASF 2FA enabled!`,
+    `This bot instance is not connected!`,
+];
+
 export async function ASFRequest(interaction: CommandInteraction, command: string, args: string): Promise<string> {
     if (!config.asfChannels.includes(interaction.channelId)) {
         return strings.invalidChannel;
     } else {
         if (!interaction.deferred) {
             await interaction.deferReply();
+            logger.debug('The reply has been deferred');
         }
 
         return axios({
@@ -25,6 +32,8 @@ export async function ASFRequest(interaction: CommandInteraction, command: strin
             }
         })
             .then((response) => {
+                logger.debug('ASF responded to the request');
+
                 if (response.data.hasOwnProperty('Success')) {
                     return response.data['Result'];
                 } else {
@@ -88,11 +97,6 @@ export async function ASFThenMail(interaction: CommandInteraction, command: stri
         let output: string[] = [];
         let bots: string[] = accounts.split(',');
         let asf: string[] = (await privilegedASFRequest(interaction, command, accounts)).split('\n');
-        const cases: string[] = [
-            `Couldn't find any bot named`,
-            `This bot doesn't have ASF 2FA enabled!`,
-            `This bot instance is not connected!`,
-        ];
 
         for (let i = 0; i < bots.length; i++) {
             if (cases.some((line) => asf[i].includes(line))) {

@@ -16,9 +16,13 @@ export async function startWS(client: Client): Promise<void> {
 
     setInterval(() => sendToWS(client), 5000);
 
-    ws.on('message', async (data) => {
+    ws.on('message', (data) => {
         buffer.push(JSON.parse(data.toString()).Result);
     });
+
+    ws.on('close', () => {
+        logger.error('The WS connection was unexpectedly closed');
+    })
 }
 
 async function sendToWS(client: Client): Promise<void> {

@@ -5,7 +5,6 @@ import {readdirSync} from 'fs';
 import {replyToInteraction} from './utils/printing';
 import {logger} from './utils/logger';
 import {startWS} from "./utils/ws";
-import {strings} from './utils/strings';
 import {config} from './config';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -20,7 +19,7 @@ for (const file of files) {
     botCommands.set(command.data.name, command);
     commandsToDeploy.push(command.data.toJSON());
 
-    logger.debug(`Found command ${command}`);
+    logger.debug(`Command: ${command}`);
 }
 
 const rest: REST = new REST({version: '9'}).setToken(config.token);
@@ -43,7 +42,7 @@ client.on('interactionCreate', async (interaction) => {
         try {
             await command.execute(interaction);
         } catch (error) {
-            await replyToInteraction(interaction, strings.unknownError);
+            await replyToInteraction(interaction, '');
             logger.error(error);
         }
     }
@@ -57,9 +56,9 @@ client.once('ready', () => {
         logger.info(guild);
     }
 
-    startWS(client).then(() => {
-        logger.debug('Established WS connection to ASF');
-    });
+    startWS(client)
+        .then(() => logger.info('Successfully established WS connection with ASF'))
+        .catch((error) => logger.error(error));
 });
 
 export function ping() {

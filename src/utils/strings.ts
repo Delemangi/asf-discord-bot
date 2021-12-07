@@ -1,10 +1,9 @@
 export const strings: { [index: string]: string } = {
     invalidChannel: 'You cannot run that command in this channel.',
     noCommandPermission: 'You do not have permission to use that command.',
-    noBotPermission: 'No permission.',
+    noBotPermission: 'The bot does not exist or you do not have permission.',
     requestFailed: 'The request was made but no response was received.',
     badResponse: 'The received response does not indicate success.',
-    unknownError: 'An unknown error has occurred.',
     tooManyArguments: 'Too many arguments have been supplied.'
 };
 

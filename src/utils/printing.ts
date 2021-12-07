@@ -18,9 +18,9 @@ export async function replyToInteraction(interaction: CommandInteraction, messag
     }
 }
 
-export async function printLog(channel: Channel, message: string) {
+export async function printLog(channel: Channel, message: string, language: string = '') {
     if (channel.isText()) {
-        for (const output of splitMessage(message)) {
+        for (const output of splitMessage(message, language)) {
             await channel.send(`${output}`);
         }
     }

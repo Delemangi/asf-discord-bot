@@ -20,12 +20,13 @@ export async function get2FAFromMail(account: string): Promise<string> {
         for (const message of messages) {
             const timestamp: Date = new Date(message.attributes.date);
             if (now.getTime() - timestamp.getTime() > config.mailInterval * 60 * 1000) {
-                logger.debug(`Terminating mail search at ${message.attributes.date}`);
+                logger.debug(`Reached mail received at ${message.attributes.date}`);
                 break;
             }
 
             const code: string | null = find2FAInMail(message.parts[0].body);
             if (code) {
+                logger.debug('Found the correct Steam Guard mail');
                 return `<${account}> Guard Code: ${code}`;
             }
         }
@@ -51,12 +52,13 @@ export async function getConfirmationFromMail(account: string): Promise<string> 
         for (const message of messages) {
             const timestamp: Date = new Date(message.attributes.date);
             if (now.getTime() - timestamp.getTime() > config.mailInterval * 60 * 1000) {
-                logger.debug(`Terminating mail search at ${message.attributes.date}`);
+                logger.debug(`Reached mail received at ${message.attributes.date}`);
                 break;
             }
 
             const url: string | null = findConfirmationInMail(message.parts[0].body);
             if (url) {
+                logger.debug('Found a confirmation mail')
                 urls.push(url);
             }
         }
