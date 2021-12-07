@@ -1,7 +1,8 @@
 import type {Client} from "discord.js";
 import {WebSocket} from "ws";
-import {config} from "../config";
 import {printLog} from "./printing";
+import {logger} from "./logger";
+import {config} from "../config";
 
 let buffer: string[] = [];
 
@@ -29,7 +30,12 @@ async function sendToWS(client: Client): Promise<void> {
         }
 
         if (textChannel) {
-            await printLog(textChannel, buffer.join('\n'));
+            try {
+                await printLog(textChannel, buffer.join('\n'));
+            } catch (e) {
+                logger.error('Unable to print ASF log');
+                return;
+            }
         }
     }
 
