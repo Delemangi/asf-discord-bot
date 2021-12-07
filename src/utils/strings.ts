@@ -4,7 +4,9 @@ export const strings: { [index: string]: string } = {
     noBotPermission: 'The bot does not exist or you do not have permission.',
     requestFailed: 'The request was made but no response was received.',
     badResponse: 'The received response does not indicate success.',
-    tooManyArguments: 'Too many arguments have been supplied.'
+    tooManyArguments: 'Too many arguments have been supplied.',
+    malformedResponse: 'The received response is malformed.',
+    unknownError: 'An unknown error occurred.'
 };
 
 export const descriptions: { [index: string]: string } = {

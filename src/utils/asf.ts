@@ -37,7 +37,7 @@ export async function ASFRequest(interaction: CommandInteraction, command: strin
                 if (response.data.hasOwnProperty('Success')) {
                     return response.data['Result'];
                 } else {
-                    return strings.unknownError;
+                    return strings.malformedResponse;
                 }
             })
             .catch(error => {

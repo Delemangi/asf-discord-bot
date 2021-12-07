@@ -1,8 +1,8 @@
-import type {CommandInteraction} from "discord.js";
-import assert from "assert";
-import {logger} from "./logger";
-import {strings} from "./strings";
-import {config} from "../config";
+import type {CommandInteraction} from 'discord.js';
+import assert from 'assert';
+import {logger} from './logger';
+import {strings} from './strings';
+import {config} from '../config';
 
 export function getCode(interaction: CommandInteraction): string {
     if (!config.rustChannels.includes(interaction.channelId)) {
