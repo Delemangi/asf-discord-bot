@@ -7,8 +7,15 @@ const confirmationString: string = 'confirm the trade contents:';
 
 export async function get2FAFromMail(account: string): Promise<string> {
     for (const mail of config.mails) {
+        logger.debug(`Attempting to login to ${mail.user} at ${mail.host} for ${account} Steam Guard`);
+
         const login: ImapSimpleOptions = {imap: mail};
         const session: ImapSimple = await connect(login);
+
+        session.on('error', (error) => {
+            logger.error(`Encountered IMAP error while getting Steam Guard code: ${error}`);
+        });
+
         await session.openBox(mail.folder);
 
         const now: Date = new Date(Date.now());
@@ -20,7 +27,7 @@ export async function get2FAFromMail(account: string): Promise<string> {
         for (const message of messages) {
             const timestamp: Date = new Date(message.attributes.date);
             if (now.getTime() - timestamp.getTime() > config.mailInterval * 60 * 1000) {
-                logger.debug(`Reached mail received at ${message.attributes.date}`);
+                logger.debug(`Reached mail received at ${message.attributes.date} which exceeds the interval`);
                 break;
             }
 
@@ -39,8 +46,15 @@ export async function getConfirmationFromMail(account: string): Promise<string> 
     const urls: string[] = [];
 
     for (const mail of config.mails) {
+        logger.debug(`Attempting to login to ${mail.user} at ${mail.host} for ${account} confirmations`);
+
         const login: ImapSimpleOptions = {imap: mail};
         const session: ImapSimple = await connect(login);
+
+        session.on('error', (error) => {
+            logger.error(`Encountered IMAP error while getting confirmations: ${error}`);
+        });
+
         await session.openBox(mail.folder);
 
         const now: Date = new Date(Date.now());
@@ -52,7 +66,7 @@ export async function getConfirmationFromMail(account: string): Promise<string> 
         for (const message of messages) {
             const timestamp: Date = new Date(message.attributes.date);
             if (now.getTime() - timestamp.getTime() > config.mailInterval * 60 * 1000) {
-                logger.debug(`Reached mail received at ${message.attributes.date}`);
+                logger.debug(`Reached mail received at ${message.attributes.date} which exceeds the interval`);
                 break;
             }
 

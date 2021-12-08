@@ -1,6 +1,9 @@
 import type {CommandInteraction, Channel} from 'discord.js';
+import {logger} from './logger';
 
 export async function replyToInteraction(interaction: CommandInteraction, message: string, language: string = ''): Promise<void> {
+    logger.debug(`Attempting to reply to interaction ${interaction}`)
+
     let reply: boolean = false;
 
     for (const output of splitMessage(message, language)) {
@@ -19,6 +22,8 @@ export async function replyToInteraction(interaction: CommandInteraction, messag
 }
 
 export async function printLog(channel: Channel, message: string, language: string = '') {
+    logger.debug(`Attempting to print log to channel ${channel.id}`)
+
     if (channel.isText()) {
         for (const output of splitMessage(message, language)) {
             await channel.send(`${output}`);
@@ -27,6 +32,8 @@ export async function printLog(channel: Channel, message: string, language: stri
 }
 
 function* splitMessage(message: string, language: string = ''): Generator<string, void> {
+    logger.debug(`Splitting message of length ${message.length}`)
+
     const delimiters: string[] = ['\n', ' ', ','];
     let output: string;
     let index: number = message.length;

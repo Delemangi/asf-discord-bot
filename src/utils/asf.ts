@@ -12,12 +12,14 @@ const cases: string[] = [
 ];
 
 export async function ASFRequest(interaction: CommandInteraction, command: string, args: string): Promise<string> {
+    logger.debug(`Processing the ASF request: ${command} ${args}`);
+
     if (!config.asfChannels.includes(interaction.channelId)) {
         return strings.invalidChannel;
     } else {
         if (!interaction.deferred) {
             await interaction.deferReply();
-            logger.debug('The reply has been deferred');
+            logger.debug('The interaction has been deferred');
         }
 
         return axios({
@@ -32,7 +34,7 @@ export async function ASFRequest(interaction: CommandInteraction, command: strin
             }
         })
             .then((response) => {
-                logger.debug('ASF responded to the request');
+                logger.debug('The ASF request succeeded');
 
                 if (response.data.hasOwnProperty('Success')) {
                     return response.data['Result'];
@@ -42,18 +44,15 @@ export async function ASFRequest(interaction: CommandInteraction, command: strin
             })
             .catch(error => {
                 if (error.response) {
-                    logger.error(error.response.data);
-                    logger.error(error.response.status);
-                    logger.error(error.response.headers);
+                    logger.error(`The ASF request failed: ${error.response.data} | ${error.response.status} | ${error.response.headers}`);
 
                     return strings.badResponse;
                 } else if (error.request) {
-                    logger.error(error.request);
+                    logger.error(`The ASF request failed: ${error.request}`);
 
                     return strings.requestFailed;
                 } else {
-                    logger.error(error.message);
-                    logger.error(error.response.data);
+                    logger.error(`The ASF request failed: ${error.message} | ${error.response.data}`);
 
                     return strings.unknownError;
                 }
@@ -62,6 +61,8 @@ export async function ASFRequest(interaction: CommandInteraction, command: strin
 }
 
 export async function privilegedASFRequest(interaction: CommandInteraction, command: string, args: string, numExtraArgs: number = 0): Promise<string> {
+    logger.debug(`Processing the privileged ASF request: ${command} ${args}`);
+
     if (!config.asfChannels.includes(interaction.channelId)) {
         return strings.invalidChannel;
     } else {
@@ -91,6 +92,8 @@ export async function privilegedASFRequest(interaction: CommandInteraction, comm
 }
 
 export async function ASFThenMail(interaction: CommandInteraction, command: string, accounts: string): Promise<string> {
+    logger.debug(`Processing ASF or mail request: ${command} ${accounts}`);
+
     if (!config.asfChannels.includes(interaction.channelId)) {
         return strings.invalidChannel;
     } else {
