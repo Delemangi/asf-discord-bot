@@ -11,6 +11,6 @@ export const logger = createLogger({
     defaultMeta: {service: 'user-service'},
     transports: [
         new transports.Console(),
-        new transports.File({filename: 'bot.log'})
+        new transports.File({filename: 'bot.log', level: 'debug'})
     ]
 });
