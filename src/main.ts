@@ -49,6 +49,8 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.once('ready', () => {
+    client.user?.setActivity('World Domination');
+
     const guilds: string[] = client.guilds.cache.map((guild) => `${guild.id} - ${guild.name}`);
 
     logger.info('Servers:');
