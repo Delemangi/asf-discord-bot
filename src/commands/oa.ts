@@ -14,7 +14,7 @@ module.exports = {
             .setRequired(true)),
 
     async execute(interaction: CommandInteraction) {
-        const output: string = await ASFRequest(interaction, 'oa', '');
+        const output: string = await ASFRequest(interaction, 'oa', `${interaction.options.getString('game')}`);
         const split: string[] = output.split('\n');
         const buffer: string[] = [];
 
