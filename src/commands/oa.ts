@@ -29,6 +29,10 @@ module.exports = {
             }
         }
 
-        await replyToInteraction(interaction, buffer.join('\n'));
+        if (buffer.length === 0) {
+            await replyToInteraction(interaction, '<ASF> No accounts own the queried game.');
+        } else {
+            await replyToInteraction(interaction, buffer.join('\n'));
+        }
     },
 };
