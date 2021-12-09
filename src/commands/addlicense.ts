@@ -19,7 +19,9 @@ module.exports = {
 
     async execute(interaction: CommandInteraction) {
         const output: string = await privilegedASFRequest(interaction, 'addlicense', `${interaction.options.getString('accounts')} ${interaction.options.getString('apps')}`, 2);
+        let split: string[] = output.split('\n');
+        split = split.filter(i => i.length > 2);
 
-        await replyToInteraction(interaction, output);
+        await replyToInteraction(interaction, split.join('\n'));
     },
 };
