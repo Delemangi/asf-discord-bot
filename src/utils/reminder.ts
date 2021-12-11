@@ -1,16 +1,12 @@
-//import type {Interaction} from "discord.js";
-//import {readFileSync, writeFileSync} from 'fs';
-//
-//let reminders: Buffer = [];
-//
-//function createReminder(interaction: Interaction): string {
-//    return JSON.stringify(interaction);
-//}
-//
-//function loadReminders() {
-//    reminders = readFileSync('./data/reminders.json', {flag: 'a+'});
-//}
-//
-//function saveReminder(interaction: string) {
-//    writeFileSync('./data/reminders.json', interaction, {flag: 'a+'});
-//}
+import type { CommandInteraction } from 'discord.js'
+import { readFileSync, writeFileSync } from 'fs'
+
+let reminders: Buffer = []
+
+function loadReminders () {
+  reminders = readFileSync('./data/reminders.json', { 'flag': 'a+' })
+}
+
+export function saveReminder (interaction: CommandInteraction) {
+  writeFileSync('./data/reminders.json', JSON.stringify(interaction), { 'flag': 'a+' })
+}

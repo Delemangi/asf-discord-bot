@@ -4,7 +4,8 @@
   "description": "Discord bot for HECKGAMING",
   "main": "src/main.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run lint && tsc",
+    "lint": "eslint .",
     "start": "node dist/main.js"
   },
   "author": "Delemangi",
@@ -29,6 +30,13 @@
   },
   "devDependencies": {
     "@types/imap": "^0.8.35",
-    "@types/ws": "^8.2.1"
+    "@types/ws": "^8.2.1",
+    "@typescript-eslint/eslint-plugin": "^5.6.0",
+    "@typescript-eslint/parser": "^5.6.0",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.2.0"
   }
 }

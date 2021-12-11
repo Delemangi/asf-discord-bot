@@ -1,17 +1,17 @@
-import type {CommandInteraction} from 'discord.js';
-import {SlashCommandBuilder} from '@discordjs/builders';
-import {replyToInteraction} from '../utils/printing';
-import {privilegedASFRequest} from '../utils/asf';
-import {descriptions} from '../utils/strings';
+import type { CommandInteraction } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { replyToInteraction } from '../utils/printing'
+import { privilegedASFRequest } from '../utils/asf'
+import { descriptions } from '../utils/strings'
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('sa')
-        .setDescription(descriptions.sa),
+  'data': new SlashCommandBuilder()
+    .setName('sa')
+    .setDescription(descriptions.sa),
 
-    async execute(interaction: CommandInteraction) {
-        const output: string = await privilegedASFRequest(interaction, 'sa', '');
+  async execute (interaction: CommandInteraction) {
+    const output: string = await privilegedASFRequest(interaction, 'sa', '')
 
-        await replyToInteraction(interaction, output);
-    },
-};
+    await replyToInteraction(interaction, output)
+  }
+}

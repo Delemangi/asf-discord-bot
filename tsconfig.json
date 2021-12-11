@@ -34,9 +34,10 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": [
-      "ESNext"
+      "ESNext",
+      "DOM"
     ],
-    "target": "esnext",
+    "target": "ESNext",
     "useDefineForClassFields": true,
     // Output Formatting
     "pretty": true,
