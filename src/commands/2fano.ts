@@ -7,7 +7,7 @@ import {descriptions} from '../utils/strings';
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('2fano')
-    .setDescription(descriptions._2fano)
+    .setDescription(descriptions['2fano'])
     .addStringOption((option) => option
       .setName('accounts')
       .setDescription('Accounts')
