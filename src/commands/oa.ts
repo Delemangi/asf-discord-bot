@@ -26,16 +26,16 @@ module.exports = {
     const buffer: string[] = [];
 
     for (const line of split) {
-      if (cases.every((value) => !line.includes(value)) && line.length > 2) {
+      if (cases.every((value) => !line.includes(value)) && line.includes('|') && line.length > 1) {
         buffer.push(line);
       }
     }
 
     if (buffer.length) {
-      buffer.push(`<ASF> ${buffer.length} account(s) own the queried game.`);
+      buffer.push(`<ASF> ${buffer.length} account(s) own the queried game(s).`);
       await replyToInteraction(interaction, buffer.join('\n'));
     } else {
-      await replyToInteraction(interaction, '<ASF> No accounts own the queried game.');
+      await replyToInteraction(interaction, '<ASF> No accounts own the queried game(s).');
     }
   }
 };
