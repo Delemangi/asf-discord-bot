@@ -26,7 +26,7 @@ module.exports = {
     const buffer: string[] = [];
 
     for (const line of split) {
-      if (cases.every((value) => !line.includes(value))) {
+      if (cases.every((value) => !line.includes(value)) && line.length > 2) {
         buffer.push(line);
       }
     }
