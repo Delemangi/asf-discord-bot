@@ -1,11 +1,18 @@
-import type { CommandInteraction } from 'discord.js'
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { replyToInteraction } from '../utils/printing'
-import { ASFRequest } from '../utils/asf'
-import { descriptions } from '../utils/strings'
+import {SlashCommandBuilder} from '@discordjs/builders';
+import type {CommandInteraction} from 'discord.js';
+import {ASFRequest} from '../utils/asf';
+import {replyToInteraction} from '../utils/printing';
+import {descriptions} from '../utils/strings';
+
+const cases: string[] = [
+  'Not owned yet',
+  'gamesOwned is empty',
+  'This bot instance is not connected!',
+  'bots already own game'
+];
 
 module.exports = {
-  'data': new SlashCommandBuilder()
+  data: new SlashCommandBuilder()
     .setName('oa')
     .setDescription(descriptions.oa)
     .addStringOption((option) => option
@@ -14,20 +21,21 @@ module.exports = {
       .setRequired(true)),
 
   async execute (interaction: CommandInteraction) {
-    const output: string = await ASFRequest(interaction, 'oa', `${interaction.options.getString('game')}`)
-    const split: string[] = output.split('\n')
-    const buffer: string[] = []
+    const output: string = await ASFRequest(interaction, 'oa', `${interaction.options.getString('game')}`);
+    const split: string[] = output.split('\n');
+    const buffer: string[] = [];
 
     for (const line of split) {
-      if (line.length > 2 && !line.includes('Not owned yet') && !line.includes('gamesOwned is empty') && !line.includes('This bot instance is not connected!') && !line.includes('bots already own the game') && line.includes('|')) {
-        buffer.push(line)
+      if (cases.every((value) => !line.includes(value))) {
+        buffer.push(line);
       }
     }
 
-    if (buffer.length === 0) {
-      await replyToInteraction(interaction, '<ASF> No accounts own the queried game.')
+    if (buffer.length) {
+      buffer.push(`<ASF> ${buffer.length} account(s) own the queried game.`);
+      await replyToInteraction(interaction, buffer.join('\n'));
     } else {
-      await replyToInteraction(interaction, buffer.join('\n'))
+      await replyToInteraction(interaction, '<ASF> No accounts own the queried game.');
     }
   }
-}
+};

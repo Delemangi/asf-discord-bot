@@ -1,12 +1,16 @@
-import type { CommandInteraction } from 'discord.js'
-import { readFileSync, writeFileSync } from 'fs'
+import type {CommandInteraction} from 'discord.js';
+import {logger} from './logger';
+import {pool} from './sql';
 
-let reminders: Buffer = []
+export function saveReminder (interaction: CommandInteraction): void {
+  pool.getConnection((error, connection) => {
+    if (error) {
+      logger.error('Failed');
+      return;
+    }
 
-function loadReminders () {
-  reminders = readFileSync('./data/reminders.json', { 'flag': 'a+' })
-}
-
-export function saveReminder (interaction: CommandInteraction) {
-  writeFileSync('./data/reminders.json', JSON.stringify(interaction), { 'flag': 'a+' })
+    connection.query('ADD', () => {
+      logger.info(interaction);
+    });
+  });
 }

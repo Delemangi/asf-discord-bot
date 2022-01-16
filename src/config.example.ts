@@ -1,30 +1,36 @@
 export const config: { [index: string]: any } = {
-  'token': '',
-  'clientID': '',
-  'asfAPI': '',
-  'asfWS': '',
-  'logLevel': '',
-  'alphaVantageAPI': '',
-  'asfChannels': [
+  alphaVantageAPI: '',
+  asfAPI: '',
+  asfChannels: [
     ''
   ],
-  'asfLogChannels': [
+  asfLogChannels: [
     ''
   ],
-  'rustChannels': [
+  asfPermissions: {},
+  asfWS: '',
+  clientID: '',
+  guildIDs: [
     ''
   ],
-  'guildIDs': [
-    ''
-  ],
-  'mails': [
+  logLevel: '',
+  mailInterval: 0,
+  mails: [
     {
-      'server': '',
-      'ssl': false,
-      'email': '',
-      'emailPassword': '',
-      'emailFolder': ''
+      email: '',
+      emailFolder: '',
+      emailPassword: '',
+      server: '',
+      ssl: false
     }
   ],
-  'asfPermissions': {}
-}
+  rustChannels: [
+    ''
+  ],
+  SQL: {
+    host: '',
+    password: '',
+    user: ''
+  },
+  token: ''
+};

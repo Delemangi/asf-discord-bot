@@ -1,11 +1,11 @@
-import type { CommandInteraction } from 'discord.js'
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { replyToInteraction } from '../utils/printing'
-import { privilegedASFRequest } from '../utils/asf'
-import { descriptions } from '../utils/strings'
+import {SlashCommandBuilder} from '@discordjs/builders';
+import type {CommandInteraction} from 'discord.js';
+import {privilegedASFRequest} from '../utils/asf';
+import {replyToInteraction} from '../utils/printing';
+import {descriptions} from '../utils/strings';
 
 module.exports = {
-  'data': new SlashCommandBuilder()
+  data: new SlashCommandBuilder()
     .setName('nickname')
     .setDescription(descriptions.nickname)
     .addStringOption((option) => option
@@ -18,8 +18,8 @@ module.exports = {
       .setRequired(true)),
 
   async execute (interaction: CommandInteraction) {
-    const output: string = await privilegedASFRequest(interaction, 'nickname', `${interaction.options.getString('accounts')} ${interaction.options.getString('nickname')}`, 32)
+    const output: string = await privilegedASFRequest(interaction, 'nickname', `${interaction.options.getString('accounts')} ${interaction.options.getString('nickname')}`, 32);
 
-    await replyToInteraction(interaction, output)
+    await replyToInteraction(interaction, output);
   }
-}
+};

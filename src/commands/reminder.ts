@@ -1,10 +1,10 @@
-import type { CommandInteraction } from 'discord.js'
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { saveReminder } from '../utils/reminder'
-import { descriptions } from '../utils/strings'
+import {SlashCommandBuilder} from '@discordjs/builders';
+import type {CommandInteraction} from 'discord.js';
+import {saveReminder} from '../utils/reminder';
+import {descriptions} from '../utils/strings';
 
 module.exports = {
-  'data': new SlashCommandBuilder()
+  data: new SlashCommandBuilder()
     .setName('reminder')
     .setDescription(descriptions.reminder)
     .addStringOption((option) => option
@@ -17,6 +17,6 @@ module.exports = {
       .setRequired(false)),
 
   async execute (interaction: CommandInteraction) {
-    saveReminder(interaction)
+    saveReminder(interaction);
   }
-}
+};

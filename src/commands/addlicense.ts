@@ -1,11 +1,11 @@
-import type { CommandInteraction } from 'discord.js'
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { replyToInteraction } from '../utils/printing'
-import { privilegedASFRequest } from '../utils/asf'
-import { descriptions } from '../utils/strings'
+import {SlashCommandBuilder} from '@discordjs/builders';
+import type {CommandInteraction} from 'discord.js';
+import {privilegedASFRequest} from '../utils/asf';
+import {replyToInteraction} from '../utils/printing';
+import {descriptions} from '../utils/strings';
 
 module.exports = {
-  'data': new SlashCommandBuilder()
+  data: new SlashCommandBuilder()
     .setName('addlicense')
     .setDescription(descriptions.addlicense)
     .addStringOption((option) => option
@@ -18,10 +18,10 @@ module.exports = {
       .setRequired(true)),
 
   async execute (interaction: CommandInteraction) {
-    const output: string = await privilegedASFRequest(interaction, 'addlicense', `${interaction.options.getString('accounts')} ${interaction.options.getString('apps')}`, 2)
-    const split: string[] = output.split('\n')
-    split = split.filter(i => i.length > 2)
+    const output: string = await privilegedASFRequest(interaction, 'addlicense', `${interaction.options.getString('accounts')} ${interaction.options.getString('apps')}`, 2);
+    let split: string[] = output.split('\n');
+    split = split.filter((index) => index.length > 2);
 
-    await replyToInteraction(interaction, split.join('\n'))
+    await replyToInteraction(interaction, split.join('\n'));
   }
-}
+};

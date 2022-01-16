@@ -1,77 +1,77 @@
-import type { CommandInteraction } from 'discord.js'
-import assert from 'assert'
-import { logger } from './logger'
-import { strings } from './strings'
-import { config } from '../config'
+import assert from 'assert';
+import type {CommandInteraction} from 'discord.js';
+import {config} from '../config';
+import {logger} from './logger';
+import {strings} from './strings';
 
 export function getCode (interaction: CommandInteraction): string {
-  if (!config.rustChannels.includes(interaction.channelId)) {
-    return strings.invalidChannel
-  } else {
-    return generateCode().toString()
+  if (config.rustChannels.includes(interaction.channelId)) {
+    return generateCode().toString();
   }
+
+  return strings.invalidChannel;
 }
 
 function generateCode (): number {
-  let i: number = 0
+  let index: number = 0;
 
   while (true) {
-    const code: number = randomNumber()
+    const code: number = randomNumber();
 
     if (checkNumber(code)) {
-      logger.debug(`Code generated after ${i} tries`)
-      return code
+      logger.debug(`Code generated after ${index} tries`);
+      return code;
     }
 
-    i++
+    index++;
   }
 }
 
 function checkNumber (number: number): boolean {
-  const d: number[] = getDigits(number)
+  const digits: number[] = getDigits(number);
 
   try {
     // 4 digits long
-    assert(d.length === 4)
+    assert(digits.length === 4);
     // number in range
-    assert(number >= 1000 && number <= 9999)
+    assert(number >= 1_000 && number <= 9_999);
     // differing neighbouring digits
-    assert(d[0] !== d[1] && d[1] !== d[2] && d[1] !== d[2])
+    assert(digits[0] !== digits[1] && digits[1] !== digits[2] && digits[1] !== digits[2]);
     // differing first and last digit
-    assert(d[0] !== d[3])
+    assert(digits[0] !== digits[3]);
     // no repeating digits
-    assert(d[0] !== d[2] || d[1] !== d[3])
+    assert(digits[0] !== digits[2] || digits[1] !== digits[3]);
     // no common years
-    assert(number <= 1900 || number >= 2050)
+    assert(number <= 1_900 || number >= 2_050);
     // no descending digits
-    assert(!(d[0] > d[1] && d[1] > d[2] && d[2] > d[3]))
+    assert(!(digits[0] > digits[1] && digits[1] > digits[2] && digits[2] > digits[3]));
     // no ascending digits
-    assert(!(d[0] < d[1] && d[1] < d[2] && d[2] < d[3]))
+    assert(!(digits[0] < digits[1] && digits[1] < digits[2] && digits[2] < digits[3]));
     // no corner pattern
-    assert(d.sort() !== [1, 3, 7, 9])
+    assert(digits.sort() !== [1, 3, 7, 9]);
     // no plus pattern
-    assert(d.sort() !== [2, 4, 6, 8])
+    assert(digits.sort() !== [2, 4, 6, 8]);
     // no touching digits
-    assert(!isTouching(d[0], d[1]) && !isTouching(d[1], d[2]) && !isTouching(d[2], d[3]))
+    assert(!isTouching(digits[0], digits[1]) && !isTouching(digits[1], digits[2]) && !isTouching(digits[2], digits[3]));
 
-    return true
-  } catch (e) {
-    return false
+    return true;
+  } catch {
+    return false;
   }
 }
 
-function randomNumber (min: number = 1000, max: number = 9999): number {
-  return Math.floor(Math.random() * (max - min + 1) + min)
+function randomNumber (min: number = 1_000, max: number = 9_999): number {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function getDigits (number: number): number[] {
-  const digits: number[] = []
+  const digits: number[] = [];
 
-  for (let i = 0; i < 4; i++) {
-    digits[i] = parseInt(number.toString()[i])
+  for (let index = 0; index < 4; index++) {
+    digits[index] = Number.parseInt(number.toString()[index], 10);
   }
 
-  return digits
+  return digits;
 }
 
 function isTouching (number: number, digit: number): boolean {
@@ -86,7 +86,7 @@ function isTouching (number: number, digit: number): boolean {
     '7': [4, 8],
     '8': [5, 7, 9],
     '9': [6, 8]
-  }
+  };
 
-  return touching[number].includes(digit)
+  return touching[number].includes(digit);
 }

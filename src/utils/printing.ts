@@ -1,67 +1,68 @@
-import type { CommandInteraction, Channel } from 'discord.js'
-import { logger } from './logger'
+import type {
+  CommandInteraction,
+  Channel
+} from 'discord.js';
+import {logger} from './logger';
 
 export async function replyToInteraction (interaction: CommandInteraction, message: string, language: string = ''): Promise<void> {
-  logger.debug(`Attempting to reply to interaction ${interaction}`)
+  logger.debug(`Attempting to reply to interaction ${interaction}`);
 
-  let reply: boolean = false
+  let reply: boolean = false;
 
   for (const output of splitMessage(message, language)) {
     if (reply) {
-      await interaction.followUp(output)
+      await interaction.followUp(output);
+    } else if (interaction.deferred) {
+      await interaction.editReply(output);
     } else {
-      if (interaction.deferred) {
-        await interaction.editReply(output)
-      } else {
-        await interaction.reply(output)
-      }
+      await interaction.reply(output);
     }
 
-    reply = true
+    reply = true;
   }
 }
 
 export async function printLog (channel: Channel, message: string, language: string = '') {
-  logger.debug(`Attempting to print log to channel ${channel.id}`)
+  logger.debug(`Attempting to print log to channel ${channel.id}`);
 
   if (channel.isText()) {
     for (const output of splitMessage(message, language)) {
-      await channel.send(`${output}`)
+      await channel.send(`${output}`);
     }
   }
 }
 
-function * splitMessage (message: string, language: string = ''): Generator<string, void> {
-  logger.debug(`Splitting message of length ${message.length}`)
+function *splitMessage (message: string, language: string = ''): Generator<string, void> {
+  logger.debug(`Splitting message of length ${message.length}`);
 
-  const delimiters: string[] = ['\n', ' ', ',']
-  let output: string
-  let index: number = message.length
-  let split: boolean
+  const delimiters: string[] = ['\n', ' ', ','];
+  let output: string;
+  let index: number = message.length;
+  let split: boolean;
 
   while (message) {
-    if (message.length > 1900) {
-      split = true
+    if (message.length > 1_900) {
+      split = true;
       for (const char of delimiters) {
-        index = message.substring(0, 1900).lastIndexOf(char) + 1
+        index = message.slice(0, 1_900).lastIndexOf(char) + 1;
 
         if (index) {
-          split = false
-          break
+          split = false;
+          break;
         }
       }
 
       if (split) {
-        index = 1900
+        index = 1_900;
       }
 
-      output = `\`\`\`${language}\n${message.substring(0, index)}\`\`\``
-      message = message.slice(index)
+      output = `\`\`\`${language}\n${message.slice(0, Math.max(0, index))}\`\`\``;
+      message = message.slice(index);
     } else {
-      output = `\`\`\`${language}\n${message}\`\`\``
-      message = ''
+      output = `\`\`\`${language}\n${message}\`\`\``;
+      message = '';
     }
 
-    yield output
+    yield output;
   }
 }
