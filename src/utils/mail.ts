@@ -18,7 +18,7 @@ export async function get2FAFromMail (account: string): Promise<string> {
     const session: ImapSimple = await connect(login);
 
     session.on('error', (error) => {
-      logger.error(`Encountered IMAP error while getting Steam Guard code: ${error}`);
+      logger.error(`Encountered IMAP error while getting Steam Guard code\n${error}`);
     });
 
     await session.openBox(mail.folder);
@@ -57,7 +57,7 @@ export async function getConfirmationFromMail (account: string): Promise<string>
     const session: ImapSimple = await connect(login);
 
     session.on('error', (error) => {
-      logger.error(`Encountered IMAP error while getting confirmations: ${error}`);
+      logger.error(`Encountered IMAP error while getting confirmations\n${error}`);
     });
 
     await session.openBox(mail.folder);
@@ -84,7 +84,7 @@ export async function getConfirmationFromMail (account: string): Promise<string>
   }
 
   if (urls.length) {
-    return `<${account}> Confirmations: \n ${urls.join('\n')}`;
+    return `<${account}> Confirmations: \n${urls.join('\n')}`;
   } else {
     return `<${account}> Confirmations: -`;
   }

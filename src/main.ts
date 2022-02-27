@@ -33,7 +33,7 @@ const rest: REST = new REST({version: '9'}).setToken(config.token);
 for (const guild of config.guildIDs) {
   rest.put(Routes.applicationGuildCommands(config.clientID, guild), {body: commandsToDeploy})
     .then(() => logger.debug(`Deployed commands in ${guild}`))
-    .catch((error) => logger.error(`Failed to deploy commands in ${guild}: ${error}`));
+    .catch((error) => logger.error(`Failed to deploy commands in ${guild}\n${error}`));
 }
 
 client.on('interactionCreate', async (interaction) => {

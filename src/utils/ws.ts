@@ -19,12 +19,12 @@ export async function startWS (client: Client): Promise<void> {
   ws.on('message', (data) => buffer.push(JSON.parse(data.toString()).Result));
 
   ws.on('close', (code) => {
-    logger.error(`The WS connection was closed: ${code}`);
+    logger.error(`The WS connection was closed\n${code}`);
     logger.debug('Attempting to reconnect to WS again in 10 seconds...');
     setTimeout(() => startWS(client), 10_000);
   });
 
-  ws.on('error', (error) => logger.error(`Encountered WS error: ${error}`));
+  ws.on('error', (error) => logger.error(`Encountered WS error\n${error}`));
 }
 
 async function sendToWS (client: Client): Promise<void> {
@@ -42,7 +42,7 @@ async function sendToWS (client: Client): Promise<void> {
       try {
         await printLog(textChannel, logs);
       } catch (error) {
-        logger.error(`Failed to print ASF log: ${error}`);
+        logger.error(`Failed to print ASF log\n${error}`);
       }
     }
   }
