@@ -27,7 +27,7 @@ module.exports = {
 
   async execute (interaction: CommandInteraction) {
     await interaction.deferReply();
-    const output: string = await convertCurrencies(interaction.options.getNumber('amount') ?? 0, `${interaction.options.getString('from')}`, `${interaction.options.getString('to')}`, interaction.options.getInteger('digits') ?? 2);
+    const output: string = await convertCurrencies(interaction.options.getNumber('amount') ?? 0, `${interaction.options.getString('from')}`, interaction.options.getString('to') ?? 'EUR', interaction.options.getInteger('digits') ?? 2);
 
     await replyToInteraction(interaction, output);
   }

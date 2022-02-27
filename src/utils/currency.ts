@@ -4,25 +4,27 @@ import {logger} from './logger';
 import {strings} from './strings';
 
 const cache: { [index: string]: { timestamp: number, rate: number } } = {};
+const HOUR: number = 60 * 60 * 1_000;
 
 export async function convertCurrencies (amount: number, from: string, to: string = 'EUR', digits: number = 2): Promise<string> {
-  logger.debug(`Processing the currency conversion request: ${amount} ${from} ${to}`);
+  logger.debug(`Processing the currency conversion request: ${amount} ${from} to ${to}, ${digits} digits`);
 
+  [from, to] = [from.toUpperCase(), to.toUpperCase()];
   const key: string = `${from}-${to}`;
 
-  if (cache[key] && Date.now() - cache[key].timestamp < 60 * 60 * 1_000) {
-    return `${amount} ${from} = ${Number.parseFloat(String(amount * cache[key].rate)).toFixed(digits)} ${to.toUpperCase()}`;
+  if (cache[key] && Date.now() - cache[key].timestamp < HOUR) {
+    return `${amount} ${from} = ${(amount * cache[key].rate).toFixed(digits)} ${to.toUpperCase()}`;
   }
 
   return axios({
     method: 'get',
-    url: `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&symbol=MSFT&apikey=${config.alphaVantageAPI}&from_currency=${from}&to_currency=${to}`
+    url: `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${from}&to_currency=${to}&apikey=${config.alphaVantageAPI}`
   })
     .then((response) => {
-      logger.debug(`The AlphaVantage request succeeded\n${response.data}`);
+      logger.debug('The AlphaVantage request succeeded');
 
       if (response.data['Realtime Currency Exchange Rate']) {
-        const rate: number = Number.parseInt(response.data['Realtime Currency Exchange Rate']['5. Exchange Rate'], 10);
+        const rate: number = Number.parseFloat(response.data['Realtime Currency Exchange Rate']['5. Exchange Rate']);
         const timestamp: number = Date.now();
 
         cache[key] = {
@@ -30,7 +32,7 @@ export async function convertCurrencies (amount: number, from: string, to: strin
           timestamp
         };
 
-        return `${amount} ${from} = ${Number.parseFloat(String(amount * cache[key].rate)).toFixed(digits)} ${to.toUpperCase()}`;
+        return `${amount} ${from} = ${(amount * cache[key].rate).toFixed(digits)} ${to.toUpperCase()}`;
       }
 
       if (response.data.Note) {
@@ -47,16 +49,16 @@ export async function convertCurrencies (amount: number, from: string, to: strin
     })
     .catch((error) => {
       if (error.response) {
-        logger.error(`The AlphaVantage request failed: ${error.response.data} | ${error.response.status} | ${error.response.headers}`);
+        logger.error(`The AlphaVantage request failed\n${error.response.data}\n${error.response.status}\n${error.response.headers}`);
         return strings.badResponse;
       }
 
       if (error.request) {
-        logger.error(`The AlphaVantage request failed: ${error.request}`);
+        logger.error(`The AlphaVantage request failed\n${error.request}`);
         return strings.requestFailed;
       }
 
-      logger.error(`The AlphaVantage request failed: ${error.message} | ${error.response.data}`);
+      logger.error(`The AlphaVantage request failed\n${error.message}\n${error.response.data}`);
       return strings.unknownError;
     });
 }
