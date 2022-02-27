@@ -19,7 +19,7 @@ function generateCode (): number {
     const code: number = randomNumber();
 
     if (checkNumber(code)) {
-      logger.debug(`Code generated after ${index} tries`);
+      logger.debug(`Code ${code} generated after ${index} attempts`);
       return code;
     }
 
@@ -75,18 +75,18 @@ function getDigits (number: number): number[] {
 }
 
 function isTouching (number: number, digit: number): boolean {
-  const touching: { [index: number]: number[] } = {
-    '0': [2],
-    '1': [2, 4],
-    '2': [0, 1, 3, 5],
-    '3': [2, 6],
-    '4': [1, 5, 7],
-    '5': [2, 4, 6, 8],
-    '6': [3, 5, 9],
-    '7': [4, 8],
-    '8': [5, 7, 9],
-    '9': [6, 8]
-  };
+  const touching: { [index: number]: number[] } = [
+    [2],
+    [2, 4],
+    [0, 1, 3, 5],
+    [2, 6],
+    [1, 5, 7],
+    [2, 4, 6, 8],
+    [3, 5, 9],
+    [4, 8],
+    [5, 7, 9],
+    [6, 8]
+  ];
 
   return touching[number].includes(digit);
 }

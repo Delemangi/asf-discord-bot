@@ -6,7 +6,7 @@ import {strings} from './strings';
 const cache: { [index: string]: { timestamp: number, rate: number } } = {};
 
 export async function convertCurrencies (amount: number, from: string, to: string = 'EUR', digits: number = 2): Promise<string> {
-  logger.debug(`Processing a currency conversion request: ${amount} ${from} ${to}`);
+  logger.debug(`Processing the currency conversion request: ${amount} ${from} ${to}`);
 
   const key: string = `${from}-${to}`;
 
@@ -19,7 +19,7 @@ export async function convertCurrencies (amount: number, from: string, to: strin
     url: `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&symbol=MSFT&apikey=${config.alphaVantageAPI}&from_currency=${from}&to_currency=${to}`
   })
     .then((response) => {
-      logger.debug('The AlphaVantage request succeeded');
+      logger.debug(`The AlphaVantage request succeeded\n${response.data}`);
 
       if (response.data['Realtime Currency Exchange Rate']) {
         const rate: number = Number.parseInt(response.data['Realtime Currency Exchange Rate']['5. Exchange Rate'], 10);
@@ -34,8 +34,8 @@ export async function convertCurrencies (amount: number, from: string, to: strin
       }
 
       if (response.data.Note) {
-        logger.debug('We are being rate limited');
-        return 'Rate limited.';
+        logger.debug('We are being rate limited on AlphaVantage');
+        return 'Rate limited. Please try again later.';
       }
 
       if (response.data['Error Message']) {

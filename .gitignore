@@ -194,3 +194,4 @@ fabric.properties
 *.js
 *.map
 config.ts
+.vscode

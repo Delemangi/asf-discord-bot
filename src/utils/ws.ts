@@ -20,8 +20,8 @@ export async function startWS (client: Client): Promise<void> {
 
   ws.on('close', (code) => {
     logger.error(`The WS connection was closed: ${code}`);
-    logger.debug('Attempting to reconnect to WS in 15 seconds...');
-    setTimeout(() => startWS(client), 15_000);
+    logger.debug('Attempting to reconnect to WS again in 10 seconds...');
+    setTimeout(() => startWS(client), 10_000);
   });
 
   ws.on('error', (error) => logger.error(`Encountered WS error: ${error}`));

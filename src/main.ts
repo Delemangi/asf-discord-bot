@@ -9,9 +9,8 @@ import {
 import {config} from './config';
 import {logger} from './utils/logger';
 import {replyToInteraction} from './utils/printing';
+import {startDB} from './utils/sql';
 import {startWS} from './utils/ws';
-
-// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 export const client: Client = new Client({
   intents: [
@@ -22,18 +21,18 @@ const files: string[] = readdirSync('./dist/commands').filter((file) => file.end
 const botCommands: Collection<string, NodeJS.Require> = new Collection();
 const commandsToDeploy: string[] = [];
 
-for (const file of files) {
+for (const [index, file] of files.entries()) {
   const command = require(`./commands/${file}`);
   botCommands.set(command.data.name, command);
   commandsToDeploy.push(command.data.toJSON());
 
-  logger.debug(`Command: ${command.data.name}`);
+  logger.debug(`Command #${index}: ${command.data.name}`);
 }
 
 const rest: REST = new REST({version: '9'}).setToken(config.token);
 for (const guild of config.guildIDs) {
   rest.put(Routes.applicationGuildCommands(config.clientID, guild), {body: commandsToDeploy})
-    .then(() => logger.debug(`Successfully deployed commands in ${guild}`))
+    .then(() => logger.debug(`Deployed commands in ${guild}`))
     .catch((error) => logger.error(`Failed to deploy commands in ${guild}: ${error}`));
 }
 
@@ -45,13 +44,13 @@ client.on('interactionCreate', async (interaction) => {
       return;
     }
 
-    logger.info(`${interaction.user.tag}: ${interaction.toString()}`);
+    logger.info(`${interaction.user.tag}: ${interaction} [${interaction.guild?.id} - ${interaction.guild?.name}]`);
 
     try {
       await command.execute(interaction);
     } catch (error) {
-      await replyToInteraction(interaction, `Encountered an error: ${error}`);
-      logger.error(`Encountered an error while processing the interaction ${interaction}: ${error}`);
+      await replyToInteraction(interaction, 'Failed to process interaction.');
+      logger.error(`Failed to process interaction ${interaction}\n${error}`);
     }
   }
 });
@@ -62,13 +61,15 @@ client.once('ready', () => {
   const guilds: string[] = client.guilds.cache.map((guild) => `${guild.id} - ${guild.name}`);
 
   logger.info('Servers:');
-  for (const guild of guilds) {
-    logger.info(guild);
+  for (const [index, guild] of guilds.entries()) {
+    logger.info(`${index}.\t${guild}`);
   }
 
   startWS(client)
-    .then(() => logger.debug('Successfully established WS connection'))
-    .catch((error) => logger.error(`Failed to establish WS connection: ${error}`));
+    .then(() => logger.debug('Established WS connection with ASF'))
+    .catch((error) => logger.error(`Failed to establish WS connection with ASF\n${error}`));
+
+  startDB();
 });
 
 export function ping () {

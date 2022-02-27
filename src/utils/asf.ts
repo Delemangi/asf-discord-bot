@@ -15,15 +15,16 @@ const cases: string[] = [
 ];
 
 export async function ASFRequest (interaction: CommandInteraction, command: string, args: string): Promise<string> {
-  logger.debug(`Processing the ASF request: ${command} ${args}`);
+  logger.debug(`Processing the ASF request #${interaction.id}: ${command} ${args}`);
 
   if (!config.asfChannels.includes(interaction.channelId)) {
+    logger.debug(`Interaction ${interaction.id} was requsted from a bad channel.`);
     return strings.invalidChannel;
   }
 
   if (!interaction.deferred) {
     await interaction.deferReply();
-    logger.debug('The interaction has been deferred');
+    logger.debug(`Deferring interaction ${interaction.id}`);
   }
 
   return axios({
@@ -36,7 +37,7 @@ export async function ASFRequest (interaction: CommandInteraction, command: stri
     url: config.asfAPI
   })
     .then((response) => {
-      logger.debug('The ASF request succeeded');
+      logger.debug(`The ASF request succeeded\n${response.data}`);
 
       if (response.data.Success === undefined) {
         return strings.malformedResponse;
@@ -46,30 +47,32 @@ export async function ASFRequest (interaction: CommandInteraction, command: stri
     })
     .catch((error) => {
       if (error.response) {
-        logger.error(`The ASF request failed: ${error.response.data} | ${error.response.status} | ${error.response.headers}`);
+        logger.error(`The ASF request failed\n${error.response.data}\n${error.response.status}\n${error.response.headers}`);
         return strings.badResponse;
       }
 
       if (error.request) {
-        logger.error(`The ASF request failed: ${error.request}`);
+        logger.error(`The ASF request failed\n${error.request}`);
         return strings.requestFailed;
       }
 
-      logger.error(`The ASF request failed: ${error.message} | ${error.response.data}`);
+      logger.error(`The ASF request failed\n${error.message}\n${error.response.data}`);
       return strings.unknownError;
     });
 }
 
 export async function privilegedASFRequest (interaction: CommandInteraction, command: string, args: string, numberExtraArgs: number = 0): Promise<string> {
-  logger.debug(`Processing the privileged ASF request: ${command} ${args}`);
+  logger.debug(`Processing the privileged ASF request #${interaction.id}: ${command} ${args}`);
 
   if (!config.asfChannels.includes(interaction.channelId)) {
+    logger.debug(`Interaction ${interaction.id} was requsted from a bad channel.`);
     return strings.invalidChannel;
   }
 
   const [accounts, ...extraArgs] = args.split(' ');
 
   if (numberExtraArgs < extraArgs.length) {
+    logger.debug(`Interaction ${interaction.id} had too many arguments passed.`);
     return strings.tooManyArguments;
   }
 
@@ -79,7 +82,9 @@ export async function privilegedASFRequest (interaction: CommandInteraction, com
   for (const account of accounts.split(',')) {
     if (account === '') {
       continue;
-    } else if (permissionCheck(interaction, account)) {
+    }
+
+    if (permissionCheck(interaction, account)) {
       message = await ASFRequest(interaction, command, `${account} ${extraArgs.join(' ')}`.trim());
     } else {
       message = `<${account}> ${strings.noBotPermission}`;
@@ -92,9 +97,10 @@ export async function privilegedASFRequest (interaction: CommandInteraction, com
 }
 
 export async function ASFThenMail (interaction: CommandInteraction, command: string, accounts: string): Promise<string> {
-  logger.debug(`Processing ASF or mail request: ${command} ${accounts}`);
+  logger.debug(`Processing the ASF/Mail request #${interaction.id}: ${command} ${accounts}`);
 
   if (!config.asfChannels.includes(interaction.channelId)) {
+    logger.debug(`Interaction ${interaction.id} was requsted from a bad channel.`);
     return strings.invalidChannel;
   }
 

@@ -10,6 +10,11 @@ export const config: { [index: string]: any } = {
   asfPermissions: {},
   asfWS: '',
   clientID: '',
+  database: {
+    host: '',
+    password: '',
+    user: ''
+  },
   guildIDs: [
     ''
   ],
@@ -27,10 +32,5 @@ export const config: { [index: string]: any } = {
   rustChannels: [
     ''
   ],
-  SQL: {
-    host: '',
-    password: '',
-    user: ''
-  },
   token: ''
 };
