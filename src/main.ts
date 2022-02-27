@@ -9,6 +9,7 @@ import {
 import {config} from './config';
 import {logger} from './utils/logger';
 import {replyToInteraction} from './utils/printing';
+import {loadReminders} from './utils/reminder';
 import {startDB} from './utils/sql';
 import {startWS} from './utils/ws';
 
@@ -69,10 +70,22 @@ client.once('ready', () => {
     .then(() => logger.debug('Established WS connection with ASF'))
     .catch((error) => logger.error(`Failed to establish WS connection with ASF\n${error}`));
 
-  startDB();
+  startDB()
+    .then(() => loadReminders());
 });
 
-export function ping () {
+export async function sendMessage (channel: string, message: string, author: string): Promise<void> {
+  const reminder: string = `<@${author}> ${message}`;
+
+  client.channels.fetch(channel)
+    .then((chat) => {
+      if (chat?.type === 'GUILD_TEXT') {
+        chat.send(reminder);
+      }
+    });
+}
+
+export function ping (): number {
   return client.ws.ping;
 }
 
