@@ -24,20 +24,20 @@
     "@discordjs/rest": "^0.3.0",
     "@klenty/imap": "^1.1.5",
     "axios": "^0.26.0",
-    "chrono-node": "^2.3.7",
+    "chrono-node": "^2.3.8",
     "discord-api-types": "^0.27.3",
     "discord.js": "^13.6.0",
     "mysql": "^2.18.1",
-    "typescript": "^4.5.5",
+    "typescript": "^4.6.2",
     "winston": "^3.6.0",
     "ws": "^8.5.0"
   },
   "devDependencies": {
     "@types/imap": "^0.8.35",
     "@types/mysql": "^2.15.21",
-    "@types/ws": "^8.5.1",
-    "@typescript-eslint/eslint-plugin": "^5.12.1",
-    "@typescript-eslint/parser": "^5.12.1",
+    "@types/ws": "^8.5.2",
+    "@typescript-eslint/eslint-plugin": "^5.13.0",
+    "@typescript-eslint/parser": "^5.13.0",
     "eslint": "^8.10.0",
     "eslint-config-canonical": "^33.0.1"
   }
