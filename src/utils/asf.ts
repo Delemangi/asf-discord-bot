@@ -13,6 +13,10 @@ const cases: string[] = [
   'This bot doesn\'t have ASF 2FA enabled!',
   'This bot instance is not connected!'
 ];
+const functions: {[index: string]: Function} = {
+  '2fa': get2FAFromMail,
+  '2faok': getConfirmationFromMail
+};
 
 export async function ASFRequest (interaction: CommandInteraction, command: string, args: string): Promise<string> {
   logger.debug(`Processing the ASF request #${interaction.id}: ${command} ${args}`);
@@ -69,7 +73,7 @@ export async function privilegedASFRequest (interaction: CommandInteraction, com
     return strings.invalidChannel;
   }
 
-  const [accounts, ...extraArgs] = args.split(' ');
+  const [accounts, ...extraArgs]: string[] = args.split(' ');
 
   if (numberExtraArgs < extraArgs.length) {
     logger.debug(`Interaction ${interaction.id} had too many arguments passed.`);
@@ -100,7 +104,7 @@ export async function ASFThenMail (interaction: CommandInteraction, command: str
   logger.debug(`Processing the ASF/Mail request #${interaction.id}: ${command} ${accounts}`);
 
   if (!config.asfChannels.includes(interaction.channelId)) {
-    logger.debug(`Interaction ${interaction.id} was requsted from a bad channel.`);
+    logger.debug(`Interaction ${interaction.id} was requested from a bad channel.`);
     return strings.invalidChannel;
   }
 
@@ -109,32 +113,12 @@ export async function ASFThenMail (interaction: CommandInteraction, command: str
   const asf: string[] = (await privilegedASFRequest(interaction, command, accounts)).split('\n');
 
   for (const [index, bot] of bots.entries()) {
-    if (cases.some((value) => asf[index].includes(value))) {
-      if (command === '2fa') {
-        if (permissionCheck(interaction, bot)) {
-          output.push(await get2FAFromMail(bot));
-        } else {
-          output.push(`<${bot}> ${strings.noBotPermission}`);
-        }
-      } else if (command === '2faok') {
-        if (permissionCheck(interaction, bot)) {
-          output.push(await getConfirmationFromMail(bot));
-        } else {
-          output.push(`<${bot}> ${strings.noBotPermission}`);
-        }
-      }
-    } else if (command === '2fa') {
-      if (permissionCheck(interaction, bot)) {
-        output.push(asf[index]);
-      } else {
-        output.push(`<${bot}> ${strings.noBotPermission}`);
-      }
-    } else if (command === '2faok') {
-      if (permissionCheck(interaction, bot)) {
-        output.push(asf[index]);
-      } else {
-        output.push(`<${bot}> ${strings.noBotPermission}`);
-      }
+    if (!permissionCheck(interaction, bot)) {
+      output.push(`<${bot}> ${strings.noBotPermission}`);
+    } else if (cases.some((value) => asf[index].includes(value))) {
+      output.push(await functions[command](bot));
+    } else {
+      output.push(asf[index]);
     }
   }
 
