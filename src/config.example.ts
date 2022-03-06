@@ -29,8 +29,5 @@ export const config: { [index: string]: any } = {
       ssl: false
     }
   ],
-  rustChannels: [
-    ''
-  ],
   token: ''
 };

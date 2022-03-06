@@ -1,18 +1,7 @@
 import assert from 'assert';
-import type {CommandInteraction} from 'discord.js';
-import {config} from '../config';
 import {logger} from './logger';
-import {strings} from './strings';
 
-export function getCode (interaction: CommandInteraction): string {
-  if (config.rustChannels.includes(interaction.channelId)) {
-    return generateCode().toString();
-  }
-
-  return strings.invalidChannel;
-}
-
-function generateCode (): number {
+export function generateCode (): number {
   let index: number = 0;
 
   while (true) {
@@ -48,9 +37,12 @@ function checkNumber (number: number): boolean {
     // no ascending digits
     assert(!(digits[0] < digits[1] && digits[1] < digits[2] && digits[2] < digits[3]));
     // no corner pattern
-    assert(digits.sort() !== [1, 3, 7, 9]);
+
+    digits.sort((a, b) => a - b);
+
+    assert(digits !== [1, 3, 7, 9]);
     // no plus pattern
-    assert(digits.sort() !== [2, 4, 6, 8]);
+    assert(digits !== [2, 4, 6, 8]);
     // no touching digits
     assert(!isTouching(digits[0], digits[1]) && !isTouching(digits[1], digits[2]) && !isTouching(digits[2], digits[3]));
 
