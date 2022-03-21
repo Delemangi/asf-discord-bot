@@ -1,6 +1,7 @@
 import {parseDate} from 'chrono-node';
 import type {CommandInteraction} from 'discord.js';
-import {sendMessage} from '../main';
+import {config} from '../config';
+import {remindUser} from '../main';
 import {logger} from './logger';
 import {pool} from './sql';
 
@@ -11,6 +12,11 @@ export async function saveReminder (interaction: CommandInteraction): Promise<vo
   const time: string = interaction.options.getString('time') ?? '';
 
   const date: Date = parseDate(time);
+
+  if (!date) {
+    interaction.reply('Unrecognized date format.');
+    return;
+  }
 
   pool.getConnection((error, connection) => {
     if (error) {
@@ -34,15 +40,16 @@ export async function saveReminder (interaction: CommandInteraction): Promise<vo
     });
   });
 
-  interaction.reply(`Reminder set for ${date}.`);
+  interaction.reply(`Reminder set for <t:${date.getTime() / 1_000}:F>.`);
 }
 
 export async function loadReminders (): Promise<void> {
-  setTimeout(loadReminders, 10_000);
+  setTimeout(loadReminders, config.reminderInterval);
 
   pool.getConnection((error, connection) => {
     if (error) {
       logger.error(`Failed to obtain a database connection\n${error}`);
+      connection.release();
       return;
     }
 
@@ -57,9 +64,10 @@ export async function loadReminders (): Promise<void> {
 
       for (const {author, channel, message} of results) {
         try {
-          await sendMessage(channel, message, author);
+          await remindUser(channel, message, author);
         } catch (error__) {
           logger.error(`Failed to send reminders\n${error__}`);
+          connection.release();
           return;
         }
       }
@@ -67,6 +75,7 @@ export async function loadReminders (): Promise<void> {
       connection.query('DELETE FROM discord_bot.reminders WHERE timestamp < ?', [new Date()], (error__, results_) => {
         if (error__) {
           logger.error('Failed to delete reminders');
+          connection.release();
           return;
         }
 

@@ -78,12 +78,12 @@ client.once('ready', () => {
     .then(() => loadReminders());
 });
 
-export async function sendMessage (channel: string, message: string, author: string): Promise<void> {
-  const reminder: string = `<@${author}> ${message}`;
+export async function remindUser (channel: string, message: string, author: string): Promise<void> {
+  const reminder: string = `<@!${author}> ${message}`;
 
   client.channels.fetch(channel)
     .then((chat) => {
-      if (chat?.type === 'GUILD_TEXT') {
+      if (chat?.type === 'GUILD_TEXT' || chat?.type === 'DM') {
         chat.send(reminder);
       }
     });

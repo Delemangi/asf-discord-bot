@@ -29,5 +29,6 @@ export const config: { [index: string]: any } = {
       ssl: false
     }
   ],
+  reminderInterval: 0,
   token: ''
 };
