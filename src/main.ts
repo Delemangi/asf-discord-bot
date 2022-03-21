@@ -10,7 +10,10 @@ import {config} from './config';
 import {logger} from './utils/logger';
 import {replyToInteraction} from './utils/printing';
 import {loadReminders} from './utils/reminder';
-import {startDB} from './utils/sql';
+import {
+  loadDB,
+  loadTables
+} from './utils/sql';
 import {startWS} from './utils/ws';
 
 export const client: Client = new Client({
@@ -70,7 +73,8 @@ client.once('ready', () => {
     .then(() => logger.debug('Established WS connection with ASF'))
     .catch((error) => logger.error(`Failed to establish WS connection with ASF\n${error}`));
 
-  startDB()
+  loadDB()
+    .then(() => loadTables())
     .then(() => loadReminders());
 });
 

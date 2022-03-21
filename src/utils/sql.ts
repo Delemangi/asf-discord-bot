@@ -14,7 +14,7 @@ pool.on('acquire', () => logger.debug('Acquired a database connection'));
 
 pool.on('connection', () => logger.debug('Sucessfully established a database connection'));
 
-export async function startDB (): Promise<void> {
+export async function loadDB (): Promise<void> {
   pool.getConnection((error, connection) => {
     if (error) {
       logger.error(`Failed to establish the first database connection\n${error}`);
@@ -28,17 +28,29 @@ export async function startDB (): Promise<void> {
       }
 
       logger.debug('Database created');
+
+      connection.release();
     });
+  });
+}
+
+export async function loadTables (): Promise<void> {
+  pool.getConnection((error, connection) => {
+    if (error) {
+      logger.error(`Failed to establish the second database connection\n${error}`);
+      return;
+    }
 
     connection.query(reminderQuery, (error_) => {
       if (error_) {
         logger.error(`Failed to create reminders table\n${error_}`);
+        connection.release();
         return;
       }
 
       logger.debug('Reminders table created');
-    });
 
-    setTimeout(() => connection.release(), 15_000);
+      connection.release();
+    });
   });
 }
