@@ -23,9 +23,9 @@
     "@discordjs/builders": "^0.12.0",
     "@discordjs/rest": "^0.3.0",
     "@klenty/imap": "^1.1.5",
-    "axios": "^0.26.0",
+    "axios": "^0.26.1",
     "chrono-node": "^2.3.8",
-    "discord-api-types": "^0.27.3",
+    "discord-api-types": "^0.29.0",
     "discord.js": "^13.6.0",
     "mysql": "^2.18.1",
     "typescript": "^4.6.2",
@@ -35,10 +35,10 @@
   "devDependencies": {
     "@types/imap": "^0.8.35",
     "@types/mysql": "^2.15.21",
-    "@types/ws": "^8.5.2",
-    "@typescript-eslint/eslint-plugin": "^5.13.0",
-    "@typescript-eslint/parser": "^5.13.0",
-    "eslint": "^8.10.0",
+    "@types/ws": "^8.5.3",
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/parser": "^5.15.0",
+    "eslint": "^8.11.0",
     "eslint-config-canonical": "^33.0.1"
   }
 }
