@@ -1,6 +1,6 @@
 import {readdirSync} from 'fs';
 import {REST} from '@discordjs/rest';
-import {Routes} from 'discord-api-types/v9';
+import {Routes} from 'discord-api-types/v10';
 import {
   Client,
   Collection,
@@ -33,7 +33,7 @@ for (const [index, file] of files.entries()) {
   logger.debug(`Command #${index}: ${command.data.name}`);
 }
 
-const rest: REST = new REST({version: '9'}).setToken(config.token);
+const rest: REST = new REST({version: '10'}).setToken(config.token);
 for (const guild of config.guildIDs) {
   rest.put(Routes.applicationGuildCommands(config.clientID, guild), {body: commandsToDeploy})
     .then(() => logger.debug(`Deployed commands in ${guild}`))
