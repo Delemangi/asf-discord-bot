@@ -36,8 +36,8 @@
     "@types/imap": "^0.8.35",
     "@types/mysql": "^2.15.21",
     "@types/ws": "^8.5.3",
-    "@typescript-eslint/eslint-plugin": "^5.15.0",
-    "@typescript-eslint/parser": "^5.15.0",
+    "@typescript-eslint/eslint-plugin": "^5.16.0",
+    "@typescript-eslint/parser": "^5.16.0",
     "eslint": "^8.11.0",
     "eslint-config-canonical": "^33.0.1"
   }
