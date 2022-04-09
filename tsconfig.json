@@ -4,7 +4,6 @@
     // Type Checking
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    // if true: conflicts with discord-api-types
     "exactOptionalPropertyTypes": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
@@ -27,7 +26,7 @@
     "outDir": "dist",
     "preserveConstEnums": true,
     "removeComments": false,
-    "sourceMap": true,
+    "sourceMap": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     // Language and Environment
