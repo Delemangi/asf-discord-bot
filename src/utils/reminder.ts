@@ -1,7 +1,7 @@
 import {parseDate} from 'chrono-node';
 import type {CommandInteraction} from 'discord.js';
-import {config} from '../config';
 import {remindUser} from '../main';
+import {configuration} from './config';
 import {logger} from './logger';
 import {pool} from './sql';
 
@@ -44,7 +44,7 @@ export async function saveReminder (interaction: CommandInteraction): Promise<vo
 }
 
 export async function loadReminders (): Promise<void> {
-  setTimeout(loadReminders, config.reminderInterval);
+  setTimeout(loadReminders, configuration('reminderInterval'));
 
   pool.getConnection((error, connection) => {
     if (error) {

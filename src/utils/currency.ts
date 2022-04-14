@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {config} from '../config';
+import {configuration} from './config';
 import {logger} from './logger';
 import {strings} from './strings';
 
@@ -18,7 +18,7 @@ export async function convertCurrencies (amount: number, from: string, to: strin
 
   return axios({
     method: 'get',
-    url: `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${from}&to_currency=${to}&apikey=${config.alphaVantageAPI}`
+    url: `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${from}&to_currency=${to}&apikey=${configuration('alphaVantageAPI')}`
   })
     .then((response) => {
       logger.debug('The AlphaVantage request succeeded');

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type {CommandInteraction} from 'discord.js';
-import {config} from '../config';
+import {configuration} from './config';
 import {logger} from './logger';
 import {
   get2FAFromMail,
@@ -21,7 +21,7 @@ const functions: {[index: string]: Function} = {
 export async function ASFRequest (interaction: CommandInteraction, command: string, args: string): Promise<string> {
   logger.debug(`Processing the ASF request #${interaction.id}: ${command} ${args}`);
 
-  if (!config.asfChannels.includes(interaction.channelId)) {
+  if (!configuration('asfChannels').includes(interaction.channelId)) {
     logger.debug(`Interaction ${interaction.id} was requsted from a bad channel.`);
     return strings.invalidChannel;
   }
@@ -34,11 +34,11 @@ export async function ASFRequest (interaction: CommandInteraction, command: stri
   return axios({
     data: {Command: `${command} ${args}`},
     headers: {
-      Authentication: config.asfPassword,
+      Authentication: configuration('asfPassword'),
       'Content-Type': 'application/json'
     },
     method: 'post',
-    url: config.asfAPI
+    url: configuration('asfAPI')
   })
     .then((response) => {
       logger.debug(`The ASF request succeeded\n${response.data}`);
@@ -68,7 +68,7 @@ export async function ASFRequest (interaction: CommandInteraction, command: stri
 export async function privilegedASFRequest (interaction: CommandInteraction, command: string, args: string, numberExtraArgs: number = 0): Promise<string> {
   logger.debug(`Processing the privileged ASF request #${interaction.id}: ${command} ${args}`);
 
-  if (!config.asfChannels.includes(interaction.channelId)) {
+  if (!configuration('asfChannels').includes(interaction.channelId)) {
     logger.debug(`Interaction ${interaction.id} was requsted from a bad channel.`);
     return strings.invalidChannel;
   }
@@ -103,7 +103,7 @@ export async function privilegedASFRequest (interaction: CommandInteraction, com
 export async function ASFThenMail (interaction: CommandInteraction, command: string, accounts: string): Promise<string> {
   logger.debug(`Processing the ASF/Mail request #${interaction.id}: ${command} ${accounts}`);
 
-  if (!config.asfChannels.includes(interaction.channelId)) {
+  if (!configuration('asfChannels').includes(interaction.channelId)) {
     logger.debug(`Interaction ${interaction.id} was requested from a bad channel.`);
     return strings.invalidChannel;
   }
@@ -128,5 +128,5 @@ export async function ASFThenMail (interaction: CommandInteraction, command: str
 export function permissionCheck (interaction: CommandInteraction, account: string = ''): boolean {
   const author: string = interaction.user.id;
 
-  return author in config.asfPermissions && (config.asfPermissions[author].includes(account) || config.asfPermissions[author] === 'All');
+  return author in configuration('asfPermissions') && (configuration('asfPermissions')[author].includes(account) || configuration('asfPermissions')[author] === 'All');
 }

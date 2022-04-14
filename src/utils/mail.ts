@@ -4,14 +4,14 @@ import {
   ImapSimpleOptions,
   Message
 } from '@klenty/imap';
-import {config} from '../config';
+import {configuration} from './config';
 import {logger} from './logger';
 
 const guardCodeString: string = 'Login Code';
 const confirmationString: string = 'confirm the trade contents:';
 
 export async function get2FAFromMail (account: string): Promise<string> {
-  for (const mail of config.mails) {
+  for (const mail of configuration('mails')) {
     logger.debug(`Attempting to login to ${mail.user} at ${mail.host} for ${account} Steam Guard`);
 
     const login: ImapSimpleOptions = {imap: mail};
@@ -31,7 +31,7 @@ export async function get2FAFromMail (account: string): Promise<string> {
     messages.reverse();
     for (const message of messages) {
       const timestamp: Date = new Date(message.attributes.date);
-      if (now.getTime() - timestamp.getTime() > config.mailInterval * 60 * 1_000) {
+      if (now.getTime() - timestamp.getTime() > configuration('mailInterval') * 60 * 1_000) {
         logger.debug(`Reached mail received at ${message.attributes.date} which exceeds the interval`);
         break;
       }
@@ -50,7 +50,7 @@ export async function get2FAFromMail (account: string): Promise<string> {
 export async function getConfirmationFromMail (account: string): Promise<string> {
   const urls: string[] = [];
 
-  for (const mail of config.mails) {
+  for (const mail of configuration('mails')) {
     logger.debug(`Attempting to login to ${mail.user} at ${mail.host} for ${account} confirmations`);
 
     const login: ImapSimpleOptions = {imap: mail};
@@ -70,7 +70,7 @@ export async function getConfirmationFromMail (account: string): Promise<string>
     messages.reverse();
     for (const message of messages) {
       const timestamp: Date = new Date(message.attributes.date);
-      if (now.getTime() - timestamp.getTime() > config.mailInterval * 60 * 1_000) {
+      if (now.getTime() - timestamp.getTime() > configuration('mailInterval') * 60 * 1_000) {
         logger.debug(`Reached mail received at ${message.attributes.date} which exceeds the interval`);
         break;
       }

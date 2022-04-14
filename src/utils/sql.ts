@@ -2,19 +2,19 @@ import {
   createPool,
   Pool
 } from 'mysql';
-import {config} from '../config';
+import {configuration} from './config';
 import {logger} from './logger';
 
 const reminderQuery: string = 'CREATE TABLE IF NOT EXISTS discord_bot.reminders (author VARCHAR(50) NOT NULL, channel VARCHAR(50) NOT NULL, message TEXT NOT NULL, timestamp DATETIME NOT NULL);';
 const databaseQuery: string = 'CREATE DATABASE IF NOT EXISTS discord_bot character set utf8mb4 collate utf8mb4_unicode_ci;';
 
-export const pool: Pool = createPool(config.database);
+export const pool: Pool = createPool(configuration('database'));
 
 pool.on('acquire', () => logger.debug('Acquired a database connection'));
 
 pool.on('connection', () => logger.debug('Sucessfully established a database connection'));
 
-export async function loadDB (): Promise<void> {
+export async function initDB (): Promise<void> {
   pool.getConnection((error, connection) => {
     if (error) {
       logger.error(`Failed to establish the first database connection\n${error}`);

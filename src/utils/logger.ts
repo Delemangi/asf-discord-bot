@@ -3,7 +3,7 @@ import {
   format,
   transports
 } from 'winston';
-import {config} from '../config';
+import {configuration} from './config';
 
 export const logger = createLogger({
   defaultMeta: {service: 'user-service'},
@@ -12,7 +12,7 @@ export const logger = createLogger({
     format.colorize(),
     format.printf(({level, message, label, timestamp}) => `${timestamp} ${label || '-'} ${level}: ${message}`)
   ),
-  level: config.logLevel,
+  level: configuration('logLevel'),
   transports: [
     new transports.Console(),
     new transports.File({

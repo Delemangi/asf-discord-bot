@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {readdirSync} from 'fs';
 import {REST} from '@discordjs/rest';
 import {Routes} from 'discord-api-types/v10';
@@ -6,15 +7,15 @@ import {
   Collection,
   Intents
 } from 'discord.js';
-import {config} from './config';
+import {configuration} from './utils/config';
 import {logger} from './utils/logger';
 import {replyToInteraction} from './utils/printing';
 import {loadReminders} from './utils/reminder';
 import {
-  loadDB,
+  initDB,
   loadTables
 } from './utils/sql';
-import {startWS} from './utils/ws';
+import {initWS} from './utils/ws';
 
 export const client: Client = new Client({
   intents: [
@@ -33,12 +34,16 @@ for (const [index, file] of files.entries()) {
   logger.debug(`Command #${index}: ${command.data.name}`);
 }
 
-const rest: REST = new REST({version: '10'}).setToken(config.token);
-for (const guild of config.guildIDs) {
-  rest.put(Routes.applicationGuildCommands(config.clientID, guild), {body: commandsToDeploy})
+const rest: REST = new REST({version: '10'}).setToken(configuration('token'));
+for (const guild of configuration('guildIDs')) {
+  rest.put(Routes.applicationGuildCommands(configuration('clientID'), guild), {body: commandsToDeploy})
     .then(() => logger.debug(`Deployed commands in ${guild}`))
     .catch((error) => logger.error(`Failed to deploy commands in ${guild}\n${error}`));
 }
+
+client.login(configuration('token'))
+  .then(() => logger.info('Client logged in.'))
+  .catch((error) => logger.error(`Client couldn't log in.\n${error}`));
 
 client.on('interactionCreate', async (interaction) => {
   if (interaction.isCommand()) {
@@ -69,11 +74,11 @@ client.once('ready', () => {
     logger.info(`${index}.\t${guild}`);
   }
 
-  startWS(client)
+  initWS(client)
     .then(() => logger.debug('Established WS connection with ASF'))
     .catch((error) => logger.error(`Failed to establish WS connection with ASF\n${error}`));
 
-  loadDB()
+  initDB()
     .then(() => loadTables())
     .then(() => loadReminders());
 });
@@ -92,5 +97,3 @@ export async function remindUser (channel: string, message: string, author: stri
 export function ping (): number {
   return client.ws.ping;
 }
-
-client.login(config.token);
