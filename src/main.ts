@@ -31,7 +31,7 @@ for (const [index, file] of files.entries()) {
   botCommands.set(command.data.name, command);
   commandsToDeploy.push(command.data.toJSON());
 
-  logger.debug(`Command #${index}: ${command.data.name}`);
+  logger.debug(`Command #${index + 1}: ${command.data.name}`);
 }
 
 const rest: REST = new REST({version: '10'}).setToken(configuration('token'));
@@ -71,7 +71,7 @@ client.once('ready', () => {
 
   logger.info('Servers:');
   for (const [index, guild] of guilds.entries()) {
-    logger.info(`${index}.\t${guild}`);
+    logger.info(`${index + 1}.\t${guild}`);
   }
 
   initWS(client)
