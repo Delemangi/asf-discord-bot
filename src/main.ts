@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {readdirSync} from 'fs';
 import {memberNicknameMention} from '@discordjs/builders';
 import {REST} from '@discordjs/rest';
