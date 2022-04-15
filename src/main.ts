@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import {readdirSync} from 'fs';
+import {memberNicknameMention} from '@discordjs/builders';
 import {REST} from '@discordjs/rest';
 import {Routes} from 'discord-api-types/v10';
 import {
@@ -84,7 +85,7 @@ client.once('ready', () => {
 });
 
 export async function remindUser (channel: string, message: string, author: string): Promise<void> {
-  const reminder: string = `<@!${author}> ${message}`;
+  const reminder: string = `${memberNicknameMention(author)} ${message}`;
 
   client.channels.fetch(channel)
     .then((chat) => {

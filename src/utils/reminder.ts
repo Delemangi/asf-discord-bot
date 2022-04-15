@@ -1,3 +1,4 @@
+import {time} from '@discordjs/builders';
 import {parseDate} from 'chrono-node';
 import type {CommandInteraction} from 'discord.js';
 import {remindUser} from '../main';
@@ -9,9 +10,9 @@ export async function saveReminder (interaction: CommandInteraction): Promise<vo
   const author: string = interaction.user.id;
   const channel: string = interaction.channel?.id ?? '';
   const message: string = interaction.options.getString('message') ?? 'Reminder';
-  const time: string = interaction.options.getString('time') ?? '';
+  const timestamp: string = interaction.options.getString('time') ?? '';
 
-  const date: Date = parseDate(time);
+  const date: Date = parseDate(timestamp);
 
   if (!date) {
     interaction.reply('Unrecognized date format.');
@@ -40,7 +41,7 @@ export async function saveReminder (interaction: CommandInteraction): Promise<vo
     });
   });
 
-  interaction.reply(`Reminder set for <t:${date.getTime() / 1_000}:F>.`);
+  interaction.reply(`Reminder set for ${time(date, 'F')}.`);
 }
 
 export async function loadReminders (): Promise<void> {
