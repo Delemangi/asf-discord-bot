@@ -23,7 +23,7 @@
     "@klenty/imap": "^1.1.5",
     "axios": "^0.26.1",
     "chrono-node": "^2.3.8",
-    "discord-api-types": "^0.31.0",
+    "discord-api-types": "^0.31.1",
     "discord.js": "^13.6.0",
     "mysql": "^2.18.1",
     "typescript": "^4.6.3",
@@ -34,9 +34,9 @@
     "@types/imap": "^0.8.35",
     "@types/mysql": "^2.15.21",
     "@types/ws": "^8.5.3",
-    "@typescript-eslint/eslint-plugin": "^5.18.0",
-    "@typescript-eslint/parser": "^5.18.0",
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
+    "@typescript-eslint/parser": "^5.19.0",
     "eslint": "^8.13.0",
-    "eslint-config-canonical": "^34.1.0"
+    "eslint-config-canonical": "^34.2.1"
   }
 }
