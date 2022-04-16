@@ -31,17 +31,17 @@ export async function saveReminder (interaction: CommandInteraction): Promise<vo
     connection.query(query, [date], (error_) => {
       if (error_) {
         logger.error(`Failed to add a reminder\n${error_}`);
+        interaction.reply('Failed to add a reminder.');
         connection.release();
         return;
       }
 
       logger.debug(`Added a reminder by ${interaction.user.tag} for ${message} at ${date}`);
+      interaction.reply(`Reminder set for ${time(date, 'F')}.`);
 
       connection.release();
     });
   });
-
-  interaction.reply(`Reminder set for ${time(date, 'F')}.`);
 }
 
 export async function loadReminders (): Promise<void> {
