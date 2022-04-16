@@ -21,7 +21,7 @@ const functions: {[index: string]: Function} = {
 export async function ASFRequest (interaction: CommandInteraction, command: string, args: string): Promise<string> {
   logger.debug(`Processing the ASF request #${interaction.id}: ${command} ${args}`);
 
-  if (!configuration('asfChannels').includes(interaction.channelId)) {
+  if (!configuration('ASFChannels').includes(interaction.channelId)) {
     logger.debug(`Interaction ${interaction.id} was requsted from a bad channel.`);
     return strings.invalidChannel;
   }
@@ -34,11 +34,11 @@ export async function ASFRequest (interaction: CommandInteraction, command: stri
   return axios({
     data: {Command: `${command} ${args}`},
     headers: {
-      Authentication: configuration('asfPassword'),
+      Authentication: configuration('ASFPassword'),
       'Content-Type': 'application/json'
     },
     method: 'post',
-    url: configuration('asfAPI')
+    url: configuration('ASFAPI')
   })
     .then((response) => {
       logger.debug(`The ASF request succeeded\n${response.data}`);
@@ -68,7 +68,7 @@ export async function ASFRequest (interaction: CommandInteraction, command: stri
 export async function privilegedASFRequest (interaction: CommandInteraction, command: string, args: string, numberExtraArgs: number = 0): Promise<string> {
   logger.debug(`Processing the privileged ASF request #${interaction.id}: ${command} ${args}`);
 
-  if (!configuration('asfChannels').includes(interaction.channelId)) {
+  if (!configuration('ASFChannels').includes(interaction.channelId)) {
     logger.debug(`Interaction ${interaction.id} was requsted from a bad channel.`);
     return strings.invalidChannel;
   }
@@ -88,7 +88,7 @@ export async function privilegedASFRequest (interaction: CommandInteraction, com
       continue;
     }
 
-    if (permissionCheck(interaction, account)) {
+    if (ASFPermissionCheck(interaction, account)) {
       message = await ASFRequest(interaction, command, `${account} ${extraArgs.join(' ')}`.trim());
     } else {
       message = `<${account}> ${strings.noBotPermission}`;
@@ -103,30 +103,31 @@ export async function privilegedASFRequest (interaction: CommandInteraction, com
 export async function ASFThenMail (interaction: CommandInteraction, command: string, accounts: string): Promise<string> {
   logger.debug(`Processing the ASF/Mail request #${interaction.id}: ${command} ${accounts}`);
 
-  if (!configuration('asfChannels').includes(interaction.channelId)) {
+  if (!configuration('ASFChannels').includes(interaction.channelId)) {
     logger.debug(`Interaction ${interaction.id} was requested from a bad channel.`);
     return strings.invalidChannel;
   }
 
   const output: string[] = [];
   const bots: string[] = accounts.split(',');
-  const asf: string[] = (await privilegedASFRequest(interaction, command, accounts)).split('\n');
+  const ASF: string[] = (await privilegedASFRequest(interaction, command, accounts)).split('\n');
 
   for (const [index, bot] of bots.entries()) {
-    if (!permissionCheck(interaction, bot)) {
+    if (!ASFPermissionCheck(interaction, bot)) {
       output.push(`<${bot}> ${strings.noBotPermission}`);
-    } else if (cases.some((value) => asf[index].includes(value))) {
+    } else if (cases.some((value) => ASF[index].includes(value))) {
       output.push(await functions[command](bot));
     } else {
-      output.push(asf[index]);
+      output.push(ASF[index]);
     }
   }
 
   return output.join('\n');
 }
 
-export function permissionCheck (interaction: CommandInteraction, account: string = ''): boolean {
+export function ASFPermissionCheck (interaction: CommandInteraction, account: string = ''): boolean {
   const author: string = interaction.user.id;
+  const permissions: {[index: string]: string[]} = configuration('ASFPermissions');
 
-  return author in configuration('asfPermissions') && (configuration('asfPermissions')[author].includes(account) || configuration('asfPermissions')[author] === 'All');
+  return author in permissions && (permissions[author].includes(account) || permissions[author].includes('All'));
 }

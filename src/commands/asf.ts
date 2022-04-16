@@ -2,7 +2,7 @@ import {SlashCommandBuilder} from '@discordjs/builders';
 import type {CommandInteraction} from 'discord.js';
 import {
   ASFRequest,
-  permissionCheck
+  ASFPermissionCheck
 } from '../utils/asf';
 import {replyToInteraction} from '../utils/printing';
 import {
@@ -24,7 +24,7 @@ module.exports = {
     const split: string[] = interaction.options.getString('command')?.split(' ') ?? [];
     const command: string = split?.shift() ?? '';
 
-    if (permissionCheck(interaction)) {
+    if (ASFPermissionCheck(interaction)) {
       output = await ASFRequest(interaction, command, split.join(' '));
     } else {
       output = strings.noCommandPermission;

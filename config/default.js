@@ -1,11 +1,11 @@
 module.exports = {
   alphaVantageAPI: '',
-  asfAPI: 'http://localhost:1242/api/command',
-  asfChannels: [],
-  asfLogChannels: [],
-  asfPassword: '',
-  asfPermissions: {},
-  asfWS: 'ws://localhost:1242/api/nlog',
+  ASFAPI: 'http://localhost:1242/api/command',
+  ASFChannels: [],
+  ASFLogChannels: [],
+  ASFPassword: '',
+  ASFPermissions: {},
+  ASFWS: 'ws://localhost:1242/api/nlog',
   clientID: '',
   database: {
     host: 'localhost',
@@ -27,6 +27,8 @@ module.exports = {
       user: ''
     }
   ],
+  permissions: [],
   reminderInterval: 10_000,
+  roles: {},
   token: ''
 };

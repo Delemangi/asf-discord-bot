@@ -34,6 +34,7 @@ export const descriptions: {[index: string]: string} = {
   reminder: 'Any: Set a reminder',
   reset: 'ASF: Stop playing games on bots',
   resume: 'ASF: Resume idling on bots',
+  roles: 'Any: Get your own roles',
   sa: 'ASF: Get status of all bots',
   setvar: 'Any: Set a variable',
   start: 'ASF: Start bots',

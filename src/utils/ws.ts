@@ -7,9 +7,9 @@ import {printLog} from './printing';
 let buffer: string[] = [];
 
 export async function initWS (client: Client): Promise<void> {
-  const ws = new WebSocket(configuration('asfWS'), {
+  const ws = new WebSocket(configuration('ASFWS'), {
     headers: {
-      Authentication: configuration('asfPassword'),
+      Authentication: configuration('ASFPassword'),
       'Content-Type': 'application/json'
     }
   });
@@ -35,7 +35,7 @@ async function sendToWS (client: Client): Promise<void> {
     return;
   }
 
-  for (const channel of configuration('asfLogChannels')) {
+  for (const channel of configuration('ASFLogChannels')) {
     const textChannel = client.channels.cache.get(channel);
 
     if (textChannel?.type === 'GUILD_TEXT') {

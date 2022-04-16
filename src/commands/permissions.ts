@@ -1,5 +1,8 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
-import type {CommandInteraction} from 'discord.js';
+import type {
+  CommandInteraction,
+  User
+} from 'discord.js';
 import {configuration} from '../utils/config';
 import {replyToInteraction} from '../utils/printing';
 import {descriptions} from '../utils/strings';
@@ -8,26 +11,38 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('permissions')
     .setDescription(descriptions.permissions)
-    .addStringOption((option) => option
+    .addUserOption((option) => option
       .setName('user')
       .setDescription('User')
       .setRequired(false)),
 
   async execute (interaction: CommandInteraction) {
-    let output: string = 'None';
-    const permissions: {[index: string]: string[]} = configuration('asfPermissions');
-    const user: string = interaction.options.getString('user') ?? interaction.user.id;
+    const output: Set<string> = new Set();
+    const permissions: {[index: string]: string[]} = configuration('permissions');
+    const roles: {[index: string]: string[]} = configuration('roles');
+    const user: User = interaction.options.getUser('user') ?? interaction.user;
 
-    if (user in permissions) {
-      const userPermissions: string | string[] = permissions[user];
+    if (user.id in permissions) {
+      const userRoles: string[] = permissions[user.id];
 
-      if (Array.isArray(userPermissions)) {
-        output = userPermissions.join(', ');
-      } else {
-        output = userPermissions;
+      if (userRoles.includes('All')) {
+        await replyToInteraction(interaction, 'All');
+        return;
+      }
+
+      for (const role of userRoles) {
+        const rolePermissions: string[] = roles[role] ?? [];
+
+        for (const permission of rolePermissions) {
+          output.add(permission);
+        }
       }
     }
 
-    await replyToInteraction(interaction, output);
+    if (output.size > 0) {
+      await replyToInteraction(interaction, [...output].join(', '));
+    } else {
+      await replyToInteraction(interaction, 'None');
+    }
   }
 };
