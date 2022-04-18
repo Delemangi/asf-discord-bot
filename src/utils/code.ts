@@ -67,7 +67,7 @@ function getDigits (number: number): number[] {
 }
 
 function isTouching (number: number, digit: number): boolean {
-  const touching: { [index: number]: number[] } = [
+  const touching: {[index: number]: number[]} = [
     [2],
     [2, 4],
     [0, 1, 3, 5],
