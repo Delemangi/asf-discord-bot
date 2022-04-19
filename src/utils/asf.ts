@@ -26,11 +26,6 @@ export async function ASFRequest (interaction: CommandInteraction, command: stri
     return strings.invalidChannel;
   }
 
-  if (!interaction.deferred) {
-    await interaction.deferReply();
-    logger.debug(`Deferring interaction ${interaction.id}`);
-  }
-
   return axios({
     data: {Command: `${command} ${args}`},
     headers: {
@@ -88,7 +83,7 @@ export async function privilegedASFRequest (interaction: CommandInteraction, com
       continue;
     }
 
-    if (ASFPermissionCheck(interaction, account)) {
+    if (ASFPermissionCheck(interaction.user.id, account)) {
       message = await ASFRequest(interaction, command, `${account} ${extraArgs.join(' ')}`.trim());
     } else {
       message = `<${account}> ${strings.noBotPermission}`;
@@ -113,7 +108,7 @@ export async function ASFThenMail (interaction: CommandInteraction, command: str
   const ASF: string[] = (await privilegedASFRequest(interaction, command, accounts)).split('\n');
 
   for (const [index, bot] of bots.entries()) {
-    if (!ASFPermissionCheck(interaction, bot)) {
+    if (!ASFPermissionCheck(interaction.user.id, bot)) {
       output.push(`<${bot}> ${strings.noBotPermission}`);
     } else if (cases.some((value) => ASF[index].includes(value))) {
       output.push(await functions[command](bot));
@@ -125,9 +120,16 @@ export async function ASFThenMail (interaction: CommandInteraction, command: str
   return output.join('\n');
 }
 
-export function ASFPermissionCheck (interaction: CommandInteraction, account: string = ''): boolean {
-  const author: string = interaction.user.id;
+export async function ASFCommand (interaction: CommandInteraction, command: string, args: string[]): Promise<string> {
+  if (ASFPermissionCheck(interaction.user.id)) {
+    return ASFRequest(interaction, command, args.join(' '));
+  }
+
+  return strings.noCommandPermission;
+}
+
+export function ASFPermissionCheck (user: string, account: string = ''): boolean {
   const permissions: {[index: string]: string[]} = configuration('ASFPermissions');
 
-  return author in permissions && (permissions[author].includes(account) || permissions[author].includes('All'));
+  return user in permissions && (permissions[user].includes(account) || permissions[user].includes('All'));
 }

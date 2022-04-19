@@ -1,7 +1,7 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
 import type {CommandInteraction} from 'discord.js';
 import {ASFRequest} from '../utils/asf';
-import {replyToInteraction} from '../utils/printing';
+import {longReplyToInteraction} from '../utils/printing';
 import {descriptions} from '../utils/strings';
 
 const cases: string[] = [
@@ -21,21 +21,16 @@ module.exports = {
       .setRequired(true)),
 
   async execute (interaction: CommandInteraction) {
-    const output: string = await ASFRequest(interaction, 'oa', `${interaction.options.getString('game')}`);
-    const split: string[] = output.split('\n');
-    const buffer: string[] = [];
+    const game: string = interaction.options.getString('game') ?? '';
+    const output: string = await ASFRequest(interaction, 'oa', game);
+    const message: string[] = output.split('\n').filter((line) => cases.every((value) => !line.includes(value)) && line.includes('|') && line.length > 1);
 
-    for (const line of split) {
-      if (cases.every((value) => !line.includes(value)) && line.includes('|') && line.length > 1) {
-        buffer.push(line);
-      }
-    }
-
-    if (buffer.length) {
-      buffer.push(`<ASF> ${buffer.length} account(s) own the queried game(s).`);
-      await replyToInteraction(interaction, buffer.join('\n'));
+    if (message.length > 0) {
+      message.push(`<ASF> ${message.length} account(s) own the queried game(s).`);
     } else {
-      await replyToInteraction(interaction, '<ASF> No accounts own the queried game(s).');
+      message.push('<ASF> No accounts own the queried game(s).');
     }
+
+    await longReplyToInteraction(interaction, message.join('\n'));
   }
 };

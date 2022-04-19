@@ -1,7 +1,7 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
 import type {CommandInteraction} from 'discord.js';
 import {privilegedASFRequest} from '../utils/asf';
-import {replyToInteraction} from '../utils/printing';
+import {longReplyToInteraction} from '../utils/printing';
 import {descriptions} from '../utils/strings';
 
 module.exports = {
@@ -26,8 +26,12 @@ module.exports = {
       .setRequired(true)),
 
   async execute (interaction: CommandInteraction) {
-    const output: string = await privilegedASFRequest(interaction, 'transfer^', `${interaction.options.getString('accounts')} ${interaction.options.getInteger('app')} ${interaction.options.getInteger('context')} ${interaction.options.getInteger('target')}`, 4);
+    const accounts: string = interaction.options.getString('accounts') ?? '';
+    const app: number = interaction.options.getInteger('app') ?? 0;
+    const context: number = interaction.options.getInteger('context') ?? 0;
+    const target: number = interaction.options.getInteger('target') ?? 0;
+    const message: string = await privilegedASFRequest(interaction, 'transfer^', `${accounts} ${app} ${context} ${target}`, 4);
 
-    await replyToInteraction(interaction, output);
+    await longReplyToInteraction(interaction, message);
   }
 };

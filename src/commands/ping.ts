@@ -1,7 +1,7 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
 import type {CommandInteraction} from 'discord.js';
 import {ping} from '../main';
-import {replyToInteraction} from '../utils/printing';
+import {longReplyToInteraction} from '../utils/printing';
 import {descriptions} from '../utils/strings';
 
 module.exports = {
@@ -10,6 +10,8 @@ module.exports = {
     .setDescription(descriptions.ping),
 
   async execute (interaction: CommandInteraction) {
-    await replyToInteraction(interaction, `${ping()} ms`);
+    const message: string = `${ping()} ms`;
+
+    await longReplyToInteraction(interaction, message);
   }
 };

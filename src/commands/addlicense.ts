@@ -1,7 +1,7 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
 import type {CommandInteraction} from 'discord.js';
 import {privilegedASFRequest} from '../utils/asf';
-import {replyToInteraction} from '../utils/printing';
+import {longReplyToInteraction} from '../utils/printing';
 import {descriptions} from '../utils/strings';
 
 module.exports = {
@@ -18,10 +18,11 @@ module.exports = {
       .setRequired(true)),
 
   async execute (interaction: CommandInteraction) {
-    const output: string = await privilegedASFRequest(interaction, 'addlicense', `${interaction.options.getString('accounts')} ${interaction.options.getString('apps')}`, 2);
-    let split: string[] = output.split('\n');
-    split = split.filter((index) => index.length > 2);
+    const accounts: string = interaction.options.getString('accounts') ?? '';
+    const apps: string = interaction.options.getString('apps') ?? '';
+    const output: string = await privilegedASFRequest(interaction, 'addlicense', `${accounts} ${apps}`, 2);
+    const message: string = output.split('\n').filter((line) => line.length > 2).join('\n');
 
-    await replyToInteraction(interaction, split.join('\n'));
+    await longReplyToInteraction(interaction, message);
   }
 };

@@ -1,7 +1,7 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
 import type {CommandInteraction} from 'discord.js';
 import {convertCurrencies} from '../utils/currency';
-import {replyToInteraction} from '../utils/printing';
+import {longReplyToInteraction} from '../utils/printing';
 import {descriptions} from '../utils/strings';
 
 module.exports = {
@@ -27,8 +27,13 @@ module.exports = {
 
   async execute (interaction: CommandInteraction) {
     await interaction.deferReply();
-    const output: string = await convertCurrencies(interaction.options.getNumber('amount') ?? 0, `${interaction.options.getString('from')}`, interaction.options.getString('to') ?? 'EUR', interaction.options.getInteger('digits') ?? 2);
 
-    await replyToInteraction(interaction, output);
+    const amount: number = interaction.options.getNumber('amount') ?? 0;
+    const from: string = interaction.options.getString('from') ?? '';
+    const to: string = interaction.options.getString('to') ?? 'EUR';
+    const digits: number = interaction.options.getInteger('digits') ?? 2;
+    const message: string = await convertCurrencies(amount, from, to, digits);
+
+    await longReplyToInteraction(interaction, message);
   }
 };

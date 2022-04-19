@@ -9,7 +9,7 @@ import {
 } from 'discord.js';
 import {configuration} from './utils/config';
 import {logger} from './utils/logger';
-import {replyToInteraction} from './utils/printing';
+import {longReplyToInteraction} from './utils/printing';
 import {loadReminders} from './utils/reminder';
 import {
   initDB,
@@ -56,9 +56,10 @@ client.on('interactionCreate', async (interaction) => {
     logger.info(`${interaction.user.tag}: ${interaction} [${interaction.guild?.id} - ${interaction.guild?.name}]`);
 
     try {
+      await interaction.deferReply();
       await command.execute(interaction);
     } catch (error) {
-      await replyToInteraction(interaction, 'Failed to process interaction.');
+      await longReplyToInteraction(interaction, 'Failed to process interaction.');
       logger.error(`Failed to process interaction ${interaction}\n${error}`);
     }
   }

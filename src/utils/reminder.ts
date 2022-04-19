@@ -4,6 +4,7 @@ import type {CommandInteraction} from 'discord.js';
 import {remindUser} from '../main';
 import {configuration} from './config';
 import {logger} from './logger';
+import {normalReplyToInteraction} from './printing';
 import {pool} from './sql';
 
 export async function saveReminder (interaction: CommandInteraction): Promise<void> {
@@ -15,7 +16,7 @@ export async function saveReminder (interaction: CommandInteraction): Promise<vo
   const date: Date = parseDate(timestamp);
 
   if (!date) {
-    interaction.reply('Unrecognized date format.');
+    await normalReplyToInteraction(interaction, 'Invalid date.');
     return;
   }
 
@@ -28,16 +29,16 @@ export async function saveReminder (interaction: CommandInteraction): Promise<vo
 
     const query: string = `INSERT INTO discord_bot.reminders VALUES ('${author}', '${channel}', '${message}', ?)`;
 
-    connection.query(query, [date], (error_) => {
+    connection.query(query, [date], async (error_) => {
       if (error_) {
         logger.error(`Failed to add a reminder\n${error_}`);
-        interaction.reply('Failed to add a reminder.');
+        await normalReplyToInteraction(interaction, 'Failed to add a reminder.');
         connection.release();
         return;
       }
 
       logger.debug(`Added a reminder by ${interaction.user.tag} for ${message} at ${date}`);
-      interaction.reply(`Reminder set for ${time(date, 'F')}.`);
+      await normalReplyToInteraction(interaction, `Reminder set for ${time(date, 'F')}.`);
 
       connection.release();
     });

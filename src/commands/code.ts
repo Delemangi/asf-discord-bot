@@ -1,7 +1,7 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
 import type {CommandInteraction} from 'discord.js';
 import {generateCode} from '../utils/code';
-import {replyToInteraction} from '../utils/printing';
+import {longReplyToInteraction} from '../utils/printing';
 import {descriptions} from '../utils/strings';
 
 module.exports = {
@@ -10,8 +10,8 @@ module.exports = {
     .setDescription(descriptions.code),
 
   async execute (interaction: CommandInteraction) {
-    const output: string = `${generateCode()}`;
+    const message: string = generateCode().toString();
 
-    await replyToInteraction(interaction, output);
+    await longReplyToInteraction(interaction, message);
   }
 };
