@@ -1,90 +1,58 @@
+import {setTimeout} from 'node:timers/promises';
 import {time} from '@discordjs/builders';
 import {parseDate} from 'chrono-node';
-import type {CommandInteraction} from 'discord.js';
-import {remindUser} from '../main';
-import {configuration} from './config';
-import {logger} from './logger';
-import {normalReplyToInteraction} from './printing';
-import {pool} from './sql';
+import {type RowDataPacket} from 'mysql2/promise';
+import {remindUser} from './client.js';
+import {configuration} from './config.js';
+import {logger} from './logger.js';
+import {pool} from './sql.js';
 
-export async function saveReminder (interaction: CommandInteraction): Promise<void> {
-  const author: string = interaction.user.id;
-  const channel: string = interaction.channel?.id ?? '';
-  const message: string = interaction.options.getString('message') ?? 'Reminder';
-  const timestamp: string = interaction.options.getString('time') ?? '';
+export async function saveReminder (timestamp: string, reminder: string, author: string, channel: string): Promise<string> {
+  logger.debug(`Saving a reminder by ${author} for ${timestamp} with message ${reminder}`);
 
-  const date: Date = parseDate(timestamp);
+  const queryString = `INSERT INTO discord_bot.reminders VALUES ('${author}', '${channel}', '${reminder}', ?)`;
+  const date: Date | null = parseDate(timestamp);
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!date) {
-    await normalReplyToInteraction(interaction, 'Invalid date.');
-    return;
+    logger.debug(`Invalid date provided for reminder: ${timestamp}`);
+
+    return 'Invalid date.';
   }
 
-  pool.getConnection((error, connection) => {
-    if (error) {
-      logger.error(`Failed to obtain a database connection\n${error}`);
-      connection.release();
-      return;
-    }
+  try {
+    await pool.query(queryString, [date]);
+    logger.debug(`Added a reminder by ${author} for ${date} with message ${reminder}`);
 
-    const query: string = `INSERT INTO discord_bot.reminders VALUES ('${author}', '${channel}', '${message}', ?)`;
+    return `Reminder set for ${time(date, 'F')}`;
+  } catch (error) {
+    logger.error(`Failed to add a reminder\n${error}`);
 
-    connection.query(query, [date], async (error_) => {
-      if (error_) {
-        logger.error(`Failed to add a reminder\n${error_}`);
-        await normalReplyToInteraction(interaction, 'Failed to add a reminder.');
-        connection.release();
-        return;
-      }
-
-      logger.debug(`Added a reminder by ${interaction.user.tag} for ${message} at ${date}`);
-      await normalReplyToInteraction(interaction, `Reminder set for ${time(date, 'F')}.`);
-
-      connection.release();
-    });
-  });
+    return 'Failed to create the reminder.';
+  }
 }
 
 export async function loadReminders (): Promise<void> {
-  setTimeout(loadReminders, configuration('reminderInterval'));
+  const selectQueryString = 'SELECT * FROM discord_bot.reminders WHERE timestamp < ?';
+  const deleteQueryString = 'DELETE FROM discord_bot.reminders WHERE timestamp < ?';
 
-  pool.getConnection((error, connection) => {
-    if (error) {
-      logger.error(`Failed to obtain a database connection\n${error}`);
-      connection.release();
-      return;
+  while (true) {
+    try {
+      const [rows] = await pool.query(selectQueryString, [new Date()]);
+      logger.debug('Reminders loaded');
+
+      await pool.query(deleteQueryString, [new Date()]);
+      logger.debug('Old reminders deleted');
+
+      if (Array.isArray(rows)) {
+        for (const {channel, message, author} of rows as RowDataPacket[]) {
+          await remindUser(channel, message, author);
+        }
+      }
+    } catch (error) {
+      logger.error(`Failed to load reminders\n${error}`);
     }
 
-    connection.query('SELECT * FROM discord_bot.reminders WHERE timestamp < ?', [new Date()], async (error_, results) => {
-      if (error_) {
-        logger.error(`Failed to query reminders\n${error_}`);
-        connection.release();
-        return;
-      }
-
-      logger.debug(`Obtained ${results.length} reminders from the database`);
-
-      for (const {author, channel, message} of results) {
-        try {
-          await remindUser(channel, message, author);
-        } catch (error__) {
-          logger.error(`Failed to send reminders\n${error__}`);
-          connection.release();
-          return;
-        }
-      }
-
-      connection.query('DELETE FROM discord_bot.reminders WHERE timestamp < ?', [new Date()], (error__, results_) => {
-        if (error__) {
-          logger.error('Failed to delete reminders');
-          connection.release();
-          return;
-        }
-
-        logger.debug(`Deleted ${results_.affectedRows} past reminders`);
-
-        connection.release();
-      });
-    });
-  });
+    await setTimeout(configuration('reminderInterval') as number);
+  }
 }

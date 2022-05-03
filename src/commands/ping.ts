@@ -1,17 +1,17 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
-import type {CommandInteraction} from 'discord.js';
-import {ping} from '../main';
-import {longReplyToInteraction} from '../utils/printing';
-import {descriptions} from '../utils/strings';
+import {type CommandInteraction} from 'discord.js';
+import {ping} from '../utils/client.js';
+import {longReplyToInteraction} from '../utils/printing.js';
+import {getDescription} from '../utils/strings.js';
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('ping')
-    .setDescription(descriptions.ping),
+const commandName = 'ping';
 
-  async execute (interaction: CommandInteraction) {
-    const message: string = `${ping()} ms`;
+export const data = new SlashCommandBuilder()
+  .setName(commandName)
+  .setDescription(getDescription(commandName));
 
-    await longReplyToInteraction(interaction, message);
-  }
-};
+export async function execute (interaction: CommandInteraction) {
+  const message = `${ping()} ms`;
+
+  await longReplyToInteraction(interaction, message);
+}

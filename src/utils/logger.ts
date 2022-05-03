@@ -3,21 +3,40 @@ import {
   format,
   transports
 } from 'winston';
-import {configuration} from './config';
+import {configuration} from './config.js';
 
 export const logger = createLogger({
-  defaultMeta: {service: 'user-service'},
-  format: format.combine(
-    format.timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),
-    format.colorize(),
-    format.printf(({level, message, label, timestamp}) => `${timestamp} ${label || '-'} ${level}: ${message}`)
-  ),
-  level: configuration('logLevel'),
   transports: [
-    new transports.Console(),
+    new transports.Console({
+      format: format.combine(
+        format.timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),
+        format.errors({stack: true}),
+        format.colorize({
+          colors: {
+            debug: 'gray',
+            error: 'red',
+            http: 'blue',
+            info: 'green',
+            silly: 'magenta',
+            verbose: 'cyan',
+            warn: 'yellow'
+          }
+        }),
+        format.printf(({level, message, timestamp}) => `${timestamp} - ${level}: ${message}`)
+      ),
+      handleExceptions: true,
+      level: configuration('logLevel') as string
+    }),
     new transports.File({
       filename: 'bot.log',
-      level: 'debug'
+      format: format.combine(
+        format.timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),
+        format.errors({stack: true}),
+        format.printf(({level, message, timestamp}) => `${timestamp} - ${level}: ${message}`)
+      ),
+      handleExceptions: true,
+      level: 'debug',
+      options: {flags: 'w'}
     })
   ]
 });

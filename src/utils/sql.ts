@@ -1,56 +1,35 @@
 import {
-  createPool,
-  Pool
-} from 'mysql';
-import {configuration} from './config';
-import {logger} from './logger';
+  type Pool,
+  createPool
+} from 'mysql2/promise';
+import {configuration} from './config.js';
+import {logger} from './logger.js';
 
-const reminderQuery: string = 'CREATE TABLE IF NOT EXISTS discord_bot.reminders (author VARCHAR(50) NOT NULL, channel VARCHAR(50) NOT NULL, message TEXT NOT NULL, timestamp DATETIME NOT NULL);';
-const databaseQuery: string = 'CREATE DATABASE IF NOT EXISTS discord_bot character set utf8mb4 collate utf8mb4_unicode_ci;';
+const reminderQuery = 'CREATE TABLE IF NOT EXISTS discord_bot.reminders (author VARCHAR(50) NOT NULL, channel VARCHAR(50) NOT NULL, message TEXT NOT NULL, timestamp DATETIME NOT NULL);';
+const databaseQuery = 'CREATE DATABASE IF NOT EXISTS discord_bot character set utf8mb4 collate utf8mb4_unicode_ci;';
 
-export const pool: Pool = createPool(configuration('database'));
-
-pool.on('acquire', () => logger.debug('Acquired a database connection'));
+export const pool: Pool = createPool(configuration('database') as {});
 
 pool.on('connection', () => logger.debug('Sucessfully established a database connection'));
+pool.on('acquire', () => logger.debug('Acquired a database connection'));
+pool.on('release', () => logger.debug('Released a database connection'));
 
 export async function initDB (): Promise<void> {
-  pool.getConnection((error, connection) => {
-    if (error) {
-      logger.error(`Failed to establish the first database connection\n${error}`);
-      return;
-    }
+  try {
+    await pool.query(databaseQuery);
 
-    connection.query(databaseQuery, (error_) => {
-      if (error_) {
-        logger.error(`Failed to create database\n${error_}`);
-        return;
-      }
-
-      logger.debug('Database created');
-
-      connection.release();
-    });
-  });
+    logger.debug('Database created');
+  } catch (error) {
+    logger.error(`Failed to create database\n${JSON.stringify(error)}`);
+  }
 }
 
 export async function loadTables (): Promise<void> {
-  pool.getConnection((error, connection) => {
-    if (error) {
-      logger.error(`Failed to establish the second database connection\n${error}`);
-      return;
-    }
+  try {
+    await pool.query(reminderQuery);
 
-    connection.query(reminderQuery, (error_) => {
-      if (error_) {
-        logger.error(`Failed to create reminders table\n${error_}`);
-        connection.release();
-        return;
-      }
-
-      logger.debug('Reminders table created');
-
-      connection.release();
-    });
-  });
+    logger.debug('Reminders table created');
+  } catch (error) {
+    logger.error(`Failed to create reminders table\n${JSON.stringify(error)}`);
+  }
 }

@@ -1,25 +1,25 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
-import type {
-  CommandInteraction,
-  User
+import {
+  type CommandInteraction,
+  type User
 } from 'discord.js';
-import {permissionsCommand} from '../utils/permissions';
-import {shortReplyToInteraction} from '../utils/printing';
-import {descriptions} from '../utils/strings';
+import {permissionsCommand} from '../utils/permissions.js';
+import {longReplyToInteraction} from '../utils/printing.js';
+import {getDescription} from '../utils/strings.js';
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('permissions')
-    .setDescription(descriptions.permissions)
-    .addUserOption((option) => option
-      .setName('user')
-      .setDescription('User')
-      .setRequired(false)),
+const commandName = 'permissions';
 
-  async execute (interaction: CommandInteraction) {
-    const user: User = interaction.options.getUser('user') ?? interaction.user;
-    const message: string = permissionsCommand(user);
+export const data = new SlashCommandBuilder()
+  .setName(commandName)
+  .setDescription(getDescription(commandName))
+  .addUserOption((option) => option
+    .setName('user')
+    .setDescription('User')
+    .setRequired(false));
 
-    await shortReplyToInteraction(interaction, message);
-  }
-};
+export async function execute (interaction: CommandInteraction) {
+  const user: User = interaction.options.getUser('user') ?? interaction.user;
+  const message: string = permissionsCommand(user);
+
+  await longReplyToInteraction(interaction, message);
+}

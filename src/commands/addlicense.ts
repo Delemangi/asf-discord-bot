@@ -1,28 +1,28 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
-import type {CommandInteraction} from 'discord.js';
-import {privilegedASFRequest} from '../utils/asf';
-import {longReplyToInteraction} from '../utils/printing';
-import {descriptions} from '../utils/strings';
+import {type CommandInteraction} from 'discord.js';
+import {sendPrivilegedASFRequest} from '../utils/asf.js';
+import {longReplyToInteraction} from '../utils/printing.js';
+import {getDescription} from '../utils/strings.js';
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('addlicense')
-    .setDescription(descriptions.addlicense)
-    .addStringOption((option) => option
-      .setName('accounts')
-      .setDescription('Accounts')
-      .setRequired(true))
-    .addStringOption((option) => option
-      .setName('apps')
-      .setDescription('Apps')
-      .setRequired(true)),
+const commandName = 'addlicense';
 
-  async execute (interaction: CommandInteraction) {
-    const accounts: string = interaction.options.getString('accounts') ?? '';
-    const apps: string = interaction.options.getString('apps') ?? '';
-    const output: string = await privilegedASFRequest(interaction, 'addlicense', `${accounts} ${apps}`, 2);
-    const message: string = output.split('\n').filter((line) => line.length > 2).join('\n');
+export const data = new SlashCommandBuilder()
+  .setName(commandName)
+  .setDescription(getDescription(commandName))
+  .addStringOption((option) => option
+    .setName('accounts')
+    .setDescription('Accounts')
+    .setRequired(true))
+  .addStringOption((option) => option
+    .setName('apps')
+    .setDescription('Apps')
+    .setRequired(true));
 
-    await longReplyToInteraction(interaction, message);
-  }
-};
+export async function execute (interaction: CommandInteraction) {
+  const accounts: string = interaction.options.getString('accounts') ?? '';
+  const apps: string = interaction.options.getString('apps') ?? '';
+  const output: string = await sendPrivilegedASFRequest(interaction, commandName, `${accounts} ${apps}`, 2);
+  const message: string = output.split('\n').filter((line) => line.length > 2).join('\n');
+
+  await longReplyToInteraction(interaction, message);
+}

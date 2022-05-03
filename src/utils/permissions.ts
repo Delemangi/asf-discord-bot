@@ -1,10 +1,12 @@
-import type {User} from 'discord.js';
-import {configuration} from './config';
+import {type User} from 'discord.js';
+import {configuration} from './config.js';
+
+const all = '[all]';
 
 export function permissionCheck (user: string, command: string): boolean {
   const roles = getRoles(user);
 
-  if (roles.includes('All')) {
+  if (roles.includes(all)) {
     return true;
   }
 
@@ -20,10 +22,14 @@ export function permissionCheck (user: string, command: string): boolean {
 }
 
 export function rolesCommand (user: User): string {
-  const permissions: {[index: string]: string[]} = configuration('permissions');
+  const permissions: {[index: string]: string[]} = configuration('permissions') as {[index: string]: string[]};
 
   if (user.id in permissions) {
-    const userPermissions: string[] = permissions[user.id];
+    const userPermissions: string[] = permissions[user.id] ?? [];
+
+    if (userPermissions.includes(all)) {
+      return `<${user.tag}> All`;
+    }
 
     if (userPermissions.length > 0) {
       return `<${user.tag}> ${userPermissions.join(', ')}`;
@@ -34,14 +40,14 @@ export function rolesCommand (user: User): string {
 }
 
 export function permissionsCommand (user: User): string {
-  const permissions: {[index: string]: string[]} = configuration('permissions');
-  const roles: {[index: string]: string[]} = configuration('roles');
+  const permissions: {[index: string]: string[]} = configuration('permissions') as {[index: string]: string[]};
+  const roles: {[index: string]: string[]} = configuration('roles') as {[index: string]: string[]};
   const output: Set<string> = new Set();
 
   if (user.id in permissions) {
-    const userRoles: string[] = permissions[user.id];
+    const userRoles: string[] = permissions[user.id] ?? [];
 
-    if (userRoles.includes('All')) {
+    if (userRoles.includes(all)) {
       return `<${user.tag}> All`;
     }
 
@@ -62,9 +68,9 @@ export function permissionsCommand (user: User): string {
 }
 
 function getRoles (user: string): string[] {
-  return configuration('permissions')[user] ?? [];
+  return (configuration('permissions') as {[index: string]: string[]})[user] ?? [];
 }
 
 function getPermissions (role: string): string[] {
-  return configuration('roles')[role] ?? [];
+  return (configuration('roles') as {[index: string]: string[]})[role] ?? [];
 }

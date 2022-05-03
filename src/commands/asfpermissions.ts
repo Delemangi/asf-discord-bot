@@ -3,11 +3,11 @@ import {
   type CommandInteraction,
   type User
 } from 'discord.js';
-import {rolesCommand} from '../utils/permissions.js';
+import {permissionsASFCommand} from '../utils/asf.js';
 import {longReplyToInteraction} from '../utils/printing.js';
 import {getDescription} from '../utils/strings.js';
 
-const commandName = 'roles';
+const commandName = 'asfpermissions';
 
 export const data = new SlashCommandBuilder()
   .setName(commandName)
@@ -19,7 +19,7 @@ export const data = new SlashCommandBuilder()
 
 export async function execute (interaction: CommandInteraction) {
   const user: User = interaction.options.getUser('user') ?? interaction.user;
-  const message: string = rolesCommand(user);
+  const message: string = permissionsASFCommand(user);
 
   await longReplyToInteraction(interaction, message);
 }

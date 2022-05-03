@@ -1,42 +1,63 @@
 {
   "env": {
-    "es2021": true,
+    "es2022": true,
     "node": true
-  },
-  "globals": {
-    "NodeJS": "readonly"
   },
   "extends": [
     "canonical"
   ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": "latest",
-    "sourceType": "module"
-  },
-  "rules": {
-    "linebreak-style": [
-      "error",
-      "windows"
-    ],
-    "object-curly-newline": [
-      "error",
-      {
-        "multiline": true
+  "overrides": [
+    {
+      "extends": [
+        "canonical/typescript",
+        "canonical/node",
+        "canonical/module"
+      ],
+      "files": "*.ts",
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "rules": {
+        "@typescript-eslint/comma-dangle": [
+          "error",
+          "never"
+        ],
+        "@typescript-eslint/member-delimiter-style": [
+          "error",
+          {
+            "multiline": {
+              "delimiter": "semi",
+              "requireLast": true
+            },
+            "multilineDetection": "brackets",
+            "singleline": {
+              "delimiter": "semi",
+              "requireLast": false
+            }
+          }
+        ],
+        "@typescript-eslint/no-base-to-string": [
+          "error",
+          {
+            "ignoredTypeNames": [
+              "RawData"
+            ]
+          }
+        ],
+        "@typescript-eslint/object-curly-spacing": [
+          "error",
+          "never"
+        ]
       }
-    ],
-    "func-style": [
-      "error",
-      "declaration"
-    ],
-    "comma-dangle": [
-      "error",
-      "never"
-    ],
-    "arrow-body-style": [
-      "error",
-      "as-needed"
-    ],
+    },
+    {
+      "extends": [
+        "canonical/json"
+      ],
+      "files": "*.json"
+    }
+  ],
+  "rules": {
     "array-bracket-newline": [
       "error",
       "consistent"
@@ -45,17 +66,37 @@
       "error",
       "consistent"
     ],
-    "no-param-reassign": [
-      "off"
-    ],
-    "import/no-dynamic-require": [
-      0
+    "arrow-body-style": [
+      "error",
+      "as-needed"
     ],
     "canonical/destructuring-property-newline": [
-      0
+      "off"
     ],
-    "canonical/id-match": [
-      0
+    "comma-dangle": [
+      "error",
+      "never"
+    ],
+    "func-style": [
+      "error",
+      "declaration"
+    ],
+    "import/extensions": [
+      "off"
+    ],
+    "linebreak-style": [
+      "error",
+      "windows"
+    ],
+    "object-curly-newline": [
+      "error",
+      {
+        "consistent": true
+      }
+    ],
+    "object-curly-spacing": [
+      "error",
+      "never"
     ]
   }
 }

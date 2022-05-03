@@ -1,44 +1,46 @@
 import {
-  connect,
-  ImapSimple,
-  ImapSimpleOptions,
-  Message
+  type ImapSimple,
+  type ImapSimpleOptions,
+  type Message,
+  connect
 } from '@klenty/imap';
-import {configuration} from './config';
-import {logger} from './logger';
+import {configuration} from './config.js';
+import {logger} from './logger.js';
 
-const guardCodeString: string = 'Login Code';
-const confirmationString: string = 'confirm the trade contents:';
+const guardCodeString = 'Login Code';
+const confirmationString = 'confirm the trade contents:';
 
-export async function get2FAFromMail (account: string): Promise<string> {
-  for (const mail of configuration('mails')) {
+export async function getGuardCodeFromMail (account: string): Promise<string> {
+  for (const mail of configuration('mails') as Mail[]) {
     logger.debug(`Attempting to login to ${mail.user} at ${mail.host} for ${account} Steam Guard`);
 
     const login: ImapSimpleOptions = {imap: mail};
     const session: ImapSimple = await connect(login);
 
-    session.on('error', (error) => {
-      logger.error(`Encountered IMAP error while getting Steam Guard code\n${error}`);
-    });
+    session.on('error', (error) => logger.error(`Encountered IMAP error while getting Steam Guard code\n${error}`));
 
     await session.openBox(mail.folder);
 
     const now: Date = new Date(Date.now());
     const criteria: string[][] = [['SINCE', now.toISOString()], ['TEXT', account], ['TEXT', guardCodeString]];
-    const fetch: { [index: string]: any } = {bodies: ['TEXT']};
+    const fetch: {} = {bodies: ['TEXT']};
     const messages: Message[] = await session.search(criteria, fetch);
 
     messages.reverse();
     for (const message of messages) {
       const timestamp: Date = new Date(message.attributes.date);
-      if (now.getTime() - timestamp.getTime() > configuration('mailInterval') * 60 * 1_000) {
+
+      if (now.getTime() - timestamp.getTime() > (configuration('mailInterval') as number) * 60 * 1_000) {
         logger.debug(`Reached mail received at ${message.attributes.date} which exceeds the interval`);
+
         break;
       }
 
-      const code: string | null = find2FAInMail(message.parts[0].body);
+      const code: string | null = findGuardCodeInMail(message.parts[0]?.body);
+
       if (code) {
         logger.debug('Found the correct Steam Guard mail');
+
         return `<${account}> Guard Code: ${code}`;
       }
     }
@@ -50,7 +52,7 @@ export async function get2FAFromMail (account: string): Promise<string> {
 export async function getConfirmationFromMail (account: string): Promise<string> {
   const urls: string[] = [];
 
-  for (const mail of configuration('mails')) {
+  for (const mail of configuration('mails') as Mail[]) {
     logger.debug(`Attempting to login to ${mail.user} at ${mail.host} for ${account} confirmations`);
 
     const login: ImapSimpleOptions = {imap: mail};
@@ -64,34 +66,39 @@ export async function getConfirmationFromMail (account: string): Promise<string>
 
     const now: Date = new Date(Date.now());
     const criteria: string[][] = [['SINCE', now.toISOString()], ['TEXT', account], ['TEXT', confirmationString]];
-    const fetch: { [index: string]: any } = {bodies: ['TEXT']};
+    const fetch: {} = {bodies: ['TEXT']};
     const messages: Message[] = await session.search(criteria, fetch);
 
     messages.reverse();
+
     for (const message of messages) {
       const timestamp: Date = new Date(message.attributes.date);
-      if (now.getTime() - timestamp.getTime() > configuration('mailInterval') * 60 * 1_000) {
+
+      if (now.getTime() - timestamp.getTime() > (configuration('mailInterval') as number) * 60 * 1_000) {
         logger.debug(`Reached mail received at ${message.attributes.date} which exceeds the interval`);
+
         break;
       }
 
-      const url: string | null = findConfirmationInMail(message.parts[0].body);
+      const url: string | null = findConfirmationInMail(message.parts[0]?.body);
+
       if (url) {
         logger.debug('Found a confirmation mail');
+
         urls.push(url);
       }
     }
   }
 
-  if (urls.length) {
+  if (urls.length > 0) {
     return `<${account}> Confirmations: \n${urls.join('\n')}`;
-  } else {
-    return `<${account}> Confirmations: -`;
   }
+
+  return `<${account}> Confirmations: -`;
 }
 
-function find2FAInMail (text: string): string | null {
-  text = text.replace(/\n/gu, ' ').replace(/\r/gu, '');
+function findGuardCodeInMail (textContent: string): string | null {
+  const text = textContent.replace(/\n/gu, ' ').replace(/\r/gu, '');
   const index: number = text.indexOf(`${guardCodeString}`);
 
   if (index === -1) {

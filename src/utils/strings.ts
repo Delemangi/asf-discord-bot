@@ -1,20 +1,18 @@
-export const strings: {[index: string]: string} = {
-  badResponse: 'The received response does not indicate success.',
+const strings: {[index: string]: string} = {
   invalidChannel: 'You cannot run that command in this channel.',
-  malformedResponse: 'The received response is malformed.',
   noBotPermission: 'The bot does not exist or you do not have permission.',
   noCommandPermission: 'You do not have permission to use that command.',
-  requestFailed: 'The request was made but no response was received.',
   tooManyArguments: 'Too many arguments have been supplied.',
-  unknownError: 'An unknown error occurred.'
+  unknownError: 'An error occurred.'
 };
 
-export const descriptions: {[index: string]: string} = {
+const descriptions: {[index: string]: string} = {
   '2fa': 'ASF: Get bots\' 2FA',
   '2fano': 'ASF: Deny bots\' confirmations',
   '2faok': 'ASF: Confirm bots\' confirmations',
   addlicense: 'ASF: Activate licenses on bots',
   asf: 'ASF: Call any ASF command',
+  asfpermissions: 'ASF: Get your own permissions',
   balance: 'ASF: Get bots\' wallet balance',
   code: 'Rust: Generate a pseudo random unbiased 4 digit code',
   convert: 'Any: Convert between 2 currencies',
@@ -44,3 +42,11 @@ export const descriptions: {[index: string]: string} = {
   unpack: 'ASF: Unpack boosters on bots',
   var: 'Any: Get a variable'
 };
+
+export function getString (name: string): string {
+  return strings[name] ?? '';
+}
+
+export function getDescription (name: string): string {
+  return descriptions[name] ?? '';
+}

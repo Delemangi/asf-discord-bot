@@ -1,17 +1,17 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
-import type {CommandInteraction} from 'discord.js';
-import {generateCode} from '../utils/code';
-import {longReplyToInteraction} from '../utils/printing';
-import {descriptions} from '../utils/strings';
+import {type CommandInteraction} from 'discord.js';
+import {generateCode} from '../utils/code.js';
+import {longReplyToInteraction} from '../utils/printing.js';
+import {getDescription} from '../utils/strings.js';
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('code')
-    .setDescription(descriptions.code),
+const commandName = 'code';
 
-  async execute (interaction: CommandInteraction) {
-    const message: string = generateCode().toString();
+export const data = new SlashCommandBuilder()
+  .setName(commandName)
+  .setDescription(getDescription(commandName));
 
-    await longReplyToInteraction(interaction, message);
-  }
-};
+export async function execute (interaction: CommandInteraction) {
+  const message: string = generateCode().toString();
+
+  await longReplyToInteraction(interaction, message);
+}

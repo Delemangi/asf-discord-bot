@@ -1,53 +1,57 @@
-import {readdirSync} from 'fs';
-import {memberNicknameMention} from '@discordjs/builders';
+import {readdirSync} from 'node:fs';
 import {REST} from '@discordjs/rest';
 import {Routes} from 'discord-api-types/v10';
-import {
-  Client,
-  Collection,
-  Intents
-} from 'discord.js';
-import {configuration} from './utils/config';
-import {logger} from './utils/logger';
-import {longReplyToInteraction} from './utils/printing';
-import {loadReminders} from './utils/reminder';
+import {Collection} from 'discord.js';
+import {client} from './utils/client.js';
+import {configuration} from './utils/config.js';
+import {logger} from './utils/logger.js';
+import {longReplyToInteraction} from './utils/printing.js';
+import {loadReminders} from './utils/reminder.js';
 import {
   initDB,
   loadTables
-} from './utils/sql';
-import {initWS} from './utils/ws';
+} from './utils/sql.js';
+import {getString} from './utils/strings.js';
+import {
+  initWS,
+  sendLog
+} from './utils/ws.js';
 
-export const client: Client = new Client({
-  intents: [
-    Intents.FLAGS.GUILDS
-  ]
-});
 const files: string[] = readdirSync('./dist/commands').filter((file) => file.endsWith('.js'));
-const botCommands: Collection<string, NodeJS.Require> = new Collection();
+const botCommands: Collection<string, Command> = new Collection();
 const commandsToDeploy: string[] = [];
 
 for (const [index, file] of files.entries()) {
-  const command = require(`./commands/${file}`);
+  const command: Command = await import(`./commands/${file}`);
   botCommands.set(command.data.name, command);
   commandsToDeploy.push(command.data.toJSON());
 
   logger.debug(`Command #${index + 1}: ${command.data.name}`);
 }
 
-const rest: REST = new REST({version: '10'}).setToken(configuration('token'));
-for (const guild of configuration('guildIDs')) {
-  rest.put(Routes.applicationGuildCommands(configuration('clientID'), guild), {body: commandsToDeploy})
-    .then(() => logger.debug(`Deployed commands in ${guild}`))
-    .catch((error) => logger.error(`Failed to deploy commands in ${guild}\n${error}`));
+const rest: REST = new REST({version: '10'}).setToken(configuration('token') as string);
+
+for (const guild of configuration('guildIDs') as string[]) {
+  try {
+    await rest.put(Routes.applicationGuildCommands(configuration('clientID') as string, guild), {body: commandsToDeploy});
+
+    logger.debug(`Deployed commands in ${guild}`);
+  } catch (error) {
+    logger.error(`Failed to deploy commands in ${guild}\n${error}`);
+  }
 }
 
-client.login(configuration('token'))
-  .then(() => logger.info('Client logged in.'))
-  .catch((error) => logger.error(`Client couldn't log in.\n${error}`));
+try {
+  await client.login(configuration('token') as string);
+
+  logger.info('Bot successfully logged in');
+} catch (error) {
+  logger.error(`Bot couldn't log in\n${error}`);
+}
 
 client.on('interactionCreate', async (interaction) => {
   if (interaction.isCommand()) {
-    const command: any = botCommands.get(interaction.commandName);
+    const command = botCommands.get(interaction.commandName);
 
     if (!command) {
       return;
@@ -58,14 +62,17 @@ client.on('interactionCreate', async (interaction) => {
     try {
       await interaction.deferReply();
       await command.execute(interaction);
+
+      logger.debug(`Interaction ${interaction.id} handled`);
     } catch (error) {
-      await longReplyToInteraction(interaction, 'Failed to process interaction.');
-      logger.error(`Failed to process interaction ${interaction}\n${error}`);
+      await longReplyToInteraction(interaction, getString('unknownError'));
+
+      logger.error(`Failed to handle interaction ${interaction}\n${error}`);
     }
   }
 });
 
-client.once('ready', () => {
+client.once('ready', async () => {
   client.user?.setActivity('World Domination');
 
   const guilds: string[] = client.guilds.cache.map((guild) => `${guild.id} - ${guild.name}`);
@@ -75,26 +82,20 @@ client.once('ready', () => {
     logger.info(`${index + 1}.\t${guild}`);
   }
 
-  initWS(client)
-    .then(() => logger.debug('Established WS connection with ASF'))
-    .catch((error) => logger.error(`Failed to establish WS connection with ASF\n${error}`));
+  try {
+    initWS();
+    sendLog().catch((error) => logger.error(`Failed to send log\n${error}`));
 
-  initDB()
-    .then(() => loadTables())
-    .then(() => loadReminders());
+    logger.debug('Established WS connection with ASF');
+  } catch (error) {
+    logger.error(`Failed to establish WS connection with ASF\n${error}`);
+  }
+
+  try {
+    await initDB();
+    await loadTables();
+    loadReminders().catch((error) => logger.error(`Failed to load reminders\n${error}`));
+  } catch (error) {
+    logger.error(`Failed to query the database\n${error}`);
+  }
 });
-
-export async function remindUser (channel: string, message: string, author: string): Promise<void> {
-  const reminder: string = `${memberNicknameMention(author)} ${message}`;
-
-  client.channels.fetch(channel)
-    .then((chat) => {
-      if (chat?.type === 'GUILD_TEXT' || chat?.type === 'DM') {
-        chat.send(reminder);
-      }
-    });
-}
-
-export function ping (): number {
-  return client.ws.ping;
-}

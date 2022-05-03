@@ -1,8 +1,8 @@
-import assert from 'assert';
-import {logger} from './logger';
+import assert from 'node:assert';
+import {logger} from './logger.js';
 
 export function generateCode (): number {
-  let index: number = 0;
+  let index = 0;
 
   while (true) {
     const code: number = randomNumber();
@@ -17,25 +17,24 @@ export function generateCode (): number {
 }
 
 function checkNumber (number: number): boolean {
-  const digits: number[] = getDigits(number);
+  const digits: [number, number, number, number] = getDigits(number);
+  const [d1, d2, d3, d4] = digits;
 
   try {
-    // 4 digits long
-    assert(digits.length === 4);
     // number in range
     assert(number >= 1_000 && number <= 9_999);
     // differing neighbouring digits
-    assert(digits[0] !== digits[1] && digits[1] !== digits[2] && digits[1] !== digits[2]);
+    assert(d1 !== d2 && d2 !== d3 && d2 !== d3);
     // differing first and last digit
-    assert(digits[0] !== digits[3]);
+    assert(d1 !== d4);
     // no repeating digits
-    assert(digits[0] !== digits[2] || digits[1] !== digits[3]);
+    assert(d1 !== d3 || d2 !== d4);
     // no common years
     assert(number <= 1_900 || number >= 2_050);
     // no descending digits
-    assert(!(digits[0] > digits[1] && digits[1] > digits[2] && digits[2] > digits[3]));
+    assert(!(d1 > d2 && d2 > d3 && d3 > d4));
     // no ascending digits
-    assert(!(digits[0] < digits[1] && digits[1] < digits[2] && digits[2] < digits[3]));
+    assert(!(d1 < d2 && d2 < d3 && d3 < d4));
     // no corner pattern
 
     digits.sort((a, b) => a - b);
@@ -44,7 +43,7 @@ function checkNumber (number: number): boolean {
     // no plus pattern
     assert(digits !== [2, 4, 6, 8]);
     // no touching digits
-    assert(!isTouching(digits[0], digits[1]) && !isTouching(digits[1], digits[2]) && !isTouching(digits[2], digits[3]));
+    assert(!isTouching(d1, d2) && !isTouching(d2, d3) && !isTouching(d3, d4));
 
     return true;
   } catch {
@@ -56,11 +55,12 @@ function randomNumber (min: number = 1_000, max: number = 9_999): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function getDigits (number: number): number[] {
-  const digits: number[] = [];
+function getDigits (number: number): [number, number, number, number] {
+  const digits: [number, number, number, number] = [0, 0, 0, 0];
+  const string = number.toString();
 
   for (let index = 0; index < 4; index++) {
-    digits[index] = Number.parseInt(number.toString()[index], 10);
+    digits[index] = Number.parseInt(string[index] as string, 10);
   }
 
   return digits;
@@ -80,5 +80,5 @@ function isTouching (number: number, digit: number): boolean {
     [6, 8]
   ];
 
-  return touching[number].includes(digit);
+  return (touching[number] as number[]).includes(digit);
 }

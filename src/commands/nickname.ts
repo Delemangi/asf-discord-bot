@@ -1,27 +1,27 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
-import type {CommandInteraction} from 'discord.js';
-import {privilegedASFRequest} from '../utils/asf';
-import {longReplyToInteraction} from '../utils/printing';
-import {descriptions} from '../utils/strings';
+import {type CommandInteraction} from 'discord.js';
+import {sendPrivilegedASFRequest} from '../utils/asf.js';
+import {longReplyToInteraction} from '../utils/printing.js';
+import {getDescription} from '../utils/strings.js';
 
-module.exports = {
-  data: new SlashCommandBuilder()
+const commandName = 'nickname';
+
+export const data = new SlashCommandBuilder()
+  .setName(commandName)
+  .setDescription(getDescription(commandName))
+  .addStringOption((option) => option
+    .setName('accounts')
+    .setDescription('Accounts')
+    .setRequired(true))
+  .addStringOption((option) => option
     .setName('nickname')
-    .setDescription(descriptions.nickname)
-    .addStringOption((option) => option
-      .setName('accounts')
-      .setDescription('Accounts')
-      .setRequired(true))
-    .addStringOption((option) => option
-      .setName('nickname')
-      .setDescription('Nickname')
-      .setRequired(true)),
+    .setDescription('Nickname')
+    .setRequired(true));
 
-  async execute (interaction: CommandInteraction) {
-    const accounts: string = interaction.options.getString('accounts') ?? '';
-    const nickname: string = interaction.options.getString('nickname') ?? '';
-    const message: string = await privilegedASFRequest(interaction, 'nickname', `${accounts} ${nickname}`, 32);
+export async function execute (interaction: CommandInteraction) {
+  const accounts: string = interaction.options.getString('accounts') ?? '';
+  const nickname: string = interaction.options.getString('nickname') ?? '';
+  const message: string = await sendPrivilegedASFRequest(interaction, commandName, `${accounts} ${nickname}`, 32);
 
-    await longReplyToInteraction(interaction, message);
-  }
-};
+  await longReplyToInteraction(interaction, message);
+}

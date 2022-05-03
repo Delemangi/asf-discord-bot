@@ -1,25 +1,25 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
-import type {CommandInteraction} from 'discord.js';
-import {reloadConfig} from '../utils/config';
-import {permissionCheck} from '../utils/permissions';
-import {shortReplyToInteraction} from '../utils/printing';
+import {type CommandInteraction} from 'discord.js';
+import {reloadConfig} from '../utils/config.js';
+import {permissionCheck} from '../utils/permissions.js';
+import {shortReplyToInteraction} from '../utils/printing.js';
 import {
-  descriptions,
-  strings
-} from '../utils/strings';
+  getDescription,
+  getString
+} from '../utils/strings.js';
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('load')
-    .setDescription(descriptions.load),
+const commandName = 'load';
 
-  async execute (interaction: CommandInteraction) {
-    if (!permissionCheck(interaction.user.id, 'load')) {
-      await shortReplyToInteraction(interaction, strings.noCommandPermission);
-      return;
-    }
+export const data = new SlashCommandBuilder()
+  .setName(commandName)
+  .setDescription(getDescription(commandName));
 
-    await reloadConfig();
-    await shortReplyToInteraction(interaction, 'Settings have been reloaded.');
+export async function execute (interaction: CommandInteraction) {
+  if (!permissionCheck(interaction.user.id, 'load')) {
+    await shortReplyToInteraction(interaction, getString('noCommandPermission'));
+    return;
   }
-};
+
+  await reloadConfig();
+  await shortReplyToInteraction(interaction, 'Settings have been reloaded.');
+}
