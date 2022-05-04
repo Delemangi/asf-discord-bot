@@ -85,11 +85,7 @@ client.once('ready', async () => {
   initWS();
   sendLog().catch((error) => logger.error(`Failed to send log\n${error}`));
 
-  try {
-    await initDB();
-    await loadTables();
-    loadReminders().catch((error) => logger.error(`Failed to load reminders\n${error}`));
-  } catch (error) {
-    logger.error(`Failed to query the database\n${error}`);
-  }
+  await initDB();
+  await loadTables();
+  loadReminders().catch((error) => logger.error(`Failed to load reminders\n${error}`));
 });
