@@ -25,18 +25,18 @@ export function initWS (): void {
 
 export async function sendLog (): Promise<void> {
   while (true) {
+    logger.debug('Checking if there is ASF log to be sent');
+
     const logs: string = buffer.join('\n');
     buffer = [];
 
-    if (logs.length === 0) {
-      return;
-    }
-
-    for (const channel of configuration('ASFLogChannels') as string[]) {
-      try {
-        await printLog(channel, logs);
-      } catch (error) {
-        logger.error(`Failed to print ASF log\n${error}`);
+    if (logs.length > 0) {
+      for (const channel of configuration('ASFLogChannels') as string[]) {
+        try {
+          await printLog(channel, logs);
+        } catch (error) {
+          logger.error(`Failed to print ASF log to channel ${channel}\n${error}`);
+        }
       }
     }
 

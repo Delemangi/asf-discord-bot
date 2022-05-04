@@ -82,14 +82,8 @@ client.once('ready', async () => {
     logger.info(`${index + 1}.\t${guild}`);
   }
 
-  try {
-    initWS();
-    sendLog().catch((error) => logger.error(`Failed to send log\n${error}`));
-
-    logger.debug('Established WS connection with ASF');
-  } catch (error) {
-    logger.error(`Failed to establish WS connection with ASF\n${error}`);
-  }
+  initWS();
+  sendLog().catch((error) => logger.error(`Failed to send log\n${error}`));
 
   try {
     await initDB();
