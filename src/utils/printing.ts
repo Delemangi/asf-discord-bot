@@ -88,7 +88,7 @@ export async function printLog (channel: string, message: string) {
 
   if (chat?.isText()) {
     for (const output of splitMessage(message)) {
-      await chat.send(output);
+      await chat.send(codeBlock(output));
     }
   }
 }
