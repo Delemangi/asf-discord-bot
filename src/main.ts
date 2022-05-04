@@ -83,9 +83,9 @@ client.once('ready', async () => {
   }
 
   initWS();
-  sendLog().catch((error) => logger.error(`Failed to send log\n${error}`));
+  sendLog().catch((error) => logger.error(`This error should never have happened (WS)\n${error}`));
 
   await initDB();
   await loadTables();
-  loadReminders().catch((error) => logger.error(`Failed to load reminders\n${error}`));
+  loadReminders().catch((error) => logger.error(`This error should never have happened (DB)\n${error}`));
 });
