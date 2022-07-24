@@ -60,10 +60,8 @@ declare global {
     code: string;
     convert: string;
     farm: string;
-    invite: string;
     level: string;
     load: string;
-    market: string;
     nickname: string;
     oa: string;
     permissions: string;
@@ -77,7 +75,6 @@ declare global {
     resume: string;
     roles: string;
     sa: string;
-    setvar: string;
     start: string;
     status: string;
     stop: string;
