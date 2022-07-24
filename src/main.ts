@@ -57,9 +57,9 @@ client.on('interactionCreate', async (interaction) => {
     logger.info(`${interaction.user.tag}: ${interaction} (ID: ${interaction.id}) [Thread]`);
   }
 
-  try {
-    logger.debug(`Deferring and executing interaction ${interaction.id}`);
+  logger.debug(`Deferring and executing interaction ${interaction.id}`);
 
+  try {
     await interaction.deferReply();
     await command.execute(interaction);
 
@@ -81,7 +81,6 @@ client.once('ready', async () => {
 
   initWS();
   sendLog().catch((error) => logger.error(`This error should never have happened (WS)\n${error}`));
-
   await initDB();
   await loadTables();
   loadReminders().catch((error) => logger.error(`This error should never have happened (DB)\n${error}`));
