@@ -19,7 +19,7 @@ export const client = new Client({
   presence: {
     activities: [{
       name: `${mode ? 'Testing...' : 'World Domination'}`,
-      type: ActivityType.Watching
+      type: mode ? ActivityType.Watching : ActivityType.Playing
     }],
     status: `${mode ? 'dnd' : 'online'}`
   }
