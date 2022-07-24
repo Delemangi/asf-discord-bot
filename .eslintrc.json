@@ -91,12 +91,17 @@
     "object-curly-newline": [
       "error",
       {
+        "multiline": true,
+        "minProperties": 2,
         "consistent": true
       }
     ],
     "object-curly-spacing": [
       "error",
       "never"
+    ],
+    "no-param-reassign": [
+      "off"
     ]
   }
 }

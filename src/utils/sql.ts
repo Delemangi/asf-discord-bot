@@ -1,14 +1,11 @@
-import {
-  type Pool,
-  createPool
-} from 'mysql2/promise';
+import {createPool} from 'mysql2/promise';
 import {configuration} from './config.js';
 import {logger} from './logger.js';
 
 const reminderQuery = 'CREATE TABLE IF NOT EXISTS discord_bot.reminders (author VARCHAR(50) NOT NULL, channel VARCHAR(50) NOT NULL, message TEXT NOT NULL, timestamp DATETIME NOT NULL);';
 const databaseQuery = 'CREATE DATABASE IF NOT EXISTS discord_bot character set utf8mb4 collate utf8mb4_unicode_ci;';
 
-export const pool: Pool = createPool(configuration('database') as {});
+export const pool = createPool(configuration('database'));
 
 pool.on('connection', () => logger.debug('Sucessfully established a database connection'));
 pool.on('acquire', () => logger.debug('Acquired a database connection'));
@@ -18,9 +15,9 @@ export async function initDB (): Promise<void> {
   try {
     await pool.query(databaseQuery);
 
-    logger.debug('Database created');
+    logger.debug('Created database if it didn\'t exist');
   } catch (error) {
-    logger.error(`Failed to create database\n${JSON.stringify(error)}`);
+    logger.error(`Failed to create database: ${error}`);
   }
 }
 
@@ -28,8 +25,8 @@ export async function loadTables (): Promise<void> {
   try {
     await pool.query(reminderQuery);
 
-    logger.debug('Reminders table created');
+    logger.debug('Created reminders table if it didn\'t exist');
   } catch (error) {
-    logger.error(`Failed to create reminders table\n${JSON.stringify(error)}`);
+    logger.error(`Failed to create reminders table: ${error}`);
   }
 }

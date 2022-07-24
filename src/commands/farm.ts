@@ -1,5 +1,7 @@
-import {SlashCommandBuilder} from '@discordjs/builders';
-import {type CommandInteraction} from 'discord.js';
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder
+} from 'discord.js';
 import {sendPrivilegedASFRequest} from '../utils/asf.js';
 import {longReplyToInteraction} from '../utils/printing.js';
 import {getDescription} from '../utils/strings.js';
@@ -14,9 +16,9 @@ export const data = new SlashCommandBuilder()
     .setDescription('Accounts')
     .setRequired(true));
 
-export async function execute (interaction: CommandInteraction) {
-  const accounts: string = interaction.options.getString('accounts') ?? '';
-  const message: string = await sendPrivilegedASFRequest(interaction, commandName, accounts);
+export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
+  const accounts = interaction.options.getString('accounts') ?? '';
+  const message = await sendPrivilegedASFRequest(interaction, commandName, accounts);
 
   await longReplyToInteraction(interaction, message);
 }

@@ -1,5 +1,7 @@
-import {SlashCommandBuilder} from '@discordjs/builders';
-import {type CommandInteraction} from 'discord.js';
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder
+} from 'discord.js';
 import {sendASFRequest} from '../utils/asf.js';
 import {longReplyToInteraction} from '../utils/printing.js';
 import {getDescription} from '../utils/strings.js';
@@ -20,15 +22,15 @@ export const data = new SlashCommandBuilder()
     .setDescription('Game')
     .setRequired(true));
 
-export async function execute (interaction: CommandInteraction) {
-  const game: string = interaction.options.getString('game') ?? '';
-  const output: string = await sendASFRequest(interaction, commandName, game);
-  const message: string[] = output.split('\n').filter((line) => cases.every((value) => !line.includes(value)) && line.includes('|') && line.length > 1);
+export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
+  const game = interaction.options.getString('game') ?? '';
+  const output = await sendASFRequest(interaction, commandName, game);
+  const message = output.split('\n').filter((line) => cases.every((value) => !line.includes(value)) && line.includes('|') && line.length > 1);
 
   if (message.length > 0) {
-    message.push(`<ASF> ${message.length} account(s) own the queried game(s).`);
+    message.push(`<ASF> Found ${message.length} matches.`);
   } else {
-    message.push('<ASF> No accounts own the queried game(s).');
+    message.push('<ASF> Found no matches.');
   }
 
   await longReplyToInteraction(interaction, message.join('\n'));

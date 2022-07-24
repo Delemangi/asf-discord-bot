@@ -1,25 +1,42 @@
-import {userMention} from '@discordjs/builders';
 import {
-  type AnyChannel,
+  type Channel,
+  ChannelType,
   Client,
-  Intents
+  GatewayIntentBits,
+  userMention,
+  ActivityType
 } from 'discord.js';
+import {configuration} from './config.js';
 import {logger} from './logger.js';
 
-export const client: Client = new Client({intents: [Intents.FLAGS.GUILDS]});
+const mode = configuration('devMode');
+
+export const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages
+  ],
+  presence: {
+    activities: [{
+      name: `${mode ? 'Testing...' : 'World Domination'}`,
+      type: ActivityType.Watching
+    }],
+    status: `${mode ? 'dnd' : 'online'}`
+  }
+});
 
 export async function remindUser (channel: string, message: string, author: string): Promise<void> {
   logger.debug(`Reminding ${author} about ${message}`);
 
-  const reminder = `${userMention(author)} ${message}`;
+  const reminder = `<${userMention(author)}> Reminder: ${message}`;
   const chat = await client.channels.fetch(channel);
 
-  if (chat?.type === 'GUILD_TEXT' || chat?.type === 'DM') {
+  if (chat?.type === ChannelType.GuildText || chat?.type === ChannelType.DM || chat?.type === ChannelType.GuildPublicThread || chat?.type === ChannelType.GuildPrivateThread) {
     await chat.send(reminder);
   }
 }
 
-export function getChannel (id: string): AnyChannel | undefined {
+export function getChannel (id: string): Channel | undefined {
   return client.channels.cache.get(id);
 }
 

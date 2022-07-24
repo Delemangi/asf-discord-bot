@@ -1,7 +1,6 @@
-import {SlashCommandBuilder} from '@discordjs/builders';
 import {
-  type CommandInteraction,
-  type User
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder
 } from 'discord.js';
 import {rolesCommand} from '../utils/permissions.js';
 import {longReplyToInteraction} from '../utils/printing.js';
@@ -17,9 +16,9 @@ export const data = new SlashCommandBuilder()
     .setDescription('User')
     .setRequired(false));
 
-export async function execute (interaction: CommandInteraction) {
-  const user: User = interaction.options.getUser('user') ?? interaction.user;
-  const message: string = rolesCommand(user);
+export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
+  const user = interaction.options.getUser('user') ?? interaction.user;
+  const message = rolesCommand(user);
 
   await longReplyToInteraction(interaction, message);
 }

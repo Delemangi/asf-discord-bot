@@ -1,5 +1,7 @@
-import {SlashCommandBuilder} from '@discordjs/builders';
-import {type CommandInteraction} from 'discord.js';
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder
+} from 'discord.js';
 import {sendPrivilegedASFRequest} from '../utils/asf.js';
 import {longReplyToInteraction} from '../utils/printing.js';
 import {getDescription} from '../utils/strings.js';
@@ -18,11 +20,11 @@ export const data = new SlashCommandBuilder()
     .setDescription('Apps')
     .setRequired(true));
 
-export async function execute (interaction: CommandInteraction) {
-  const accounts: string = interaction.options.getString('accounts') ?? '';
-  const apps: string = interaction.options.getString('apps') ?? '';
-  const output: string = await sendPrivilegedASFRequest(interaction, commandName, `${accounts} ${apps}`, 2);
-  const message: string = output.split('\n').filter((line) => line.length > 2).join('\n');
+export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
+  const accounts = interaction.options.getString('accounts') ?? '';
+  const apps = interaction.options.getString('apps') ?? '';
+  const output = await sendPrivilegedASFRequest(interaction, commandName, `${accounts} ${apps}`, 2);
+  const message = output.split('\n').filter((line) => line.length > 2).join('\n');
 
   await longReplyToInteraction(interaction, message);
 }

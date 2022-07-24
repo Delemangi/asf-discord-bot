@@ -1,17 +1,25 @@
 import {
+  type ChatInputCommandInteraction,
+  ChannelType,
   codeBlock,
   inlineCode
-} from '@discordjs/builders';
-import {type CommandInteraction} from 'discord.js';
+} from 'discord.js';
 import {getChannel} from './client.js';
 import {logger} from './logger.js';
+import {getString} from './strings.js';
 
-export async function longReplyToInteraction (interaction: CommandInteraction, message: string, language: string = ''): Promise<void> {
-  logger.debug(`Attempting to reply to interaction ${interaction} with long reply`);
+export async function longReplyToInteraction (interaction: ChatInputCommandInteraction, message: string, language: string = ''): Promise<void> {
+  logger.debug(`Replying to interaction ${interaction.id} with long reply`);
 
   let reply = false;
 
-  for (const output of splitMessage(message)) {
+  for (let output of splitMessage(message)) {
+    if (output === '') {
+      logger.warn(`Received an empty response for interaction ${interaction.id}`);
+
+      output = getString('emptyMessage');
+    }
+
     if (reply) {
       await interaction.followUp(codeBlock(language, output));
     } else if (interaction.deferred) {
@@ -24,8 +32,14 @@ export async function longReplyToInteraction (interaction: CommandInteraction, m
   }
 }
 
-export async function normalReplyToInteraction (interaction: CommandInteraction, message: string): Promise<void> {
-  logger.debug(`Attempting to reply to interaction ${interaction} with normal reply`);
+export async function normalReplyToInteraction (interaction: ChatInputCommandInteraction, message: string): Promise<void> {
+  logger.debug(`Replying to interaction ${interaction.id} with normal reply`);
+
+  if (message === '') {
+    logger.warn(`Received an empty response for interaction ${interaction.id}`);
+
+    message = getString('emptyMessage');
+  }
 
   if (interaction.deferred) {
     await interaction.editReply(message);
@@ -34,8 +48,14 @@ export async function normalReplyToInteraction (interaction: CommandInteraction,
   }
 }
 
-export async function shortReplyToInteraction (interaction: CommandInteraction, message: string): Promise<void> {
-  logger.debug(`Attempting to reply to interaction ${interaction} with short reply`);
+export async function shortReplyToInteraction (interaction: ChatInputCommandInteraction, message: string): Promise<void> {
+  logger.debug(`Replying to interaction ${interaction.id} with short reply`);
+
+  if (message === '') {
+    logger.warn(`Received an empty response for interaction ${interaction.id}`);
+
+    message = getString('emptyMessage');
+  }
 
   if (interaction.deferred) {
     await interaction.editReply(inlineCode(message));
@@ -47,10 +67,15 @@ export async function shortReplyToInteraction (interaction: CommandInteraction, 
 function *splitMessage (message: string): Generator<string, void> {
   logger.debug(`Splitting message of length ${message.length}`);
 
-  const delimiters: string[] = ['\n', ' ', ','];
+  if (message === '') {
+    yield '';
+    return;
+  }
+
+  const delimiters = ['\n', ' ', ','];
   const length = 1_950;
   let output: string;
-  let index: number = message.length;
+  let index = message.length;
   let split: boolean;
   let currentMessage = message;
 
@@ -81,12 +106,12 @@ function *splitMessage (message: string): Generator<string, void> {
   }
 }
 
-export async function printLog (channel: string, message: string) {
-  logger.debug(`Attempting to print ASF log to channel ${channel}`);
+export async function printLog (channel: string, message: string): Promise<void> {
+  logger.debug(`Printing ASF log to channel ${channel}`);
 
   const chat = getChannel(channel);
 
-  if (chat?.isText()) {
+  if (chat?.type === ChannelType.GuildText) {
     for (const output of splitMessage(message)) {
       await chat.send(codeBlock(output));
     }

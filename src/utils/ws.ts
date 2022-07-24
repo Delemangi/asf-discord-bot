@@ -7,11 +7,11 @@ import {printLog} from './printing.js';
 let buffer: string[] = [];
 
 export function initWS (): void {
-  const headers: {[index: string]: string} = {
-    Authentication: configuration('ASFPassword') as string,
+  const headers = {
+    Authentication: configuration('ASFPassword'),
     'Content-Type': 'application/json'
   };
-  const ws: WebSocket = new WebSocket(configuration('ASFWS') as string, {headers});
+  const ws = new WebSocket(configuration('ASFWS'), {headers});
 
   ws.on('message', (data) => buffer.push(JSON.parse(data.toString()).Result));
   ws.on('error', (error) => logger.error(`Encountered WS error\n${JSON.stringify(error)}`));
@@ -27,11 +27,11 @@ export async function sendLog (): Promise<void> {
   while (true) {
     logger.debug('Checking if there is ASF log to be sent');
 
-    const logs: string = buffer.join('\n');
+    const logs = buffer.join('\n');
     buffer = [];
 
     if (logs.length > 0) {
-      for (const channel of configuration('ASFLogChannels') as string[]) {
+      for (const channel of configuration('ASFLogChannels')) {
         try {
           await printLog(channel, logs);
         } catch (error) {

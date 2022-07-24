@@ -1,5 +1,7 @@
-import {SlashCommandBuilder} from '@discordjs/builders';
-import {type CommandInteraction} from 'discord.js';
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder
+} from 'discord.js';
 import {normalReplyToInteraction} from '../utils/printing.js';
 import {saveReminder} from '../utils/reminder.js';
 import {getDescription} from '../utils/strings.js';
@@ -18,12 +20,12 @@ export const data = new SlashCommandBuilder()
     .setDescription('Reminder')
     .setRequired(false));
 
-export async function execute (interaction: CommandInteraction) {
-  const time: string = interaction.options.getString('time') ?? '';
-  const reminder: string = interaction.options.getString('reminder') ?? 'Reminder';
-  const author: string = interaction.user.id;
-  const channel: string = interaction.channel?.id ?? '';
-  const message: string = await saveReminder(time, reminder, author, channel);
+export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
+  const time = interaction.options.getString('time') ?? '';
+  const reminder = interaction.options.getString('reminder') ?? '-';
+  const author = interaction.user.id;
+  const channel = interaction.channel?.id ?? '';
+  const message = await saveReminder(time, reminder, author, channel);
 
   await normalReplyToInteraction(interaction, message);
 }

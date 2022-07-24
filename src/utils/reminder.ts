@@ -1,6 +1,6 @@
 import {setTimeout} from 'node:timers/promises';
-import {time} from '@discordjs/builders';
 import {parseDate} from 'chrono-node';
+import {time} from 'discord.js';
 import {type RowDataPacket} from 'mysql2/promise';
 import {remindUser} from './client.js';
 import {configuration} from './config.js';
@@ -11,13 +11,13 @@ export async function saveReminder (timestamp: string, reminder: string, author:
   logger.debug(`Saving a reminder by ${author} for ${timestamp} with message ${reminder}`);
 
   const queryString = `INSERT INTO discord_bot.reminders VALUES ('${author}', '${channel}', '${reminder}', ?)`;
-  const date: Date | null = parseDate(timestamp);
+  const date = parseDate(timestamp);
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!date) {
-    logger.debug(`Invalid date provided for reminder: ${timestamp}`);
+    logger.debug(`Invalid date or time provided for reminder: ${timestamp}`);
 
-    return 'Invalid date.';
+    return 'You have provided an invalid date or time.';
   }
 
   try {
@@ -28,7 +28,7 @@ export async function saveReminder (timestamp: string, reminder: string, author:
   } catch (error) {
     logger.error(`Failed to add a reminder\n${error}`);
 
-    return 'Failed to create the reminder.';
+    return 'Failed to create the reminder. Your reminder may be too far in the future.';
   }
 }
 
@@ -38,21 +38,24 @@ export async function loadReminders (): Promise<void> {
 
   while (true) {
     try {
-      const [rows] = await pool.query(selectQueryString, [new Date()]);
+      const now = new Date();
+
+      const [rows] = await pool.query(selectQueryString, [now]);
       logger.debug('Reminders loaded');
 
-      await pool.query(deleteQueryString, [new Date()]);
+      await pool.query(deleteQueryString, [now]);
       logger.debug('Old reminders deleted');
 
       if (Array.isArray(rows)) {
+        // eslint-disable-next-line object-curly-newline
         for (const {channel, message, author} of rows as RowDataPacket[]) {
           await remindUser(channel, message, author);
         }
       }
     } catch (error) {
-      logger.error(`Failed to load reminders\n${error}`);
+      logger.error(`Failed to load reminders: ${error}`);
     }
 
-    await setTimeout(configuration('reminderInterval') as number);
+    await setTimeout(configuration('reminderInterval'));
   }
 }

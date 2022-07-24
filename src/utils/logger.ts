@@ -22,16 +22,18 @@ export const logger = createLogger({
             warn: 'yellow'
           }
         }),
+        // eslint-disable-next-line object-curly-newline
         format.printf(({level, message, timestamp}) => `${timestamp} - ${level}: ${message}`)
       ),
       handleExceptions: true,
-      level: configuration('logLevel') as string
+      level: configuration('logLevel')
     }),
     new transports.File({
       filename: 'bot.log',
       format: format.combine(
         format.timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),
         format.errors({stack: true}),
+        // eslint-disable-next-line object-curly-newline
         format.printf(({level, message, timestamp}) => `${timestamp} - ${level}: ${message}`)
       ),
       handleExceptions: true,

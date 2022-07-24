@@ -1,5 +1,7 @@
-import {SlashCommandBuilder} from '@discordjs/builders';
-import {type CommandInteraction} from 'discord.js';
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder
+} from 'discord.js';
 import {reloadConfig} from '../utils/config.js';
 import {permissionCheck} from '../utils/permissions.js';
 import {shortReplyToInteraction} from '../utils/printing.js';
@@ -14,7 +16,7 @@ export const data = new SlashCommandBuilder()
   .setName(commandName)
   .setDescription(getDescription(commandName));
 
-export async function execute (interaction: CommandInteraction) {
+export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   if (!permissionCheck(interaction.user.id, 'load')) {
     await shortReplyToInteraction(interaction, getString('noCommandPermission'));
     return;

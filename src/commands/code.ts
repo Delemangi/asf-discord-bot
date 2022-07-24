@@ -1,7 +1,9 @@
-import {SlashCommandBuilder} from '@discordjs/builders';
-import {type CommandInteraction} from 'discord.js';
+import {
+  SlashCommandBuilder,
+  type ChatInputCommandInteraction
+} from 'discord.js';
 import {generateCode} from '../utils/code.js';
-import {longReplyToInteraction} from '../utils/printing.js';
+import {normalReplyToInteraction} from '../utils/printing.js';
 import {getDescription} from '../utils/strings.js';
 
 const commandName = 'code';
@@ -10,8 +12,8 @@ export const data = new SlashCommandBuilder()
   .setName(commandName)
   .setDescription(getDescription(commandName));
 
-export async function execute (interaction: CommandInteraction) {
-  const message: string = generateCode().toString();
+export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
+  const message = generateCode().toString();
 
-  await longReplyToInteraction(interaction, message);
+  await normalReplyToInteraction(interaction, message);
 }

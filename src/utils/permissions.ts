@@ -22,37 +22,37 @@ export function permissionCheck (user: string, command: string): boolean {
 }
 
 export function rolesCommand (user: User): string {
-  const permissions: {[index: string]: string[]} = configuration('permissions') as {[index: string]: string[]};
+  const permissions = configuration('permissions');
 
   if (user.id in permissions) {
-    const userPermissions: string[] = permissions[user.id] ?? [];
+    const userPermissions = permissions[user.id] ?? [];
 
     if (userPermissions.includes(all)) {
-      return `<${user.tag}> All`;
+      return `<${user.tag}> Roles: All`;
     }
 
     if (userPermissions.length > 0) {
-      return `<${user.tag}> ${userPermissions.join(', ')}`;
+      return `<${user.tag}> Roles: ${userPermissions.join(', ')}`;
     }
   }
 
-  return `<${user.tag}> -`;
+  return `<${user.tag}> Roles: -`;
 }
 
 export function permissionsCommand (user: User): string {
-  const permissions: {[index: string]: string[]} = configuration('permissions') as {[index: string]: string[]};
-  const roles: {[index: string]: string[]} = configuration('roles') as {[index: string]: string[]};
-  const output: Set<string> = new Set();
+  const permissions = configuration('permissions');
+  const roles = configuration('roles');
+  const output = new Set<string>();
 
   if (user.id in permissions) {
     const userRoles: string[] = permissions[user.id] ?? [];
 
     if (userRoles.includes(all)) {
-      return `<${user.tag}> All`;
+      return `<${user.tag}> Permissions: All`;
     }
 
     for (const role of userRoles) {
-      const rolePermissions: string[] = roles[role] ?? [];
+      const rolePermissions = roles[role] ?? [];
 
       for (const permission of rolePermissions) {
         output.add(permission);
@@ -61,16 +61,16 @@ export function permissionsCommand (user: User): string {
   }
 
   if (output.size > 0) {
-    return `<${user.tag}> ${[...output].join(', ')}`;
+    return `<${user.tag}> Permissions: ${[...output].join(', ')}`;
   }
 
-  return `<${user.tag}> -`;
+  return `<${user.tag}> Permissions: -`;
 }
 
 function getRoles (user: string): string[] {
-  return (configuration('permissions') as {[index: string]: string[]})[user] ?? [];
+  return configuration('permissions')[user] ?? [];
 }
 
 function getPermissions (role: string): string[] {
-  return (configuration('roles') as {[index: string]: string[]})[role] ?? [];
+  return configuration('roles')[role] ?? [];
 }
