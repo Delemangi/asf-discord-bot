@@ -1,15 +1,14 @@
-import {readdirSync} from 'node:fs';
-import {REST} from '@discordjs/rest';
-import {
-  ChannelType,
-  Routes
-} from 'discord-api-types/v10';
-import {Collection} from 'discord.js';
+import {ChannelType} from 'discord-api-types/v10';
 import {client} from './utils/client.js';
 import {configuration} from './utils/config.js';
 import {logger} from './utils/logger.js';
 import {longReplyToInteraction} from './utils/printing.js';
 import {loadReminders} from './utils/reminder.js';
+import {
+  commands,
+  getCommands,
+  registerCommands
+} from './utils/rest.js';
 import {
   initDB,
   loadTables
@@ -49,40 +48,8 @@ if (mode && guilds.length === 0) {
 
 logger.info(`Bot running in ${mode ? 'development' : 'production'} mode`);
 
-const files = readdirSync('./dist/commands').filter((file) => file.endsWith('.js'));
-const commands = new Collection<string, Command>();
-const commandsJSON: string[] = [];
-
-for (const [index, file] of files.entries()) {
-  const command: Command = await import(`./commands/${file}`);
-  commands.set(command.data.name, command);
-  commandsJSON.push(command.data.toJSON());
-
-  logger.debug(`Command #${index + 1}: ${command.data.name}`);
-}
-
-const rest = new REST();
-rest.setToken(token);
-
-if (mode) {
-  for (const guild of guilds) {
-    try {
-      await rest.put(Routes.applicationGuildCommands(applicationID, guild), {body: commandsJSON});
-
-      logger.debug(`Deployed slash commands in ${guild}`);
-    } catch (error) {
-      logger.error(`Failed to deploy slash commands in ${guild}: ${error}`);
-    }
-  }
-} else {
-  try {
-    await rest.put(Routes.applicationCommands(applicationID), {body: commandsJSON});
-
-    logger.debug('Deployed slash commands globally');
-  } catch (error) {
-    throw new Error(`Failed to deploy slash commands globally: ${error}`);
-  }
-}
+await getCommands();
+await registerCommands();
 
 try {
   await client.login(token);
