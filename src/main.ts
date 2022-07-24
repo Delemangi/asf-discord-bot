@@ -14,45 +14,20 @@ import {
   loadTables
 } from './utils/sql.js';
 import {getString} from './utils/strings.js';
+import {validate} from './utils/validation.js';
 import {
   initWS,
   sendLog
 } from './utils/ws.js';
 
-const token = configuration('token');
-const applicationID = configuration('applicationID');
+logger.info(`Bot running in ${configuration('devMode') ? 'development' : 'production'} mode`);
 
-if (token === '' || applicationID === '') {
-  throw new Error('The bot token or application ID have not been set. Please set them and restart the bot.');
-}
-
-const ASFAPI = configuration('ASFAPI');
-const ASFWS = configuration('ASFWS');
-
-if (ASFAPI === '' || ASFWS === '') {
-  throw new Error('The ASF API or WS URLs have not been set. Please set them and restart the bot.');
-}
-
-const ASFPassword = configuration('ASFPassword');
-
-if (ASFPassword === '') {
-  logger.warn('You have not set an ASF password. It is highly recommended to do so for security reasons.');
-}
-
-const mode = configuration('devMode');
-const guilds = configuration('guilds');
-
-if (mode && guilds.length === 0) {
-  logger.warn('You are running the bot in development mode but haven\'t set any guilds. Slash commands won\'t be registered.');
-}
-
-logger.info(`Bot running in ${mode ? 'development' : 'production'} mode`);
-
+validate();
 await getCommands();
 await registerCommands();
 
 try {
-  await client.login(token);
+  await client.login(configuration('token'));
 
   logger.info('Bot logged in');
 } catch (error) {
