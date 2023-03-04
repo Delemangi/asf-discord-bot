@@ -8,9 +8,9 @@ services:
     ports:
       - 1242:1242
     volumes:
-      - ./config:/app/config
-      - ./logs:/app/logs
-      - ./plugins:/app/plugins
+      - ./ASF/config:/app/config
+      - ./ASF/logs:/app/logs
+      - ./ASF/plugins:/app/plugins
 
   bot:
     container_name: heckgaming-bot
