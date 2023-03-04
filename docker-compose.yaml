@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  asf:
+    container_name: ArchiSteamFarm
+    image: justarchi/archisteamfarm:latest
+    restart: always
+    ports:
+      - 1242:1242
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - ./plugins:/app/plugins
+
+  bot:
+    container_name: heckgaming-bot
+    image: heckgaming-discord-bot
+    build: .
+    restart: always
+    depends_on:
+      - asf
+    volumes:
+      - ./config:/app/config
+      - ./bot.log:/app/bot.log

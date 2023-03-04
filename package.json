@@ -9,7 +9,8 @@
     "chrono-node": "^2.5.0",
     "discord-api-types": "^0.37.35",
     "discord.js": "^14.7.1",
-    "mysql2": "^3.1.2",
+    "mysql2": "^3.2.0",
+    "rimraf": "^4.3.0",
     "winston": "^3.8.2",
     "ws": "^8.12.1"
   },
@@ -17,10 +18,10 @@
   "devDependencies": {
     "@types/imap": "^0.8.35",
     "@types/ws": "^8.5.4",
-    "@typescript-eslint/eslint-plugin": "^5.52.0",
-    "@typescript-eslint/parser": "^5.52.0",
-    "eslint": "^8.34.0",
-    "eslint-config-canonical": "^40.0.7",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
+    "eslint": "^8.35.0",
+    "eslint-config-canonical": "^40.0.8",
     "typescript": "^4.9.5"
   },
   "homepage": "https://github.com/Delemangi/heckgaming-discord-bot",
@@ -32,14 +33,9 @@
     "url": "https://github.com/Delemangi/heckgaming-discord-bot.git"
   },
   "scripts": {
-    "build": "npm run lint && tsc",
-    "build:dev": "tsc",
-    "lint": "eslint src --cache --ext .ts,.json",
-    "lint:config": "eslint config --cache --ext .json",
-    "lint:config:fix": "eslint config --cache --ext .json --fix",
-    "lint:fix": "eslint src --cache --ext .ts,.json --fix",
-    "start": "node dist/main.js",
-    "watch": "tsc --watch"
+    "build": "rimraf dist && tsc",
+    "lint": "eslint . --ext .ts --cache",
+    "start": "node dist/main.js"
   },
   "type": "module",
   "version": "2.0.0"
