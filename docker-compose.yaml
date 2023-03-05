@@ -12,6 +12,15 @@ services:
       - ./ASF/logs:/app/logs
       - ./ASF/plugins:/app/plugins
 
+  db:
+    container_name: heckgaming-db
+    image: mariadb:latest
+    restart: always
+    volumes:
+      - ./db:/var/lib/mysql
+    env_file:
+      - .env
+
   bot:
     container_name: heckgaming-bot
     image: heckgaming-discord-bot
@@ -19,6 +28,14 @@ services:
     restart: always
     depends_on:
       - asf
+      - db
     volumes:
       - ./config:/app/config
       - ./bot.log:/app/bot.log
+
+  adminer:
+    container_name: heckgaming-adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

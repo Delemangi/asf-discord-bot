@@ -199,3 +199,7 @@ config
 # Compiled output
 dist
 *.js
+
+# Docker volumes
+db
+ASF
