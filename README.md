@@ -55,8 +55,16 @@ Example for `config.json`:
   "mailInterval": 15,
   "mails": [],
   "permissions": {},
-  "reminderInterval": 10_000,
+  "reminderInterval": 10000,
   "roles": {},
   "token": ""
 }
+```
+
+If you are running this bot in a Docker environment, create a `.env` file with environment variables for MariaDB.
+
+Example:
+
+```env
+MARIADB_ROOT_PASSWORD=password
 ```
