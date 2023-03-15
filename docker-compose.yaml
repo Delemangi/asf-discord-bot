@@ -1,8 +1,8 @@
-version: "3.8"
+version: '3.8'
 
 services:
   asf:
-    container_name: ArchiSteamFarm
+    container_name: archi-steam-farm
     image: justarchi/archisteamfarm:latest
     restart: always
     ports:
@@ -11,9 +11,11 @@ services:
       - ./ASF/config:/app/config
       - ./ASF/logs:/app/logs
       - ./ASF/plugins:/app/plugins
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
 
-  db:
-    container_name: heckgaming-db
+  postgres:
+    container_name: heckgaming-postgres
     image: mariadb:latest
     restart: always
     volumes:
