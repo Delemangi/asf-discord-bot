@@ -30,7 +30,7 @@ services:
     restart: always
     depends_on:
       - asf
-      - db
+      - postgres
     volumes:
       - ./config:/app/config
       - ./bot.log:/app/bot.log
