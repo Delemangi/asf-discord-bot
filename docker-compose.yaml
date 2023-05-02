@@ -14,8 +14,8 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
 
-  postgres:
-    container_name: heckgaming-postgres
+  mariadb:
+    container_name: heckgaming-mariadb
     image: mariadb:latest
     restart: always
     volumes:
@@ -30,14 +30,7 @@ services:
     restart: always
     depends_on:
       - asf
-      - postgres
+      - mariadb
     volumes:
       - ./config:/app/config
       - ./bot.log:/app/bot.log
-
-  adminer:
-    container_name: heckgaming-adminer
-    image: adminer
-    restart: always
-    ports:
-      - 8081:8080
