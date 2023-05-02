@@ -8,7 +8,7 @@
     "@klenty/imap": "^1.1.5",
     "chrono-node": "^2.5.0",
     "discord-api-types": "^0.37.35",
-    "discord.js": "^14.7.1",
+    "discord.js": "^14.10.2",
     "mysql2": "^3.2.0",
     "rimraf": "^4.3.0",
     "winston": "^3.8.2",
