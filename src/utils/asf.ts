@@ -36,7 +36,10 @@ export const sendASFRequest = async (
     },
     method: 'POST',
   };
-  const result = await fetch(configuration('ASF') + commandEndpoint, settings);
+  const result = await fetch(
+    'http://' + configuration('ASF') + commandEndpoint,
+    settings,
+  );
 
   if (!result.ok) {
     logger.error(

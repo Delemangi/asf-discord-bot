@@ -55,7 +55,7 @@ The minimum required config properties for `config.json` are:
 
 - `token` (the Discord bot's token)
 - `applicationID` (the Discord bot's application ID, for registering the application commands)
-- `ASF` (where ASF is located, in case of Docker setup, this should probably be `http://asf:1242`)
+- `ASF` (where ASF is located, in case of Docker setup, this should probably be `asf:1242`)
 
 It's also highly recommended to set a password for ASF, especially if you are running it outside a Docker container.
 
@@ -114,3 +114,25 @@ With above example configuration for `groups.json`, these groups can be used ins
 ```
 
 In this example, the user would have access to the accounts `account7`, `account8`, and all accounts under the group `csgo`.
+
+## Communication with ASF
+
+Please note that you may have to create an IPC config to be able to access ASF. Example `IPC.config`:
+
+```json
+{
+    "Kestrel":
+    {
+        "Endpoints":
+        {
+            "http":
+            {
+                "Url": "http://*:1242"
+            }
+        }
+    },
+    "PathBase": "/"
+}
+```
+
+In addition, make sure that the password in the ASF config and in the bot config are matching.

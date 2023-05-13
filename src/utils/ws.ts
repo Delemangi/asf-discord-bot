@@ -12,7 +12,9 @@ export const initializeWS = () => {
     Authentication: configuration('ASFPassword'),
     'Content-Type': 'application/json',
   };
-  const ws = new WebSocket(configuration('ASF') + endpoint, { headers });
+  const ws = new WebSocket('ws://' + configuration('ASF') + endpoint, {
+    headers,
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-base-to-string
   ws.on('message', (data) => buffer.push(JSON.parse(data.toString()).Result));
