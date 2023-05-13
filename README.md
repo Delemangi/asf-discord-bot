@@ -41,11 +41,12 @@ Example for `config.json`:
 
 ```json
 {
-  "applicationID": "",
   "ASF": "",
   "ASFLogChannels": [],
   "ASFPassword": "",
   "ASFPermissions": {},
+  "admins": [],
+  "applicationID": "",
   "mails": [],
   "token": "",
 }
@@ -64,6 +65,8 @@ The `ASFLogChannels` property should be a list of IDs of channels where the bot 
 The `ASFPermissions` property should be an object whose keys are user IDs and values are lists of accounts or groups of accounts. See `groups.json` for more information.
 
 The `mails` property is used for obtaining Steam Guard codes for accounts that do not have 2FA. There can be multiple. Example:
+
+The `admins` property is a list of IDs of users who will be able to execute important commands.
 
 ```json
 {
