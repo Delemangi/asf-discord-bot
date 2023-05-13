@@ -4,6 +4,7 @@ import { printLog } from './printing.js';
 import { setTimeout as setTimeoutPromise } from 'node:timers/promises';
 import { WebSocket } from 'ws';
 
+const endpoint = '/api/nlog';
 let buffer: string[] = [];
 
 export const initializeWS = () => {
@@ -11,7 +12,7 @@ export const initializeWS = () => {
     Authentication: configuration('ASFPassword'),
     'Content-Type': 'application/json',
   };
-  const ws = new WebSocket(configuration('ASFWS'), { headers });
+  const ws = new WebSocket(configuration('ASF') + endpoint, { headers });
 
   // eslint-disable-next-line @typescript-eslint/no-base-to-string
   ws.on('message', (data) => buffer.push(JSON.parse(data.toString()).Result));

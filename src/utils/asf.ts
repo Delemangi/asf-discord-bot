@@ -14,6 +14,7 @@ const functions: { [index: string]: Function } = {
   '2fa': getGuardCodeFromMail,
   '2faok': getConfirmationFromMail,
 };
+const commandEndpoint = '/api/command';
 
 export const checkASFPermissions = (user: string, account: string = '') => {
   const permissions = configuration('ASFPermissions');
@@ -35,7 +36,7 @@ export const sendASFRequest = async (
     },
     method: 'POST',
   };
-  const result = await fetch(configuration('ASFAPI'), settings);
+  const result = await fetch(configuration('ASF') + commandEndpoint, settings);
 
   if (!result.ok) {
     logger.error(

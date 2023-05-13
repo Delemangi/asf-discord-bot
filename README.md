@@ -42,11 +42,10 @@ Example for `config.json`:
 ```json
 {
   "applicationID": "",
-  "ASFAPI": "",
+  "ASF": "",
   "ASFLogChannels": [],
   "ASFPassword": "",
   "ASFPermissions": {},
-  "ASFWS": "",
   "mails": [],
   "token": "",
 }
@@ -56,7 +55,7 @@ The minimum required config properties for `config.json` are:
 
 - `token` (the Discord bot's token)
 - `applicationID` (the Discord bot's application ID, for registering the application commands)
-- `ASFAPI` (where ASF is located, in case of Docker setup, this should probably be `http://asf:1242`)
+- `ASF` (where ASF is located, in case of Docker setup, this should probably be `http://asf:1242`)
 
 It's also highly recommended to set a password for ASF, especially if you are running it outside a Docker container.
 

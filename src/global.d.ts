@@ -18,11 +18,10 @@ declare global {
   };
 
   type Config = {
-    ASFAPI: string;
+    ASF: string;
     ASFLogChannels: string[];
     ASFPassword: string;
     ASFPermissions: { [index: string]: string[] };
-    ASFWS: string;
     applicationID: string;
     mails: Mail[];
     token: string;

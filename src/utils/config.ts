@@ -3,11 +3,10 @@ import { readFile } from 'node:fs/promises';
 
 const defaultConfig: Config = {
   applicationID: '',
-  ASFAPI: '',
+  ASF: 'http://asf:1242',
   ASFLogChannels: [],
   ASFPassword: '',
   ASFPermissions: {},
-  ASFWS: '',
   mails: [],
   token: '',
 };
