@@ -54,21 +54,18 @@ export const longReplyToInteraction = async (
 ) => {
   let reply = false;
 
-  for (let output of splitMessage(message)) {
-    if (output === '') {
-      logger.warn(
-        `Received an empty response for interaction ${interaction.id}`,
-      );
-
-      output = getString('emptyMessage');
-    }
+  for (const output of splitMessage(message)) {
+    const code = codeBlock(
+      language,
+      output.length === 0 ? getString('emptyMessage') : output,
+    );
 
     if (reply) {
-      await interaction.followUp(codeBlock(language, output));
+      await interaction.followUp(code);
     } else if (interaction.deferred) {
-      await interaction.editReply(codeBlock(language, output));
+      await interaction.editReply(code);
     } else {
-      await interaction.reply(codeBlock(language, output));
+      await interaction.reply(code);
     }
 
     reply = true;
