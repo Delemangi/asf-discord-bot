@@ -4,7 +4,7 @@ import { logger } from './logger.js';
 export const validate = () => {
   const token = configuration('token');
   const applicationID = configuration('applicationID');
-  const ASFAPI = configuration('ASFAPI');
+  const ASF = configuration('ASF');
   const ASFPassword = configuration('ASFPassword');
 
   if (token === '' || applicationID === '') {
@@ -13,7 +13,7 @@ export const validate = () => {
     );
   }
 
-  if (ASFAPI === '') {
+  if (ASF === '') {
     throw new Error(
       'The ASF API or WS URLs have not been set. Please set them and restart the bot.',
     );
