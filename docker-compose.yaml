@@ -4,7 +4,7 @@ services:
   asf:
     container_name: archi-steam-farm
     image: justarchi/archisteamfarm:latest
-    restart: always
+    restart: unless-stopped
     ports:
       - 1242:1242
     volumes:
@@ -18,7 +18,7 @@ services:
     container_name: asf-bot
     image: asf-discord-bot
     build: .
-    restart: always
+    restart: unless-stopped
     depends_on:
       - asf
     volumes:
