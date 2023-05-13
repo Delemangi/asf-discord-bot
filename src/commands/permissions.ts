@@ -6,7 +6,7 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-const commandName = 'asfpermissions';
+const commandName = 'permissions';
 
 export const data = new SlashCommandBuilder()
   .setName(commandName)
@@ -17,7 +17,7 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user') ?? interaction.user;
-  const message = permissionsCommand(user);
+  const message = await permissionsCommand(user);
 
   await longReplyToInteraction(interaction, message);
 };
