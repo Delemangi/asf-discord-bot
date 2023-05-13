@@ -1,6 +1,10 @@
 import { executeASFCommand } from '../utils/asf.js';
-import { longReplyToInteraction } from '../utils/printing.js';
-import { getDescription } from '../utils/strings.js';
+import { configuration } from '../utils/config.js';
+import {
+  longReplyToInteraction,
+  shortReplyToInteraction,
+} from '../utils/printing.js';
+import { getDescription, getString } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -16,6 +20,14 @@ export const data = new SlashCommandBuilder()
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
+  if (!configuration('admins').includes(interaction.user.id)) {
+    await shortReplyToInteraction(
+      interaction,
+      getString('noCommandPermission'),
+    );
+    return;
+  }
+
   const args = interaction.options.getString('command', true).split(' ') ?? [];
   const command = args.shift() ?? '';
   const message = await executeASFCommand(interaction, command, args);

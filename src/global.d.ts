@@ -22,6 +22,7 @@ declare global {
     ASFLogChannels: string[];
     ASFPassword: string;
     ASFPermissions: { [index: string]: string[] };
+    admins: string[];
     applicationID: string;
     mails: Mail[];
     token: string;

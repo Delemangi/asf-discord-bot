@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 
 const defaultConfig: Config = {
+  admins: [],
   applicationID: '',
   ASF: 'http://asf:1242',
   ASFLogChannels: [],
