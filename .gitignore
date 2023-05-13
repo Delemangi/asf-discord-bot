@@ -201,5 +201,4 @@ dist
 *.js
 
 # Docker volumes
-db
 ASF

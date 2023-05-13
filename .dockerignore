@@ -9,6 +9,3 @@ bot.log
 
 # User defined folders
 config
-
-# Environment variables
-.env

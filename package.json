@@ -1,7 +1,7 @@
 {
   "author": "Delemangi",
   "bugs": {
-    "url": "https://github.com/Delemangi/heckgaming-discord-bot/issues"
+    "url": "https://github.com/Delemangi/asf-discord-bot/issues"
   },
   "dependencies": {
     "@discordjs/rest": "^1.5.0",
@@ -14,7 +14,7 @@
     "winston": "^3.8.2",
     "ws": "^8.12.1"
   },
-  "description": "Discord bot for HECKGAMING",
+  "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
     "@types/imap": "^0.8.36",
     "@types/ws": "^8.5.4",
@@ -24,17 +24,18 @@
     "eslint-config-canonical": "^41.0.4",
     "typescript": "^5.0.4"
   },
-  "homepage": "https://github.com/Delemangi/heckgaming-discord-bot",
+  "homepage": "https://github.com/Delemangi/asf-discord-bot",
   "license": "MIT",
   "main": "dist/main.js",
-  "name": "heckgaming-discord-bot",
+  "name": "asf-discord-bot",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Delemangi/heckgaming-discord-bot.git"
+    "url": "https://github.com/Delemangi/asf-discord-bot.git"
   },
   "scripts": {
     "build": "rimraf dist && tsc",
     "lint": "eslint . --ext .ts --cache",
+    "lint:fix": "eslint . --ext .ts --cache --fix",
     "start": "node dist/main.js"
   },
   "type": "module",

@@ -1,49 +1,55 @@
-const strings: Strings = {
+const strings: { [index: string]: string } = {
   emptyMessage: 'Received an empty message. Perhaps you should report it.',
-  error: 'An error occurred while executing the command. Perhaps you should report it.',
+  error:
+    'An error occurred while executing the command. Perhaps you should report it.',
   invalidChannel: 'You cannot run that command in this channel.',
   noBotPermission: 'You do not have permission to use that bot.',
   noCommandPermission: 'You do not have permission to use that command.',
-  tooManyArguments: 'You have given too many arguments for the command.'
+  tooManyArguments: 'You have given too many arguments for the command.',
 };
 
-const descriptions: Descriptions = {
-  '2fa': 'ASF: Get bots\' 2FA',
-  '2fano': 'ASF: Deny bots\' confirmations',
-  '2faok': 'ASF: Confirm bots\' confirmations',
+const descriptions: { [index: string]: string } = {
+  '2fa': "ASF: Get bots' 2FA",
+  '2fano': "ASF: Deny bots' confirmations",
+  '2faok': "ASF: Confirm bots' confirmations",
   addlicense: 'ASF: Activate licenses on bots',
   asf: 'ASF: Call any ASF command',
-  asfpermissions: 'ASF: Get a user\'s permissions',
-  balance: 'ASF: Get bots\' wallet balance',
+  asfpermissions: "ASF: Get a user's permissions",
+  balance: "ASF: Get bots' wallet balance",
   code: 'Rust: Generate a pseudo random unbiased 4 digit code',
   convert: 'Currency: Convert between 2 currencies',
   farm: 'ASF: Restart idling on bots',
-  level: 'ASF: Get bots\' level',
+  level: "ASF: Get bots' level",
   load: 'Bot: Reload settings',
-  nickname: 'ASF: Change bot\'s nickname',
+  nickname: "ASF: Change bot's nickname",
   oa: 'ASF: Get bots that own an app or sub',
-  permissions: 'Any: Get a user\'s permissions',
+  permissions: "Any: Get a user's permissions",
   ping: 'Discord: Check latency',
   play: 'ASF: Play games on bots',
-  points: 'ASF: Get bots\' points in Steam store',
-  privacy: 'ASF: Set bots\' privacy settings',
+  points: "ASF: Get bots' points in Steam store",
+  privacy: "ASF: Set bots' privacy settings",
   redeem: 'ASF: Redeem CD keys on bots',
   reminder: 'Reminder: Set a reminder',
   reset: 'ASF: Stop playing games on bots',
   resume: 'ASF: Resume idling on bots',
-  roles: 'Bot: Get a user\'s roles',
+  roles: "Bot: Get a user's roles",
   sa: 'ASF: Get status of all bots',
   start: 'ASF: Start bots',
   status: 'ASF: Get status of bots',
   stop: 'ASF: Stop bots',
   transfer: 'ASF: Transfer items between bots',
-  unpack: 'ASF: Unpack boosters on bots'
+  unpack: 'ASF: Unpack boosters on bots',
 };
 
-export function getString<T extends keyof Strings> (name: T): string {
-  return strings[name];
-}
+export const getString = (name: string) => {
+  return (
+    strings[name] ?? 'No string found. Perhaps you should report this error.'
+  );
+};
 
-export function getDescription<T extends keyof Descriptions> (name: T): string {
-  return descriptions[name];
-}
+export const getDescription = (name: string) => {
+  return (
+    descriptions[name] ??
+    'No description found. Perhaps you should report this error.'
+  );
+};

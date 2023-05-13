@@ -1,78 +1,68 @@
-import {
-  type ChatInputCommandInteraction,
-  type User
-} from 'discord.js';
-import {configuration} from './config.js';
-import {logger} from './logger.js';
-import {
-  getGuardCodeFromMail,
-  getConfirmationFromMail
-} from './mail.js';
-import {getString} from './strings.js';
+import { configuration } from './config.js';
+import { logger } from './logger.js';
+import { getConfirmationFromMail, getGuardCodeFromMail } from './mail.js';
+import { getString } from './strings.js';
+import { type ChatInputCommandInteraction, type User } from 'discord.js';
 
 const all = '[all]';
 const cases = [
-  'Couldn\'t find any bot named',
-  'This bot doesn\'t have ASF 2FA enabled!',
-  'This bot instance is not connected!'
+  "Couldn't find any bot named",
+  "This bot doesn't have ASF 2FA enabled!",
+  'This bot instance is not connected!',
 ];
-const functions: {[index: string]: Function} = {
+const functions: { [index: string]: Function } = {
   '2fa': getGuardCodeFromMail,
-  '2faok': getConfirmationFromMail
+  '2faok': getConfirmationFromMail,
 };
 
-export async function sendASFRequest (interaction: ChatInputCommandInteraction, command: string, args: string): Promise<string> {
-  logger.debug(`Executing the ASF request ${command} ${args} from interaction ${interaction.id}`);
+export const checkASFPermissions = (user: string, account: string = '') => {
+  const permissions = configuration('ASFPermissions');
+  const userPermissions = permissions[user] ?? [];
 
-  if (!configuration('ASFChannels').includes(interaction.channelId)) {
-    logger.debug(`The ASF request ${command} ${args} from interaction ${interaction.id} was requsted from an invalid channel`);
+  return userPermissions.includes(account) || userPermissions.includes(all);
+};
 
-    return getString('invalidChannel');
-  }
-
-  const settings: {} = {
-    body: JSON.stringify({Command: `${command} ${args}`}),
+export const sendASFRequest = async (
+  interaction: ChatInputCommandInteraction,
+  command: string,
+  args: string,
+) => {
+  const settings = {
+    body: JSON.stringify({ Command: `${command} ${args}` }),
     headers: {
       Authentication: configuration('ASFPassword'),
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    method: 'POST'
+    method: 'POST',
   };
   const result = await fetch(configuration('ASFAPI'), settings);
 
   if (!result.ok) {
-    logger.error(`The ASF request ${command} ${args} from interaction ${interaction.id} failed: ${result.status} ${result.statusText}`);
+    logger.error(
+      `The ASF request ${command} ${args} from interaction ${interaction.id} failed: ${result.status} ${result.statusText}`,
+    );
 
     return getString('error');
   }
 
-  logger.debug(`The ASF request ${command} ${args} from interaction ${interaction.id} succeeded: ${result.status} ${result.statusText}`);
-
-  const json = await result.json();
+  const json: ASFResponse = await result.json();
   return json.Result;
-}
+};
 
-export async function sendPrivilegedASFRequest (interaction: ChatInputCommandInteraction, command: string, args: string, numberExtraArgs: number = 0): Promise<string> {
-  logger.debug(`Executing the privileged ASF request ${command} ${args} from interaction ${interaction.id}`);
-
-  if (!configuration('ASFChannels').includes(interaction.channelId)) {
-    logger.debug(`The ASF request ${command} ${args} from interaction ${interaction.id} was requsted from an invalid channel`);
-
-    return getString('invalidChannel');
-  }
-
+export const sendPrivilegedASFRequest = async (
+  interaction: ChatInputCommandInteraction,
+  command: string,
+  args: string,
+  numberExtraArgs: number = 0,
+) => {
   const [accounts, ...extraArgs] = args.split(' ');
 
   // this shouldn't ever happen
   if (accounts === undefined) {
-    logger.error(`The ASF request ${command} ${args} from interaction ${interaction.id} received undefined accounts`);
-
     return getString('error');
   }
 
   if (numberExtraArgs < extraArgs.length) {
-    logger.debug(`The ASF request ${command} ${args} from interaction ${interaction.id} had too many arguments passed`);
-
     return getString('tooManyArguments');
   }
 
@@ -85,7 +75,11 @@ export async function sendPrivilegedASFRequest (interaction: ChatInputCommandInt
     }
 
     if (checkASFPermissions(interaction.user.id, account)) {
-      message = await sendASFRequest(interaction, command, `${account} ${extraArgs.join(' ')}`.trim());
+      message = await sendASFRequest(
+        interaction,
+        command,
+        `${account} ${extraArgs.join(' ')}`.trim(),
+      );
     } else {
       message = `<${account}> ${getString('noBotPermission')}`;
     }
@@ -93,58 +87,55 @@ export async function sendPrivilegedASFRequest (interaction: ChatInputCommandInt
     output.push(message);
   }
 
-  logger.debug(`The privileged ASF request ${command} ${args} from interaction ${interaction.id} succeeded`);
-
   return output.join('\n');
-}
+};
 
-export async function sendASFOrMailRequest (interaction: ChatInputCommandInteraction, command: string, accounts: string): Promise<string> {
-  logger.debug(`Executing the ASF or mail request ${command} ${accounts} from interaction ${interaction.id}`);
-
+export const sendASFOrMailRequest = async (
+  interaction: ChatInputCommandInteraction,
+  command: string,
+  accounts: string,
+) => {
   const output: string[] = [];
   const bots = accounts.split(',');
-  const ASF = (await sendPrivilegedASFRequest(interaction, command, accounts)).split('\n');
+  const ASF = (
+    await sendPrivilegedASFRequest(interaction, command, accounts)
+  ).split('\n');
 
   for (const [index, bot] of bots.entries()) {
     if (!checkASFPermissions(interaction.user.id, bot)) {
       output.push(`<${bot}> ${getString('noBotPermission')}`);
-    } else if (cases.some((value) => (ASF[index] ?? '').includes(value))) {
-      output.push(await (functions[command] as Function)(bot));
+    } else if (cases.some((value) => ASF[index]?.includes(value))) {
+      output.push(await functions[command]?.(bot));
     } else {
-      output.push(ASF[index] ?? '');
+      output.push(ASF[index] as string);
     }
   }
 
-  logger.debug(`The ASF or mail request ${command} ${accounts} from interaction ${interaction.id} succeeded`);
-
   return output.join('\n');
-}
+};
 
-export async function doASFCommand (interaction: ChatInputCommandInteraction, command: string, args: string[]): Promise<string> {
+export const executeASFCommand = async (
+  interaction: ChatInputCommandInteraction,
+  command: string,
+  args: string[],
+) => {
   if (checkASFPermissions(interaction.user.id)) {
     return await sendASFRequest(interaction, command, args.join(' '));
   }
 
   return getString('noCommandPermission');
-}
+};
 
-export function checkASFPermissions (user: string, account: string = ''): boolean {
-  const permissions = configuration('ASFPermissions');
-  const userPermissions = permissions[user] ?? [];
-
-  return userPermissions.includes(account) || userPermissions.includes(all);
-}
-
-export function permissionsASFCommand (user: User): string {
+export const permissionsCommand = async (user: User) => {
   const permissions = configuration('ASFPermissions')[user.id];
 
   if (permissions === undefined || permissions.length === 0) {
-    return `<${user.tag}> ASF Permissions: -`;
+    return `<${user.tag}> Permissions: -`;
   }
 
   if (permissions.includes(all)) {
-    return `<${user.tag}> ASF Permissions: All`;
+    return `<${user.tag}> Permissions: All`;
   }
 
-  return `<${user.tag}> ASF Permissions: ${permissions.join(', ')}`;
-}
+  return `<${user.tag}> Permissions: ${permissions.join(', ')}`;
+};

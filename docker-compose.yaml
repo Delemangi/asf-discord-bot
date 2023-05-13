@@ -14,23 +14,13 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
 
-  mariadb:
-    container_name: heckgaming-mariadb
-    image: mariadb:latest
-    restart: always
-    volumes:
-      - ./db:/var/lib/mysql
-    env_file:
-      - .env
-
   bot:
-    container_name: heckgaming-bot
-    image: heckgaming-discord-bot
+    container_name: asf-bot
+    image: asf-discord-bot
     build: .
     restart: always
     depends_on:
       - asf
-      - mariadb
     volumes:
       - ./config:/app/config
       - ./bot.log:/app/bot.log

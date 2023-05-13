@@ -1,29 +1,14 @@
-import {ChannelType} from 'discord-api-types/v10';
-import {client} from './utils/client.js';
-import {configuration} from './utils/config.js';
-import {logger} from './utils/logger.js';
-import {longReplyToInteraction} from './utils/printing.js';
-import {loadReminders} from './utils/reminder.js';
-import {
-  commands,
-  getCommands,
-  registerCommands
-} from './utils/rest.js';
-import {
-  initDB,
-  loadTables
-} from './utils/sql.js';
-import {getString} from './utils/strings.js';
-import {validate} from './utils/validation.js';
-import {
-  initWS,
-  sendLog
-} from './utils/ws.js';
-
-logger.info(`Bot running in ${configuration('devMode') ? 'development' : 'production'} mode`);
+import { client } from './utils/client.js';
+import { commands, readCommands, registerCommands } from './utils/commands.js';
+import { configuration } from './utils/config.js';
+import { logger } from './utils/logger.js';
+import { longReplyToInteraction } from './utils/printing.js';
+import { getString } from './utils/strings.js';
+import { validate } from './utils/validation.js';
+import { initializeWS, sendASFLogs } from './utils/ws.js';
 
 validate();
-await getCommands();
+await readCommands();
 await registerCommands();
 
 try {
@@ -39,49 +24,36 @@ client.on('interactionCreate', async (interaction) => {
     return;
   }
 
-  logger.debug(`Received chat input interaction ${interaction.id}`);
-
   const command = commands.get(interaction.commandName);
 
   if (command === undefined) {
     logger.error(`No command found for ${interaction.commandName}`);
-
     return;
   }
 
-  if (interaction.channel?.type === ChannelType.GuildText) {
-    logger.info(`${interaction.user.tag}: ${interaction} (ID: ${interaction.id}) [Guild: ${interaction.guild?.id} - ${interaction.guild?.name}]`);
-  } else if (interaction.channel?.type === ChannelType.DM) {
-    logger.info(`${interaction.user.tag}: ${interaction} (ID: ${interaction.id}) [DM]`);
-  } else if (interaction.channel?.type === ChannelType.GuildPublicThread || interaction.channel?.type === ChannelType.GuildPrivateThread) {
-    logger.info(`${interaction.user.tag}: ${interaction} (ID: ${interaction.id}) [Thread]`);
+  if (interaction.channel?.isDMBased()) {
+    logger.info(`${interaction.user.tag}: ${interaction} [DM]`);
+  } else {
+    logger.info(
+      `${interaction.user.tag}: ${interaction} [${interaction.guild?.name}]`,
+    );
   }
-
-  logger.debug(`Deferring and executing interaction ${interaction.id}`);
 
   try {
     await interaction.deferReply();
     await command.execute(interaction);
-
-    logger.debug(`Executed chat input interaction ${interaction.id}`);
   } catch (error) {
     await longReplyToInteraction(interaction, getString('error'));
 
-    logger.error(`Failed to handle chat input interaction ${interaction}: ${error}`);
+    logger.error(
+      `Failed to handle chat input interaction ${interaction}: ${error}`,
+    );
   }
 });
 
 client.once('ready', async () => {
-  logger.info('Servers:');
-  for (const [index, guild] of client.guilds.cache.map((server) => `${server.id} - ${server.name}`).entries()) {
-    logger.info(`${index + 1}.\t${guild}`);
-  }
+  initializeWS();
+  void sendASFLogs();
 
   logger.info('Bot is ready');
-
-  initWS();
-  sendLog().catch((error) => logger.error(`This error should never have happened (WS)\n${error}`));
-  await initDB();
-  await loadTables();
-  loadReminders().catch((error) => logger.error(`This error should never have happened (DB)\n${error}`));
 });
