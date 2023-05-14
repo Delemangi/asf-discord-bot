@@ -28,6 +28,10 @@ It's recommended, but not required to run this inside a Docker container.
 
 `npm run start`
 
+### Note
+
+If it's your first run of the bot, or if you have just updated the bot, you should also run `npm run command:register` to register the application commands. Conversely, `npm run command:unregister` exists to remove all commands.
+
 ## Configuration
 
 Create a `config` folder with:
