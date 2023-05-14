@@ -18,7 +18,7 @@ const descriptions: { [index: string]: string } = {
   farm: 'Restart idling on bots',
   level: "Get bots' level",
   load: 'Reload settings',
-  nickname: " Change bot's nickname",
+  nickname: "Change bot's nickname",
   oa: 'ASF: Get bots that own an app or sub',
   permissions: "Get a user's permissions",
   play: 'Play games on bots',
