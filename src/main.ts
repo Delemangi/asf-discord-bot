@@ -1,5 +1,5 @@
 import { client } from './utils/client.js';
-import { commands, readCommands, registerCommands } from './utils/commands.js';
+import { getCommand } from './utils/commands.js';
 import { configuration } from './utils/config.js';
 import { logger } from './utils/logger.js';
 import { longReplyToInteraction } from './utils/printing.js';
@@ -8,8 +8,6 @@ import { validate } from './utils/validation.js';
 import { initializeWS, sendASFLogs } from './utils/ws.js';
 
 validate();
-await readCommands();
-await registerCommands();
 
 try {
   await client.login(configuration('token'));
@@ -24,7 +22,7 @@ client.on('interactionCreate', async (interaction) => {
     return;
   }
 
-  const command = commands.get(interaction.commandName);
+  const command = await getCommand(interaction.commandName);
 
   if (command === undefined) {
     logger.error(`No command found for ${interaction.commandName}`);

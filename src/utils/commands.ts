@@ -1,18 +1,11 @@
-import { configuration } from './config.js';
-import { logger } from './logger.js';
-import { REST } from '@discordjs/rest';
 import { Collection } from 'discord.js';
-import { Routes } from 'discord-api-types/v10';
 import { readdirSync } from 'node:fs';
 
-export const commands = new Collection<string, Command>();
+const commands = new Collection<string, Command>();
 
-const applicationID = configuration('applicationID');
+const refreshCommands = async () => {
+  commands.clear();
 
-const rest = new REST();
-rest.setToken(configuration('token'));
-
-export const readCommands = async () => {
   for (const cmd of readdirSync('./dist/commands').filter((file) =>
     file.endsWith('.js'),
   )) {
@@ -21,14 +14,18 @@ export const readCommands = async () => {
   }
 };
 
-export const registerCommands = async () => {
-  try {
-    await rest.put(Routes.applicationCommands(applicationID), {
-      body: commands.map((command) => command.data.toJSON()),
-    });
-
-    logger.info('Successfully registered commands');
-  } catch (error) {
-    throw new Error(`Failed registering commands: ${error}`);
+export const getCommand = async (command: string) => {
+  if (commands.entries.length === 0) {
+    await refreshCommands();
   }
+
+  return commands.get(command);
+};
+
+export const getCommands = async () => {
+  if (commands.entries.length === 0) {
+    await refreshCommands();
+  }
+
+  return commands;
 };
