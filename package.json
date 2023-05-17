@@ -14,7 +14,7 @@
   },
   "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
-    "@types/imap": "^0.8.36",
+    "@types/imap": "^0.8.37",
     "@types/ws": "^8.5.4",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
