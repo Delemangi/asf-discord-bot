@@ -20,7 +20,7 @@
     "@typescript-eslint/parser": "^5.60.1",
     "eslint": "^8.43.0",
     "eslint-config-canonical": "^41.0.5",
-    "typescript": "^5.1.5"
+    "typescript": "^5.1.6"
   },
   "homepage": "https://github.com/Delemangi/asf-discord-bot",
   "license": "MIT",
