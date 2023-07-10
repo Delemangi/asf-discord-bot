@@ -9,7 +9,7 @@
     "discord-api-types": "^0.37.47",
     "discord.js": "^14.11.0",
     "rimraf": "^5.0.1",
-    "winston": "^3.9.0",
+    "winston": "^3.10.0",
     "ws": "^8.12.1"
   },
   "description": "ArchiSteamFarm Discord bot",
