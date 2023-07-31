@@ -4,7 +4,7 @@
     "url": "https://github.com/Delemangi/asf-discord-bot/issues"
   },
   "dependencies": {
-    "@discordjs/rest": "^1.5.0",
+    "@discordjs/rest": "^2.0.0",
     "@klenty/imap": "^1.1.5",
     "discord-api-types": "^0.37.50",
     "discord.js": "^14.11.0",
