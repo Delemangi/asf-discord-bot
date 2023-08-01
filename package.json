@@ -18,7 +18,7 @@
     "@types/ws": "^8.5.5",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
-    "eslint": "^8.45.0",
+    "eslint": "^8.46.0",
     "eslint-config-canonical": "^41.1.7",
     "typescript": "^5.1.6"
   },
