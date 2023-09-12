@@ -4,23 +4,22 @@
     "url": "https://github.com/Delemangi/asf-discord-bot/issues"
   },
   "dependencies": {
-    "@discordjs/rest": "^1.5.0",
     "@klenty/imap": "^1.1.5",
-    "discord-api-types": "^0.37.53",
-    "discord.js": "^14.12.1",
+    "discord-api-types": "^0.37.56",
+    "discord.js": "^14.13.0",
     "rimraf": "^5.0.1",
     "winston": "^3.10.0",
-    "ws": "^8.12.1"
+    "ws": "^8.14.1"
   },
   "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
     "@types/imap": "^0.8.37",
     "@types/ws": "^8.5.5",
-    "@typescript-eslint/eslint-plugin": "^6.4.0",
-    "@typescript-eslint/parser": "^6.4.0",
-    "eslint": "^8.47.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "eslint": "^8.49.0",
     "eslint-config-canonical": "^41.1.7",
-    "typescript": "^5.1.6"
+    "typescript": "^5.2.2"
   },
   "homepage": "https://github.com/Delemangi/asf-discord-bot",
   "license": "MIT",
