@@ -5,20 +5,20 @@
   },
   "dependencies": {
     "@klenty/imap": "^1.1.5",
-    "discord-api-types": "^0.37.56",
+    "discord-api-types": "^0.37.63",
     "discord.js": "^14.13.0",
-    "rimraf": "^5.0.1",
-    "winston": "^3.10.0",
-    "ws": "^8.14.1"
+    "rimraf": "^5.0.5",
+    "winston": "^3.11.0",
+    "ws": "^8.14.2"
   },
   "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
-    "@types/imap": "^0.8.37",
-    "@types/ws": "^8.5.5",
+    "@types/imap": "^0.8.40",
+    "@types/ws": "^8.5.9",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
-    "@typescript-eslint/parser": "^6.7.0",
-    "eslint": "^8.49.0",
-    "eslint-config-canonical": "^41.1.7",
+    "@typescript-eslint/parser": "^6.10.0",
+    "eslint": "^8.53.0",
+    "eslint-config-canonical": "^42.3.0",
     "typescript": "^5.2.2"
   },
   "homepage": "https://github.com/Delemangi/asf-discord-bot",
@@ -32,11 +32,11 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "lint": "eslint . --ext .ts --cache",
-    "lint:fix": "eslint . --ext .ts --cache --fix",
+    "lint:fix": "eslint . --ext .ts --fix",
     "start": "node dist/main.js",
-    "command:register": "npm run build && node dist/scripts/register.js",
-    "command:unregister": "npm run build && node dist/scripts/unregister.js"
+    "start:dev": "npm run lint && npm run build && npm run start",
+    "start:prod": "npm run migration:apply && npm run start"
   },
   "type": "module",
-  "version": "2.0.0"
+  "version": "3.0.0"
 }

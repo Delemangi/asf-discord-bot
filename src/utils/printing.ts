@@ -1,19 +1,19 @@
-import { getChannel } from './client.js';
-import { logger } from './logger.js';
-import { getString } from './strings.js';
+import { getChannel } from "./client.js";
+import { logger } from "./logger.js";
+import { getString } from "./strings.js";
 import {
   type ChatInputCommandInteraction,
   codeBlock,
   inlineCode,
-} from 'discord.js';
+} from "discord.js";
 
 const splitMessage = function* (message: string) {
-  if (message === '') {
-    yield '';
+  if (message === "") {
+    yield "";
     return;
   }
 
-  const delimiters = ['\n', ' ', ','];
+  const delimiters = ["\n", " ", ","];
   const length = 1_950;
   let output: string;
   let index = message.length;
@@ -40,7 +40,7 @@ const splitMessage = function* (message: string) {
       currentMessage = currentMessage.slice(index);
     } else {
       output = currentMessage;
-      currentMessage = '';
+      currentMessage = "";
     }
 
     yield output;
@@ -50,14 +50,14 @@ const splitMessage = function* (message: string) {
 export const longReplyToInteraction = async (
   interaction: ChatInputCommandInteraction,
   message: string,
-  language: string = '',
+  language: string = "",
 ) => {
   let reply = false;
 
   for (const output of splitMessage(message)) {
     const code = codeBlock(
       language,
-      output.length === 0 ? getString('emptyMessage') : output,
+      output.length === 0 ? getString("emptyMessage") : output,
     );
 
     if (reply) {
@@ -76,11 +76,11 @@ export const normalReplyToInteraction = async (
   interaction: ChatInputCommandInteraction,
   message: string,
 ) => {
-  if (message === '') {
+  if (message === "") {
     logger.warn(`Received an empty response for interaction ${interaction.id}`);
 
     // eslint-disable-next-line no-param-reassign
-    message = getString('emptyMessage');
+    message = getString("emptyMessage");
   }
 
   if (interaction.deferred) {
@@ -94,11 +94,11 @@ export const shortReplyToInteraction = async (
   interaction: ChatInputCommandInteraction,
   message: string,
 ) => {
-  if (message === '') {
+  if (message === "") {
     logger.warn(`Received an empty response for interaction ${interaction.id}`);
 
     // eslint-disable-next-line no-param-reassign
-    message = getString('emptyMessage');
+    message = getString("emptyMessage");
   }
 
   if (interaction.deferred) {
