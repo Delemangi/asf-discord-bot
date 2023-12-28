@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "@klenty/imap": "^1.1.5",
-    "discord-api-types": "^0.37.66",
+    "discord-api-types": "^0.37.67",
     "discord.js": "^14.14.1",
     "rimraf": "^5.0.5",
     "winston": "^3.11.0",
