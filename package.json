@@ -31,11 +31,9 @@
   },
   "scripts": {
     "build": "rimraf dist && tsc",
+    "format": "eslint . --ext .ts --fix",
     "lint": "eslint . --ext .ts --cache",
-    "lint:fix": "eslint . --ext .ts --fix",
-    "start": "node dist/main.js",
-    "start:dev": "npm run lint && npm run build && npm run start",
-    "start:prod": "npm run migration:apply && npm run start"
+    "start": "node dist/main.js"
   },
   "type": "module",
   "version": "3.0.0"
