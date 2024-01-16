@@ -9,12 +9,12 @@
     "discord.js": "^14.14.0",
     "rimraf": "^5.0.5",
     "winston": "^3.11.0",
-    "ws": "^8.14.2"
+    "ws": "^8.16.0"
   },
   "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
     "@types/imap": "^0.8.40",
-    "@types/ws": "^8.5.9",
+    "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.10.0",
     "eslint": "^8.53.0",
