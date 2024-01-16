@@ -1,9 +1,9 @@
-import { configuration } from "./config.js";
-import { logger } from "./logger.js";
-import { connect } from "@klenty/imap";
+import { configuration } from './config.js';
+import { logger } from './logger.js';
+import { connect } from '@klenty/imap';
 
-const guardCodeString = "Login Code";
-const confirmationString = "confirm the trade contents:";
+const guardCodeString = 'Login Code';
+const confirmationString = 'confirm the trade contents:';
 
 const settings = {
   authTimeout: 10_000,
@@ -15,7 +15,7 @@ const settings = {
 };
 
 const findGuardCodeInMail = (textContent: string) => {
-  const text = textContent.replaceAll(/[\n\r]/gu, " ");
+  const text = textContent.replaceAll(/[\n\r]/gu, ' ');
   const index = text.indexOf(`${guardCodeString}`);
 
   if (index === -1) {
@@ -35,17 +35,17 @@ const findConfirmationInMail = (text: string) => {
     return null;
   }
 
-  const URLIndex = index + text.slice(index).indexOf("\n");
+  const URLIndex = index + text.slice(index).indexOf('\n');
 
   if (URLIndex === -1) {
     return null;
   }
 
-  return text.slice(URLIndex, URLIndex + text.slice(URLIndex).indexOf("\n"));
+  return text.slice(URLIndex, URLIndex + text.slice(URLIndex).indexOf('\n'));
 };
 
 export const getGuardCodeFromMail = async (account: string) => {
-  for (const mailConfig of configuration("mails")) {
+  for (const mailConfig of configuration('mails')) {
     const imap = {
       ...settings,
       ...mailConfig,
@@ -53,7 +53,7 @@ export const getGuardCodeFromMail = async (account: string) => {
 
     const session = await connect({ imap });
 
-    session.on("error", (error) =>
+    session.on('error', (error) =>
       logger.error(
         `Encountered IMAP error while getting Steam Guard code for account ${account}: ${error}`,
       ),
@@ -63,11 +63,11 @@ export const getGuardCodeFromMail = async (account: string) => {
 
     const now = new Date();
     const criteria = [
-      ["SINCE", now.toISOString()],
-      ["TEXT", account],
-      ["TEXT", guardCodeString],
+      ['SINCE', now.toISOString()],
+      ['TEXT', account],
+      ['TEXT', guardCodeString],
     ];
-    const fetch = { bodies: ["TEXT"] };
+    const fetch = { bodies: ['TEXT'] };
     const messages = await session.search(criteria, fetch);
 
     messages.reverse();
@@ -92,7 +92,7 @@ export const getGuardCodeFromMail = async (account: string) => {
 export const getConfirmationFromMail = async (account: string) => {
   const urls: string[] = [];
 
-  for (const mailConfig of configuration("mails")) {
+  for (const mailConfig of configuration('mails')) {
     const imap = {
       ...settings,
       ...mailConfig,
@@ -100,7 +100,7 @@ export const getConfirmationFromMail = async (account: string) => {
 
     const session = await connect({ imap });
 
-    session.on("error", (error) => {
+    session.on('error', (error) => {
       logger.error(
         `Encountered IMAP error while getting confirmations for account ${account}: ${error}`,
       );
@@ -110,11 +110,11 @@ export const getConfirmationFromMail = async (account: string) => {
 
     const now = new Date();
     const criteria = [
-      ["SINCE", now.toISOString()],
-      ["TEXT", account],
-      ["TEXT", confirmationString],
+      ['SINCE', now.toISOString()],
+      ['TEXT', account],
+      ['TEXT', confirmationString],
     ];
-    const fetch = { bodies: ["TEXT"] };
+    const fetch = { bodies: ['TEXT'] };
     const messages = await session.search(criteria, fetch);
 
     messages.reverse();
@@ -135,7 +135,7 @@ export const getConfirmationFromMail = async (account: string) => {
   }
 
   if (urls.length > 0) {
-    return `<${account}> Confirmations: \n${urls.join("\n")}`;
+    return `<${account}> Confirmations: \n${urls.join('\n')}`;
   }
 
   return `<${account}> Confirmations: -`;

@@ -1,20 +1,20 @@
-import { createLogger, format, transports } from "winston";
+import { createLogger, format, transports } from 'winston';
 
 export const logger = createLogger({
   transports: [
     new transports.Console({
       format: format.combine(
-        format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+        format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
         format.errors({ stack: true }),
         format.colorize({
           colors: {
-            debug: "gray",
-            error: "red",
-            http: "blue",
-            info: "green",
-            silly: "magenta",
-            verbose: "cyan",
-            warn: "yellow",
+            debug: 'gray',
+            error: 'red',
+            http: 'blue',
+            info: 'green',
+            silly: 'magenta',
+            verbose: 'cyan',
+            warn: 'yellow',
           },
         }),
         format.printf(
@@ -23,12 +23,12 @@ export const logger = createLogger({
         ),
       ),
       handleExceptions: true,
-      level: "info",
+      level: 'info',
     }),
     new transports.File({
-      filename: "bot.log",
+      filename: 'bot.log',
       format: format.combine(
-        format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+        format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
         format.errors({ stack: true }),
         format.printf(
           ({ level, message, timestamp }) =>
@@ -36,8 +36,8 @@ export const logger = createLogger({
         ),
       ),
       handleExceptions: true,
-      level: "debug",
-      options: { flags: "w" },
+      level: 'debug',
+      options: { flags: 'w' },
     }),
   ],
 });

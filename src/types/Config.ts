@@ -1,4 +1,4 @@
-import { type Mail } from "./Mail.js";
+import { type Mail } from './Mail.js';
 
 export type Config = {
   ASF: string;

@@ -1,16 +1,16 @@
-import { type Config } from "../types/Config.js";
-import { readFileSync } from "node:fs";
-import { readFile } from "node:fs/promises";
+import { type Config } from '../types/Config.js';
+import { readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 
 const defaultConfig: Config = {
   admins: [],
-  applicationID: "",
-  ASF: "http://asf:1242",
+  applicationID: '',
+  ASF: 'http://asf:1242',
   ASFLogChannels: [],
-  ASFPassword: "",
+  ASFPassword: '',
   ASFPermissions: {},
   mails: [],
-  token: "",
+  token: '',
 };
 let config: Partial<Config> = {};
 
@@ -21,8 +21,8 @@ export const configuration = <T extends keyof Config>(
 };
 
 export const reloadConfig = async () => {
-  const groups = JSON.parse(await readFile("./config/groups.json", "utf8"));
-  config = JSON.parse(await readFile("./config/config.json", "utf8"));
+  const groups = JSON.parse(await readFile('./config/groups.json', 'utf8'));
+  config = JSON.parse(await readFile('./config/config.json', 'utf8'));
   const property = config.ASFPermissions;
 
   if (property === undefined) {
@@ -41,8 +41,8 @@ export const reloadConfig = async () => {
 };
 
 export const loadConfig = () => {
-  config = JSON.parse(readFileSync("./config/config.json", "utf8"));
-  const groups = JSON.parse(readFileSync("./config/groups.json", "utf8"));
+  config = JSON.parse(readFileSync('./config/config.json', 'utf8'));
+  const groups = JSON.parse(readFileSync('./config/groups.json', 'utf8'));
   const property = config.ASFPermissions;
 
   if (property === undefined) {
