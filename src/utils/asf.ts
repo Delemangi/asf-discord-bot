@@ -1,20 +1,11 @@
 import { type AsfResponse } from '../types/AsfResponse.js';
 import { configuration } from './config.js';
 import { logger } from './logger.js';
-import { getConfirmationFromMail, getGuardCodeFromMail } from './mail.js';
 import { getString } from './strings.js';
 import { type ChatInputCommandInteraction, type User } from 'discord.js';
 
 const all = '[all]';
-const cases = [
-  "Couldn't find any bot named",
-  "This bot doesn't have ASF 2FA enabled!",
-  'This bot instance is not connected!',
-];
-const functions: { [index: string]: Function } = {
-  '2fa': getGuardCodeFromMail,
-  '2faok': getConfirmationFromMail,
-};
+
 const commandEndpoint = '/api/command';
 
 export const checkASFPermissions = (user: string, account: string = '') => {
@@ -107,12 +98,10 @@ export const sendASFOrMailRequest = async (
   ).split('\n');
 
   for (const [index, bot] of bots.entries()) {
-    if (!checkASFPermissions(interaction.user.id, bot)) {
-      output.push(`<${bot}> ${getString('noBotPermission')}`);
-    } else if (cases.some((value) => ASF[index]?.includes(value))) {
-      output.push(await functions[command]?.(bot));
-    } else {
+    if (checkASFPermissions(interaction.user.id, bot)) {
       output.push(ASF[index] as string);
+    } else {
+      output.push(`<${bot}> ${getString('noBotPermission')}`);
     }
   }
 

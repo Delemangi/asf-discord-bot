@@ -4,7 +4,6 @@
     "url": "https://github.com/Delemangi/asf-discord-bot/issues"
   },
   "dependencies": {
-    "@klenty/imap": "^1.1.5",
     "discord-api-types": "^0.37.67",
     "discord.js": "^14.14.1",
     "rimraf": "^5.0.5",
@@ -13,7 +12,6 @@
   },
   "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
-    "@types/imap": "^0.8.40",
     "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
