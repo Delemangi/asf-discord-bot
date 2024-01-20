@@ -18,7 +18,7 @@ WORKDIR /app
 
 RUN apk add --no-cache
 
-COPY package.json package-lock.json start.sh ./
+COPY package.json package-lock.json ./
 
 COPY --from=development /app/node_modules ./node_modules
 RUN npm prune --production
