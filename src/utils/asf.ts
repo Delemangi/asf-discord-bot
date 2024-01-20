@@ -41,6 +41,7 @@ export const sendASFRequest = async (
     return getString('error');
   }
 
+  // @ts-expect-error returns unknown - fix later
   const json: AsfResponse = await result.json();
   return json.Result;
 };

@@ -1,13 +1,34 @@
-ARG PLATFORM="linux/amd64"
-
-FROM --platform=${PLATFORM} node:20-alpine
-
+# Development stage
+FROM --platform=${BUILDPLATFORM} node:20-alpine AS development
 WORKDIR /app
 
-COPY package*.json .
-RUN npm install
+RUN apk add --no-cache postgresql-client git openjdk17 nodejs
 
-COPY . .
+COPY package.json package-lock.json ./
+RUN npm i --ignore-scripts
+
+COPY prisma ./prisma
+RUN npm run generate
+
+COPY . ./
 RUN npm run build
 
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "dev" ]
+
+# Production stage
+FROM --platform=${TARGETPLATFORM} node:20-alpine AS production
+WORKDIR /app
+
+RUN apk add --no-cache postgresql-client
+
+COPY package.json package-lock.json start.sh ./
+
+COPY --from=development /app/node_modules ./node_modules
+RUN npm prune --production
+
+COPY prisma ./prisma
+RUN npm run generate
+
+COPY --from=development /app/dist ./dist
+
+CMD [ "sh", "./start.sh" ]

@@ -16,8 +16,7 @@ services:
 
   bot:
     container_name: asf-bot
-    image: asf-discord-bot
-    build: .
+    image: delemangi/asf-discord-bot
     restart: unless-stopped
     depends_on:
       - asf

@@ -3,26 +3,31 @@
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "checkJs": true,
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "exactOptionalPropertyTypes": true,
+    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "lib": [
-      "ESNext",
-      "DOM"
+      "ESNext"
     ],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
-    "resolveJsonModule": true,
-    "target": "ESNext",
-    "skipLibCheck": true,
-    "strict": true,
     "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ESNext",
+  },
+  "ts-node": {
+    "swc": true,
+    "files": true,
+    "transpileOnly": true
   }
 }
