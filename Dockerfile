@@ -25,4 +25,4 @@ RUN npm prune --production
 
 COPY --from=development /app/dist ./dist
 
-CMD [ "sh", "./start.sh" ]
+CMD [ "npm", "run", "start" ]
