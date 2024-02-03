@@ -36,7 +36,7 @@
     "build": "rimraf dist && tsc",
     "format": "eslint . --ext .ts --fix",
     "lint": "eslint . --ext .ts --cache",
-    "prepare": "husky install",
+    "prepare": "husky",
     "start": "node dist/main.js"
   },
   "type": "module",
