@@ -12,7 +12,7 @@
   },
   "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
-    "@swc/core": "^1.4.2",
+    "@swc/core": "^1.4.4",
     "@swc/helpers": "^0.5.6",
     "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
