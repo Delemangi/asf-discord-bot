@@ -22,4 +22,4 @@ services:
       - asf
     volumes:
       - ./config:/app/config
-      - ./bot.log:/app/bot.log
+      - ./logs:/app/logs

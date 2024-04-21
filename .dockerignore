@@ -5,7 +5,8 @@ node_modules
 dist
 
 # Logs
-bot.log
+logs
+*.log
 
 # User defined folders
 config
