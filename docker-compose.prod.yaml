@@ -1,6 +1,16 @@
-version: "3.8"
+name: asf-discord-bot
 
 services:
+  bot:
+    container_name: asf-bot
+    image: delemangi/asf-discord-bot:latest
+    restart: unless-stopped
+    depends_on:
+      - asf
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+
   asf:
     container_name: archi-steam-farm
     image: justarchi/archisteamfarm:latest
@@ -13,13 +23,3 @@ services:
       - ./ASF/plugins:/app/plugins
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
-
-  bot:
-    container_name: asf-bot
-    image: delemangi/asf-discord-bot
-    restart: unless-stopped
-    depends_on:
-      - asf
-    volumes:
-      - ./config:/app/config
-      - ./logs:/app/logs
