@@ -5,18 +5,18 @@
   },
   "dependencies": {
     "discord-api-types": "^0.37.83",
-    "discord.js": "^14.14.1",
+    "discord.js": "^14.15.2",
     "rimraf": "^5.0.5",
     "winston": "^3.13.0",
     "ws": "^8.17.0"
   },
   "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
-    "@swc/core": "^1.5.0",
+    "@swc/core": "^1.5.3",
     "@swc/helpers": "^0.5.11",
     "@types/ws": "^8.5.10",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
     "eslint": "^8.57.0",
     "eslint-config-canonical": "^42.8.2",
     "husky": "^9.0.11",

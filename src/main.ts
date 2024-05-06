@@ -17,6 +17,7 @@ try {
   logger.error(`Bot failed to log in: ${error}`);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand()) {
     return;
@@ -49,6 +50,7 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 client.once('ready', async () => {
   initializeWS();
   void sendASFLogs();
