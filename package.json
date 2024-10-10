@@ -15,7 +15,7 @@
     "@swc/core": "^1.7.35",
     "@swc/helpers": "^0.5.13",
     "@types/ws": "^8.5.12",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
     "@typescript-eslint/parser": "^7.18.0",
     "eslint": "^8.57.1",
     "eslint-config-canonical": "^42.8.3",
