@@ -111,9 +111,11 @@ export const shortReplyToInteraction = async (
 export const printLog = async (channel: string, message: string) => {
   const chat = getChannel(channel);
 
-  if (chat?.isTextBased()) {
-    for (const output of splitMessage(message)) {
-      await chat.send(codeBlock(output));
-    }
+  if (!chat?.isSendable()) {
+    return;
+  }
+
+  for (const output of splitMessage(message)) {
+    await chat.send(codeBlock(output));
   }
 };

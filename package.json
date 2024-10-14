@@ -4,9 +4,9 @@
     "url": "https://github.com/Delemangi/asf-discord-bot/issues"
   },
   "dependencies": {
-    "discord-api-types": "^0.37.101",
     "discord.js": "^14.16.3",
-    "rimraf": "^5.0.7",
+    "discord-api-types": "^0.37.102",
+    "rimraf": "^6.0.1",
     "winston": "^3.15.0",
     "ws": "^8.18.0"
   },
@@ -15,10 +15,8 @@
     "@swc/core": "^1.7.35",
     "@swc/helpers": "^0.5.13",
     "@types/ws": "^8.5.12",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
-    "eslint": "^8.57.1",
-    "eslint-config-canonical": "^42.8.3",
+    "eslint": "^9.12.0",
+    "eslint-config-canonical": "^44.3.4",
     "husky": "^9.1.6",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
@@ -37,8 +35,8 @@
   },
   "scripts": {
     "build": "rimraf dist && tsc",
-    "format": "eslint . --ext .ts --fix",
-    "lint": "eslint . --ext .ts --cache",
+    "format": "eslint . --cache --fix",
+    "lint": "tsc --noEmit && eslint . --cache",
     "prepare": "husky",
     "start": "node dist/main.js"
   },

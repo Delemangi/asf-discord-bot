@@ -194,11 +194,9 @@ config
 
 # IDEs
 .idea
-.vscode
 
 # Compiled output
 dist
-*.js
 
 # Docker volumes
 ASF

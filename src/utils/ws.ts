@@ -16,7 +16,6 @@ export const initializeWS = () => {
     headers,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-base-to-string
   ws.on('message', (data) => buffer.push(JSON.parse(data.toString()).Result));
   ws.on('error', (error) =>
     logger.error(`Encountered WS error\n${JSON.stringify(error)}`),

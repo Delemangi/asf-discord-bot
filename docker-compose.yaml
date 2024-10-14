@@ -1,26 +1,24 @@
 name: asf-discord-bot-dev
-
 services:
-  bot:
-    container_name: asf-bot-dev
-    image: asf-discord-bot-dev:latest
-    build: .
-    restart: unless-stopped
-    depends_on:
-      - asf
-    volumes:
-      - ./config:/app/config
-      - ./logs:/app/logs
-
   asf:
     container_name: archi-steam-farm
     image: justarchi/archisteamfarm:latest
-    restart: unless-stopped
+    labels:
+      - 'com.centurylinklabs.watchtower.enable=false'
     ports:
       - 1242:1242
+    restart: unless-stopped
     volumes:
       - ./ASF/config:/app/config
       - ./ASF/logs:/app/logs
       - ./ASF/plugins:/app/plugins
-    labels:
-      - "com.centurylinklabs.watchtower.enable=false"
+  bot:
+    build: .
+    container_name: asf-bot-dev
+    depends_on:
+      - asf
+    image: asf-discord-bot-dev:latest
+    restart: unless-stopped
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
