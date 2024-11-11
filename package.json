@@ -13,7 +13,7 @@
   "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
     "@swc/core": "^1.9.1",
-    "@swc/helpers": "^0.5.13",
+    "@swc/helpers": "^0.5.15",
     "@types/ws": "^8.5.13",
     "eslint": "^9.14.0",
     "eslint-config-canonical": "^44.3.4",
