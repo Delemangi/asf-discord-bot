@@ -16,7 +16,7 @@
     "@swc/helpers": "^0.5.15",
     "@types/ws": "^8.5.14",
     "eslint": "^9.20.0",
-    "eslint-config-canonical": "^44.3.42",
+    "eslint-config-canonical": "^44.3.43",
     "husky": "^9.1.7",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
