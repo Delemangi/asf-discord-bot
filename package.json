@@ -14,7 +14,7 @@
   "devDependencies": {
     "@swc/core": "^1.11.7",
     "@swc/helpers": "^0.5.15",
-    "@types/ws": "^8.5.14",
+    "@types/ws": "^8.18.0",
     "eslint": "^9.21.0",
     "eslint-config-canonical": "^44.3.43",
     "husky": "^9.1.7",
