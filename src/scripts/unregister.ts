@@ -1,6 +1,7 @@
+import { REST, Routes } from 'discord.js';
+
 import { configuration } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
-import { REST, Routes } from 'discord.js';
 
 const rest = new REST().setToken(configuration('token'));
 

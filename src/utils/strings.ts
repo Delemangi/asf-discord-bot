@@ -35,15 +35,9 @@ const descriptions: { [index: string]: string } = {
   unpack: 'Unpack boosters on bots',
 };
 
-export const getString = (name: string) => {
-  return (
-    strings[name] ?? 'No string found. Perhaps you should report this error.'
-  );
-};
+export const getString = (name: string) =>
+  strings[name] ?? 'No string found. Perhaps you should report this error.';
 
-export const getDescription = (name: string) => {
-  return (
-    descriptions[name] ??
-    'No description found. Perhaps you should report this error.'
-  );
-};
+export const getDescription = (name: string) =>
+  descriptions[name] ??
+  'No description found. Perhaps you should report this error.';

@@ -1,11 +1,12 @@
-import { getChannel } from './client.js';
-import { logger } from './logger.js';
-import { getString } from './strings.js';
 import {
   type ChatInputCommandInteraction,
   codeBlock,
   inlineCode,
 } from 'discord.js';
+
+import { getChannel } from './client.js';
+import { logger } from './logger.js';
+import { getString } from './strings.js';
 
 const splitMessage = function* (message: string) {
   if (message === '') {
@@ -50,7 +51,7 @@ const splitMessage = function* (message: string) {
 export const longReplyToInteraction = async (
   interaction: ChatInputCommandInteraction,
   message: string,
-  language: string = '',
+  language = '',
 ) => {
   let reply = false;
 
@@ -83,11 +84,9 @@ export const normalReplyToInteraction = async (
     message = getString('emptyMessage');
   }
 
-  if (interaction.deferred) {
-    await interaction.editReply(message);
-  } else {
-    await interaction.reply(message);
-  }
+  await (interaction.deferred
+    ? interaction.editReply(message)
+    : interaction.reply(message));
 };
 
 export const shortReplyToInteraction = async (
@@ -101,11 +100,9 @@ export const shortReplyToInteraction = async (
     message = getString('emptyMessage');
   }
 
-  if (interaction.deferred) {
-    await interaction.editReply(inlineCode(message));
-  } else {
-    await interaction.reply(inlineCode(message));
-  }
+  await (interaction.deferred
+    ? interaction.editReply(inlineCode(message))
+    : interaction.reply(inlineCode(message)));
 };
 
 export const printLog = async (channel: string, message: string) => {

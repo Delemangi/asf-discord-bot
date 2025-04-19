@@ -23,6 +23,7 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "strict": true,
+    "skipLibCheck": true,
     "target": "ESNext"
   },
   "exclude": [

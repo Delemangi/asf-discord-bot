@@ -1,8 +1,5 @@
-# Development stage
-FROM --platform=${BUILDPLATFORM} node:20-alpine AS development
+FROM --platform=${BUILDPLATFORM} node:22-alpine AS build
 WORKDIR /app
-
-RUN apk add --no-cache git openjdk17 nodejs
 
 COPY package.json package-lock.json ./
 RUN npm i --ignore-scripts
@@ -10,19 +7,12 @@ RUN npm i --ignore-scripts
 COPY . ./
 RUN npm run build
 
-CMD [ "npm", "run", "dev" ]
-
-# Production stage
-FROM --platform=${TARGETPLATFORM} node:20-alpine AS production
+FROM node:22-alpine AS final
 WORKDIR /app
 
-RUN apk add --no-cache
-
 COPY package.json package-lock.json ./
+RUN npm i --production --ignore-scripts
 
-COPY --from=development /app/node_modules ./node_modules
-RUN npm prune --production
-
-COPY --from=development /app/dist ./dist
+COPY --from=build /app/dist ./dist
 
 CMD [ "npm", "run", "start" ]

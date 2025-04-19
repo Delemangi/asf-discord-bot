@@ -30,10 +30,10 @@ client.on('interactionCreate', async (interaction) => {
   }
 
   if (interaction.channel?.isDMBased()) {
-    logger.info(`${interaction.user.tag}: ${interaction} [DM]`);
+    logger.info(`${interaction.user.tag}: ${interaction.toString()} [DM]`);
   } else {
     logger.info(
-      `${interaction.user.tag}: ${interaction} [${interaction.guild?.name}]`,
+      `${interaction.user.tag}: ${interaction.toString()} [${interaction.guild?.name}]`,
     );
   }
 
@@ -44,12 +44,12 @@ client.on('interactionCreate', async (interaction) => {
     await longReplyToInteraction(interaction, getString('error'));
 
     logger.error(
-      `Failed to handle chat input interaction ${interaction}: ${error}`,
+      `Failed to handle chat input interaction ${interaction.toString()}: ${error}`,
     );
   }
 });
 
-client.once('ready', async () => {
+client.once('ready', () => {
   initializeWS();
   void sendASFLogs();
 

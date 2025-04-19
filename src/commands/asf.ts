@@ -1,3 +1,8 @@
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { executeASFCommand } from '../utils/asf.js';
 import { configuration } from '../utils/config.js';
 import {
@@ -5,10 +10,6 @@ import {
   shortReplyToInteraction,
 } from '../utils/printing.js';
 import { getDescription, getString } from '../utils/strings.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const commandName = 'asf';
 
@@ -28,7 +29,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const args = interaction.options.getString('command', true).split(' ') ?? [];
+  const args = interaction.options.getString('command', true).split(' ');
   const command = args.shift() ?? '';
   const message = await executeASFCommand(interaction, command, args);
 

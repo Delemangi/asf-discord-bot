@@ -1,14 +1,15 @@
+import { type ChatInputCommandInteraction, type User } from 'discord.js';
+
 import { type AsfResponse } from '../types/AsfResponse.js';
 import { configuration } from './config.js';
 import { logger } from './logger.js';
 import { getString } from './strings.js';
-import { type ChatInputCommandInteraction, type User } from 'discord.js';
 
 const all = '[all]';
 
 const commandEndpoint = '/api/command';
 
-export const checkASFPermissions = (user: string, account: string = '') => {
+export const checkASFPermissions = (user: string, account = '') => {
   const permissions = configuration('ASFPermissions');
   const userPermissions = permissions[user] ?? [];
 
@@ -29,7 +30,7 @@ export const sendASFRequest = async (
     method: 'POST',
   };
   const result = await fetch(
-    'http://' + configuration('ASF') + commandEndpoint,
+    `http://${configuration('ASF')}${commandEndpoint}`,
     settings,
   );
 
@@ -50,7 +51,7 @@ export const sendPrivilegedASFRequest = async (
   interaction: ChatInputCommandInteraction,
   command: string,
   args: string,
-  numberExtraArgs: number = 0,
+  numberExtraArgs = 0,
 ) => {
   const [accounts, ...extraArgs] = args.split(' ');
 
@@ -71,15 +72,13 @@ export const sendPrivilegedASFRequest = async (
       continue;
     }
 
-    if (checkASFPermissions(interaction.user.id, account)) {
-      message = await sendASFRequest(
-        interaction,
-        command,
-        `${account} ${extraArgs.join(' ')}`.trim(),
-      );
-    } else {
-      message = `<${account}> ${getString('noBotPermission')}`;
-    }
+    message = checkASFPermissions(interaction.user.id, account)
+      ? await sendASFRequest(
+          interaction,
+          command,
+          `${account} ${extraArgs.join(' ')}`.trim(),
+        )
+      : `<${account}> ${getString('noBotPermission')}`;
 
     output.push(message);
   }
@@ -94,13 +93,16 @@ export const sendASFOrMailRequest = async (
 ) => {
   const output: string[] = [];
   const bots = accounts.split(',');
-  const ASF = (
-    await sendPrivilegedASFRequest(interaction, command, accounts)
-  ).split('\n');
+  const request = await sendPrivilegedASFRequest(
+    interaction,
+    command,
+    accounts,
+  );
+  const ASF = request.split('\n');
 
   for (const [index, bot] of bots.entries()) {
     if (checkASFPermissions(interaction.user.id, bot)) {
-      output.push(ASF[index] as string);
+      output.push(ASF[index] ?? '');
     } else {
       output.push(`<${bot}> ${getString('noBotPermission')}`);
     }
@@ -121,7 +123,7 @@ export const executeASFCommand = async (
   return getString('noCommandPermission');
 };
 
-export const permissionsCommand = async (user: User) => {
+export const permissionsCommand = (user: User) => {
   const permissions = configuration('ASFPermissions')[user.id];
 
   if (permissions === undefined || permissions.length === 0) {

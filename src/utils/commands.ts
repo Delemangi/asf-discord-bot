@@ -1,6 +1,7 @@
-import { type Command } from '../types/Command.js';
 import { Collection } from 'discord.js';
 import { readdirSync } from 'node:fs';
+
+import { type Command } from '../types/Command.js';
 
 const commands = new Collection<string, Command>();
 
@@ -10,6 +11,7 @@ const refreshCommands = async () => {
   for (const cmd of readdirSync('./dist/commands').filter((file) =>
     file.endsWith('.js'),
   )) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const command: Command = await import(`../commands/${cmd}`);
     commands.set(command.data.name, command);
   }

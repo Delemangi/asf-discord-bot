@@ -1,6 +1,11 @@
-import { type Config } from '../types/Config.js';
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
+
+import { type Config } from '../types/Config.js';
 
 const defaultConfig: Config = {
   admins: [],
@@ -14,11 +19,8 @@ const defaultConfig: Config = {
 };
 let config: Partial<Config> = {};
 
-export const configuration = <T extends keyof Config>(
-  property: T,
-): Config[T] => {
-  return config[property] ?? defaultConfig[property];
-};
+export const configuration = <T extends keyof Config>(property: T): Config[T] =>
+  config[property] ?? defaultConfig[property];
 
 export const reloadConfig = async () => {
   const groups = JSON.parse(await readFile('./config/groups.json', 'utf8'));
@@ -32,9 +34,8 @@ export const reloadConfig = async () => {
   for (const key of Object.keys(property)) {
     for (const group of Object.keys(groups)) {
       if (property[key]?.includes(`[${group}]`)) {
-        property[key] =
-          property[key]?.filter((value) => value !== `[${group}]`) ?? [];
-        property[key]?.push(...(groups[group] as string[]));
+        property[key] = property[key].filter((value) => value !== `[${group}]`);
+        property[key].push(...(groups[group] as string[]));
       }
     }
   }
@@ -52,9 +53,8 @@ export const loadConfig = () => {
   for (const key of Object.keys(property)) {
     for (const group of Object.keys(groups)) {
       if (property[key]?.includes(`[${group}]`)) {
-        property[key] =
-          property[key]?.filter((value) => value !== `[${group}]`) ?? [];
-        property[key]?.push(...(groups[group] as string[]));
+        property[key] = property[key].filter((value) => value !== `[${group}]`);
+        property[key].push(...(groups[group] as string[]));
       }
     }
   }

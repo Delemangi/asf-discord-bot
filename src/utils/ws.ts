@@ -1,8 +1,9 @@
+import { setTimeout as setTimeoutPromise } from 'node:timers/promises';
+import { WebSocket } from 'ws';
+
 import { configuration } from './config.js';
 import { logger } from './logger.js';
 import { printLog } from './printing.js';
-import { setTimeout as setTimeoutPromise } from 'node:timers/promises';
-import { WebSocket } from 'ws';
 
 const endpoint = '/api/nlog';
 let buffer: string[] = [];
@@ -12,10 +13,11 @@ export const initializeWS = () => {
     Authentication: configuration('ASFPassword'),
     'Content-Type': 'application/json',
   };
-  const ws = new WebSocket('ws://' + configuration('ASF') + endpoint, {
+  const ws = new WebSocket(`ws://${configuration('ASF')}${endpoint}`, {
     headers,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-base-to-string, @typescript-eslint/no-unsafe-member-access
   ws.on('message', (data) => buffer.push(JSON.parse(data.toString()).Result));
   ws.on('error', (error) =>
     logger.error(`Encountered WS error\n${JSON.stringify(error)}`),

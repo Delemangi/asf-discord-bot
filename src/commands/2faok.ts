@@ -1,10 +1,11 @@
-import { sendASFOrMailRequest } from '../utils/asf.js';
-import { longReplyToInteraction } from '../utils/printing.js';
-import { getDescription } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from 'discord.js';
+
+import { sendASFOrMailRequest } from '../utils/asf.js';
+import { longReplyToInteraction } from '../utils/printing.js';
+import { getDescription } from '../utils/strings.js';
 
 const commandName = '2faok';
 

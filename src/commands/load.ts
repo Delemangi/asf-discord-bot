@@ -1,10 +1,11 @@
-import { configuration, reloadConfig } from '../utils/config.js';
-import { shortReplyToInteraction } from '../utils/printing.js';
-import { getDescription, getString } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from 'discord.js';
+
+import { configuration, reloadConfig } from '../utils/config.js';
+import { shortReplyToInteraction } from '../utils/printing.js';
+import { getDescription, getString } from '../utils/strings.js';
 
 const commandName = 'load';
 

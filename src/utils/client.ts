@@ -4,6 +4,5 @@ export const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
 
-export const getChannel = (channelId: string) => {
-  return client.channels.cache.get(channelId);
-};
+export const getChannel = (channelId: string) =>
+  client.channels.cache.get(channelId);
