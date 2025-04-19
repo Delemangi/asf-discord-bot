@@ -18,7 +18,7 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user') ?? interaction.user;
-  const message = await permissionsCommand(user);
+  const message = permissionsCommand(user);
 
   await longReplyToInteraction(interaction, message);
 };
