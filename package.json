@@ -22,7 +22,7 @@
     "typescript": "~5.8.3"
   },
   "engines": {
-    "node": "^20 || ^22"
+    "node": "^20 || ^22 || ^24"
   },
   "homepage": "https://github.com/Delemangi/asf-discord-bot",
   "license": "MIT",
