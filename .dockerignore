@@ -10,3 +10,6 @@ logs
 
 # User defined folders
 config
+
+# SonarCloud
+.sonarcloud.properties
