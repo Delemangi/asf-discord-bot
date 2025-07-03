@@ -9,7 +9,7 @@
     "rimraf": "^6.0.1",
     "winston": "^3.17.0",
     "ws": "^8.18.3",
-    "zod": "^3.25.69"
+    "zod": "^3.25.71"
   },
   "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
