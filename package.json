@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "discord-api-types": "^0.38.31",
-    "discord.js": "^14.23.2",
+    "discord.js": "^14.24.0",
     "rimraf": "^6.0.1",
     "winston": "^3.18.3",
     "ws": "^8.18.3",
