@@ -10,6 +10,8 @@ const strings: { [index: string]: string } = {
 
 const descriptions: { [index: string]: string } = {
   '2fa': "Get bots' 2FA",
+  '2fafinalize': "Finalize bots' 2FA",
+  '2fainit': "Initialize bots' 2FA",
   '2fano': "Deny bots' confirmations",
   '2faok': "Confirm bots' confirmations",
   addlicense: 'Activate licenses on bots',
