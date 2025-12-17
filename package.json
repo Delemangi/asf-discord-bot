@@ -14,7 +14,7 @@
   "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
     "@types/ws": "^8.18.1",
-    "esbuild": "^0.27.1",
+    "esbuild": "^0.27.2",
     "eslint": "^9.39.2",
     "eslint-config-imperium": "^3.0.0",
     "tsx": "^4.21.0",
