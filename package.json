@@ -8,7 +8,7 @@
     "discord.js": "^14.25.1",
     "rimraf": "^6.1.2",
     "winston": "^3.19.0",
-    "ws": "^8.18.3",
+    "ws": "^8.19.0",
     "zod": "^4.3.4"
   },
   "description": "ArchiSteamFarm Discord bot",
