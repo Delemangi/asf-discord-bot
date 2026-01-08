@@ -1,0 +1,14 @@
+name: Docker
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  docker:
+    uses: finki-hub/.github/.github/workflows/docker.yaml@main
+    secrets: inherit
