@@ -8,15 +8,15 @@
     "discord.js": "^14.25.1",
     "rimraf": "^6.1.2",
     "winston": "^3.19.0",
-    "ws": "^8.18.3",
-    "zod": "^4.2.1"
+    "ws": "^8.19.0",
+    "zod": "^4.3.5"
   },
   "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
     "@types/ws": "^8.18.1",
     "esbuild": "^0.27.2",
     "eslint": "^9.39.2",
-    "eslint-config-imperium": "^3.0.0",
+    "eslint-config-imperium": "^3.1.0",
     "tsx": "^4.21.0",
     "typescript": "~5.9.3"
   },
