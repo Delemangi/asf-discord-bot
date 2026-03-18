@@ -22,12 +22,10 @@ export const data = new SlashCommandBuilder()
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const account = interaction.options.getString('account', true);
   const code = interaction.options.getString('code', true);
-  const message = await sendPrivilegedASFRequest(
-    interaction,
-    commandName,
-    `${account} ${code}`,
-    1,
-  );
+  const message = await sendPrivilegedASFRequest(interaction, commandName, {
+    args: `${account} ${code}`,
+    numberExtraArgs: 1,
+  });
 
   await longReplyToInteraction(interaction, message);
 };

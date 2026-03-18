@@ -1,6 +1,7 @@
 import { setTimeout as setTimeoutPromise } from 'node:timers/promises';
 import { WebSocket } from 'ws';
 
+import { asfResponseSchema } from '../types/AsfResponse.js';
 import { configuration } from './config.js';
 import { logger } from './logger.js';
 import { printLog } from './printing.js';
@@ -17,8 +18,10 @@ export const initializeWS = () => {
     headers,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-base-to-string, @typescript-eslint/no-unsafe-member-access
-  ws.on('message', (data) => buffer.push(JSON.parse(data.toString()).Result));
+  ws.on('message', (data: Buffer) => {
+    const json = asfResponseSchema.parse(JSON.parse(data.toString('utf8')));
+    buffer.push(json.Result);
+  });
   ws.on('error', (error) =>
     logger.error(`Encountered WS error\n${JSON.stringify(error)}`),
   );

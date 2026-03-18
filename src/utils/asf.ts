@@ -1,6 +1,6 @@
 import { type ChatInputCommandInteraction, type User } from 'discord.js';
 
-import { type AsfResponse } from '../types/AsfResponse.js';
+import { asfResponseSchema } from '../types/AsfResponse.js';
 import { configuration } from './config.js';
 import { logger } from './logger.js';
 import { getString } from './strings.js';
@@ -42,16 +42,19 @@ export const sendASFRequest = async (
     return getString('error');
   }
 
-  // @ts-expect-error returns unknown - fix later
-  const json: AsfResponse = await result.json();
+  const json = asfResponseSchema.parse(await result.json());
   return json.Result;
+};
+
+type PrivilegedRequestOptions = {
+  args: string;
+  numberExtraArgs?: number;
 };
 
 export const sendPrivilegedASFRequest = async (
   interaction: ChatInputCommandInteraction,
   command: string,
-  args: string,
-  numberExtraArgs = 0,
+  { args, numberExtraArgs = 0 }: PrivilegedRequestOptions,
 ) => {
   const [accounts, ...extraArgs] = args.split(' ');
 
@@ -93,11 +96,9 @@ export const sendASFOrMailRequest = async (
 ) => {
   const output: string[] = [];
   const bots = accounts.split(',');
-  const request = await sendPrivilegedASFRequest(
-    interaction,
-    command,
-    accounts,
-  );
+  const request = await sendPrivilegedASFRequest(interaction, command, {
+    args: accounts,
+  });
   const ASF = request.split('\n');
 
   for (const [index, bot] of bots.entries()) {

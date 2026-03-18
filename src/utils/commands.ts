@@ -18,7 +18,7 @@ const refreshCommands = async () => {
 };
 
 export const getCommand = async (command: string) => {
-  if (commands.entries.length === 0) {
+  if (commands.size === 0) {
     await refreshCommands();
   }
 
@@ -26,7 +26,7 @@ export const getCommand = async (command: string) => {
 };
 
 export const getCommands = async () => {
-  if (commands.entries.length === 0) {
+  if (commands.size === 0) {
     await refreshCommands();
   }
 

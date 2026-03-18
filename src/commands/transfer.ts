@@ -30,12 +30,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const app = interaction.options.getInteger('app', true);
   const context = interaction.options.getInteger('context', true);
   const target = interaction.options.getInteger('target', true);
-  const message = await sendPrivilegedASFRequest(
-    interaction,
-    'transfer^',
-    `${accounts} ${app} ${context} ${target}`,
-    4,
-  );
+  const message = await sendPrivilegedASFRequest(interaction, 'transfer^', {
+    args: `${accounts} ${app} ${context} ${target}`,
+    numberExtraArgs: 4,
+  });
 
   await longReplyToInteraction(interaction, message);
 };

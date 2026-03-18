@@ -77,32 +77,30 @@ export const normalReplyToInteraction = async (
   interaction: ChatInputCommandInteraction,
   message: string,
 ) => {
+  const text = message === '' ? getString('emptyMessage') : message;
+
   if (message === '') {
     logger.warn(`Received an empty response for interaction ${interaction.id}`);
-
-    // eslint-disable-next-line no-param-reassign
-    message = getString('emptyMessage');
   }
 
   await (interaction.deferred
-    ? interaction.editReply(message)
-    : interaction.reply(message));
+    ? interaction.editReply(text)
+    : interaction.reply(text));
 };
 
 export const shortReplyToInteraction = async (
   interaction: ChatInputCommandInteraction,
   message: string,
 ) => {
+  const text = message === '' ? getString('emptyMessage') : message;
+
   if (message === '') {
     logger.warn(`Received an empty response for interaction ${interaction.id}`);
-
-    // eslint-disable-next-line no-param-reassign
-    message = getString('emptyMessage');
   }
 
   await (interaction.deferred
-    ? interaction.editReply(inlineCode(message))
-    : interaction.reply(inlineCode(message)));
+    ? interaction.editReply(inlineCode(text))
+    : interaction.reply(inlineCode(text)));
 };
 
 export const printLog = async (channel: string, message: string) => {

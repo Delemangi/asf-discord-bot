@@ -14,7 +14,9 @@ export const data = new SlashCommandBuilder()
   .setDescription(getDescription(commandName));
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const message = await sendPrivilegedASFRequest(interaction, commandName, '');
+  const message = await sendPrivilegedASFRequest(interaction, commandName, {
+    args: '',
+  });
 
   await longReplyToInteraction(interaction, message);
 };
