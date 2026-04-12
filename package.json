@@ -1,8 +1,4 @@
 {
-  "author": "Delemangi",
-  "bugs": {
-    "url": "https://github.com/Delemangi/asf-discord-bot/issues"
-  },
   "dependencies": {
     "discord-api-types": "^0.38.45",
     "discord.js": "^14.26.2",
@@ -11,7 +7,6 @@
     "ws": "^8.20.0",
     "zod": "^4.3.6"
   },
-  "description": "ArchiSteamFarm Discord bot",
   "devDependencies": {
     "@types/ws": "^8.18.1",
     "esbuild": "^0.28.0",
@@ -20,17 +15,9 @@
     "tsx": "^4.21.0",
     "typescript": "~6.0.2"
   },
-  "engines": {
-    "node": "^20 || ^22 || ^24"
-  },
-  "homepage": "https://github.com/Delemangi/asf-discord-bot",
   "license": "MIT",
-  "main": "src/main.ts",
   "name": "asf-discord-bot",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Delemangi/asf-discord-bot.git"
-  },
+  "private": true,
   "scripts": {
     "build": "npm run clean && node esbuild.config.js",
     "clean": "rimraf dist",
@@ -40,5 +27,5 @@
     "start": "node dist/main.js"
   },
   "type": "module",
-  "version": "1.0.0"
+  "version": "0.0.0"
 }
