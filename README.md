@@ -1,6 +1,6 @@
 # ArchiSteamFarm Discord Bot
 
-Discord bot for [ArchiSteamFarm](https://github.com/JustArchiNET/ArchiSteamFarm), powered by [discord.js](https://github.com/discordjs/discord.js) 14. Requires Node.js ≥ 20.
+Discord bot for [ArchiSteamFarm](https://github.com/JustArchiNET/ArchiSteamFarm), powered by [discord.js](https://github.com/discordjs/discord.js) 14. Requires Node.js 22 or 24.
 
 This bot is intended to be ran alongside ArchiSteamFarm, and will allow the user to manage ASF from Discord.
 

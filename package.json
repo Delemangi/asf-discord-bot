@@ -10,8 +10,8 @@
   "devDependencies": {
     "@types/ws": "^8.18.1",
     "esbuild": "^0.28.0",
-    "eslint": "^9.39.4",
-    "eslint-config-imperium": "^3.6.0",
+    "eslint": "^10.3.0",
+    "eslint-config-imperium": "^4.0.2",
     "tsx": "^4.21.0",
     "typescript": "~6.0.3"
   },

@@ -1,4 +1,4 @@
-const strings: { [index: string]: string } = {
+const strings: Record<string, string> = {
   emptyMessage: 'Received an empty message. Perhaps you should report it.',
   error:
     'An error occurred while executing the command. Perhaps you should report it.',
@@ -8,7 +8,7 @@ const strings: { [index: string]: string } = {
   tooManyArguments: 'You have given too many arguments for the command.',
 };
 
-const descriptions: { [index: string]: string } = {
+const descriptions: Record<string, string> = {
   '2fa': "Get bots' 2FA",
   '2fafinalize': "Finalize bots' 2FA",
   '2fainit': "Initialize bots' 2FA",
