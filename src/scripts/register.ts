@@ -17,5 +17,5 @@ try {
   });
   logger.info('Done');
 } catch (error) {
-  throw new Error(`Failed to register application commands\n${error}`);
+  throw new Error('Failed to register application commands', { cause: error });
 }
