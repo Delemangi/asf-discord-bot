@@ -1,7 +1,7 @@
 import { type ChatInputCommandInteraction, type User } from 'discord.js';
 
 import { asfResponseSchema } from '../types/AsfResponse.js';
-import { configuration } from './config.js';
+import { configuration, getASFAddress } from './config.js';
 import { logger } from './logger.js';
 import { getString } from './strings.js';
 
@@ -30,7 +30,7 @@ export const sendASFRequest = async (
     method: 'POST',
   };
   const result = await fetch(
-    `http://${configuration('ASF')}${commandEndpoint}`,
+    `http://${getASFAddress()}${commandEndpoint}`,
     settings,
   );
 
@@ -118,7 +118,7 @@ export const executeASFCommand = async (
   args: string[],
 ) => {
   if (checkASFPermissions(interaction.user.id)) {
-    return await sendASFRequest(interaction, command, args.join(' '));
+    return sendASFRequest(interaction, command, args.join(' '));
   }
 
   return getString('noCommandPermission');

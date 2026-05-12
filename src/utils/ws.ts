@@ -2,7 +2,7 @@ import { setTimeout as setTimeoutPromise } from 'node:timers/promises';
 import { WebSocket } from 'ws';
 
 import { asfResponseSchema } from '../types/AsfResponse.js';
-import { configuration } from './config.js';
+import { configuration, getASFAddress } from './config.js';
 import { logger } from './logger.js';
 import { printLog } from './printing.js';
 
@@ -14,7 +14,7 @@ export const initializeWS = () => {
     Authentication: configuration('ASFPassword'),
     'Content-Type': 'application/json',
   };
-  const ws = new WebSocket(`ws://${configuration('ASF')}${endpoint}`, {
+  const ws = new WebSocket(`ws://${getASFAddress()}${endpoint}`, {
     headers,
   });
 

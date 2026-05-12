@@ -6,6 +6,7 @@ import { type Config, configSchema } from '../types/Config.js';
 
 const partialConfigSchema = configSchema.partial();
 type PartialConfig = Partial<Config>;
+const ASFProtocolPattern = /^(?:https?|wss?):\/\//u;
 
 const parseConfig = (data: unknown): PartialConfig => {
   const parsed = partialConfigSchema.parse(data);
@@ -23,6 +24,7 @@ const parseConfig = (data: unknown): PartialConfig => {
 const defaultConfig: Config = {
   admins: [],
   applicationID: '',
+  // eslint-disable-next-line sonarjs/no-clear-text-protocols -- ASF IPC commonly uses HTTP on trusted local or Docker networks by default.
   ASF: 'http://asf:1242',
   ASFLogChannels: [],
   ASFPassword: '',
@@ -34,6 +36,9 @@ let config: PartialConfig = {};
 
 export const configuration = <T extends keyof Config>(property: T): Config[T] =>
   config[property] ?? defaultConfig[property];
+
+export const getASFAddress = () =>
+  configuration('ASF').replace(ASFProtocolPattern, '');
 
 const groupsSchema = z.record(z.string(), z.array(z.string()));
 
