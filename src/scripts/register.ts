@@ -7,7 +7,9 @@ import { logger } from '../utils/logger.js';
 const rest = new REST().setToken(configuration('token'));
 const commands = [];
 
-for (const [, command] of await getCommands()) {
+const registeredCommands = await getCommands();
+
+for (const [, command] of registeredCommands) {
   commands.push(command.data.toJSON());
 }
 

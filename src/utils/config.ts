@@ -32,10 +32,10 @@ const defaultConfig: Config = {
   mails: [],
   token: '',
 };
-let config: PartialConfig = {};
+const configState: { current: PartialConfig } = { current: {} };
 
 export const configuration = <T extends keyof Config>(property: T): Config[T] =>
-  config[property] ?? defaultConfig[property];
+  configState.current[property] ?? defaultConfig[property];
 
 export const getASFAddress = () =>
   configuration('ASF').replace(ASFProtocolPattern, '');
@@ -43,17 +43,17 @@ export const getASFAddress = () =>
 const groupsSchema = z.record(z.string(), z.array(z.string()));
 
 const expandGroups = (groups: z.infer<typeof groupsSchema>) => {
-  const property = config.ASFPermissions;
+  const property = configState.current.ASFPermissions;
 
   if (property === undefined) {
     return;
   }
 
   for (const key of Object.keys(property)) {
-    for (const group of Object.keys(groups)) {
+    for (const [group, groupValues] of Object.entries(groups)) {
       if (property[key]?.includes(`[${group}]`)) {
         property[key] = property[key].filter((value) => value !== `[${group}]`);
-        property[key].push(...(groups[group] ?? []));
+        property[key].push(...groupValues);
       }
     }
   }
@@ -63,14 +63,14 @@ export const reloadConfig = async () => {
   const groups = groupsSchema.parse(
     JSON.parse(await readFile('./config/groups.json', 'utf8')),
   );
-  config = parseConfig(
+  configState.current = parseConfig(
     JSON.parse(await readFile('./config/config.json', 'utf8')),
   );
   expandGroups(groups);
 };
 
 export const loadConfig = () => {
-  config = parseConfig(
+  configState.current = parseConfig(
     JSON.parse(readFileSync('./config/config.json', 'utf8')),
   );
   const groups = groupsSchema.parse(
@@ -79,6 +79,6 @@ export const loadConfig = () => {
   expandGroups(groups);
 };
 
-if (Object.keys(config).length === 0) {
+if (Object.keys(configState.current).length === 0) {
   loadConfig();
 }

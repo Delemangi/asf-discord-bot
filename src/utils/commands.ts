@@ -8,9 +8,11 @@ const commands = new Collection<string, Command>();
 const refreshCommands = async () => {
   commands.clear();
 
-  for (const cmd of readdirSync('./dist/commands').filter((file) =>
-    file.endsWith('.js'),
-  )) {
+  for (const cmd of readdirSync('./dist/commands')) {
+    if (!cmd.endsWith('.js')) {
+      continue;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Dynamic command imports are validated by the Command type contract.
     const command: Command = await import(`../commands/${cmd}`);
     commands.set(command.data.name, command);

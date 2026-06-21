@@ -68,14 +68,13 @@ export const sendPrivilegedASFRequest = async (
   }
 
   const output: string[] = [];
-  let message: string;
 
   for (const account of accounts.split(',')) {
     if (accounts !== '' && account === '') {
       continue;
     }
 
-    message = checkASFPermissions(interaction.user.id, account)
+    const message = checkASFPermissions(interaction.user.id, account)
       ? await sendASFRequest(
           interaction,
           command,

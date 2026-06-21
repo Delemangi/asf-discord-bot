@@ -7,7 +7,7 @@ import { logger } from './logger.js';
 import { printLog } from './printing.js';
 
 const endpoint = '/api/nlog';
-let buffer: string[] = [];
+const buffer: string[] = [];
 
 export const initializeWS = () => {
   const headers = {
@@ -35,7 +35,7 @@ export const initializeWS = () => {
 export const sendASFLogs = async () => {
   while (true) {
     const logs = buffer.join('\n');
-    buffer = [];
+    buffer.length = 0;
 
     if (logs.length > 0) {
       for (const channel of configuration('ASFLogChannels')) {

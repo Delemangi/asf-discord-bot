@@ -8,34 +8,33 @@ import { getChannel } from './client.js';
 import { logger } from './logger.js';
 import { getString } from './strings.js';
 
+const delimiters = ['\n', ' ', ','];
+const maxMessageLength = 1_950;
+
+const findSplitIndex = (text: string) => {
+  for (const delimiter of delimiters) {
+    const index = text.slice(0, maxMessageLength).lastIndexOf(delimiter) + 1;
+
+    if (index) {
+      return index;
+    }
+  }
+
+  return maxMessageLength;
+};
+
 const splitMessage = function* (message: string) {
   if (message === '') {
     yield '';
     return;
   }
 
-  const delimiters = ['\n', ' ', ','];
-  const length = 1_950;
   let output: string;
-  let index = message.length;
-  let split: boolean;
   let currentMessage = message;
 
   while (currentMessage) {
-    if (currentMessage.length > length) {
-      split = true;
-      for (const char of delimiters) {
-        index = currentMessage.slice(0, length).lastIndexOf(char) + 1;
-
-        if (index) {
-          split = false;
-          break;
-        }
-      }
-
-      if (split) {
-        index = length;
-      }
+    if (currentMessage.length > maxMessageLength) {
+      const index = findSplitIndex(currentMessage);
 
       output = currentMessage.slice(0, Math.max(0, index));
       currentMessage = currentMessage.slice(index);
