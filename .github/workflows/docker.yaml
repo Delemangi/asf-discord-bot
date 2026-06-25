@@ -10,5 +10,5 @@ permissions:
 
 jobs:
   docker:
-    uses: finki-hub/.github/.github/workflows/docker.yaml@main
+    uses: Delemangi/.github/.github/workflows/docker.yaml@main
     secrets: inherit
