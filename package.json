@@ -11,7 +11,7 @@
     "@types/ws": "^8.18.2",
     "esbuild": "^0.28.2",
     "eslint": "^10.12.0",
-    "eslint-config-imperium": "^4.1.4",
+    "eslint-config-imperium": "^4.1.5",
     "tsx": "^4.23.15",
     "typescript": "~6.0.3"
   },
