@@ -51,10 +51,12 @@ const expandGroups = (groups: z.infer<typeof groupsSchema>) => {
 
   for (const key of Object.keys(property)) {
     for (const [group, groupValues] of Object.entries(groups)) {
-      if (property[key]?.includes(`[${group}]`)) {
-        property[key] = property[key].filter((value) => value !== `[${group}]`);
-        property[key].push(...groupValues);
+      if (!property[key]?.includes(`[${group}]`)) {
+        continue;
       }
+
+      property[key] = property[key].filter((value) => value !== `[${group}]`);
+      property[key].push(...groupValues);
     }
   }
 };

@@ -115,13 +115,10 @@ export const executeASFCommand = async (
   interaction: ChatInputCommandInteraction,
   command: string,
   args: string[],
-) => {
-  if (checkASFPermissions(interaction.user.id)) {
-    return sendASFRequest(interaction, command, args.join(' '));
-  }
-
-  return getString('noCommandPermission');
-};
+) =>
+  checkASFPermissions(interaction.user.id)
+    ? sendASFRequest(interaction, command, args.join(' '))
+    : getString('noCommandPermission');
 
 export const permissionsCommand = (user: User) => {
   const permissions = configuration('ASFPermissions')[user.id];
@@ -130,9 +127,7 @@ export const permissionsCommand = (user: User) => {
     return `<${user.tag}> Permissions: -`;
   }
 
-  if (permissions.includes(all)) {
-    return `<${user.tag}> Permissions: All`;
-  }
-
-  return `<${user.tag}> Permissions: ${permissions.join(', ')}`;
+  return permissions.includes(all)
+    ? `<${user.tag}> Permissions: All`
+    : `<${user.tag}> Permissions: ${permissions.join(', ')}`;
 };
