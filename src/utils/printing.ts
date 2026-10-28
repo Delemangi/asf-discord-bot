@@ -52,24 +52,21 @@ export const longReplyToInteraction = async (
   message: string,
   language = '',
 ) => {
-  let reply = false;
-
-  for (const output of splitMessage(message)) {
+  await Array.fromAsync(splitMessage(message), async (output, index) => {
     const code = codeBlock(
       language,
       output.length === 0 ? getString('emptyMessage') : output,
     );
 
-    if (reply) {
+    if (index > 0) {
       await interaction.followUp(code);
     } else if (interaction.deferred) {
       await interaction.editReply(code);
     } else {
       await interaction.reply(code);
     }
-
-    reply = true;
-  }
+    return true;
+  });
 };
 
 export const normalReplyToInteraction = async (
@@ -109,7 +106,8 @@ export const printLog = async (channel: string, message: string) => {
     return;
   }
 
-  for (const output of splitMessage(message)) {
+  await Array.fromAsync(splitMessage(message), async (output) => {
     await chat.send(codeBlock(output));
-  }
+    return true;
+  });
 };

@@ -32,23 +32,39 @@ export const initializeWS = () => {
   });
 };
 
-export const sendASFLogs = async () => {
-  while (true) {
-    const logs = buffer.join('\n');
-    buffer.length = 0;
+const sendASFLogBatch = async () => {
+  const logs = buffer.join('\n');
+  buffer.length = 0;
 
-    if (logs.length > 0) {
-      for (const channel of configuration('ASFLogChannels')) {
-        try {
-          await printLog(channel, logs);
-        } catch (error) {
-          logger.error(
-            `Failed to print ASF log to channel ${channel}\n${error}`,
-          );
-        }
-      }
-    }
-
-    await setTimeoutPromise(5_000);
+  if (logs.length === 0) {
+    return;
   }
+  await Array.fromAsync(configuration('ASFLogChannels'), async (channel) => {
+    try {
+      await printLog(channel, logs);
+    } catch (error) {
+      logger.error(`Failed to print ASF log to channel ${channel}\n${error}`);
+    }
+    return true;
+  });
 };
+
+export const sendASFLogs = () =>
+  new Promise<void>((_resolve, reject) => {
+    const sendNextBatch = async () => {
+      try {
+        await sendASFLogBatch();
+        await setTimeoutPromise(5_000);
+        // Do not retain an ever-growing chain of promises for this infinite pump.
+        void sendNextBatch();
+      } catch (error) {
+        reject(
+          error instanceof Error
+            ? error
+            : new Error(String(error), { cause: error }),
+        );
+      }
+    };
+
+    void sendNextBatch();
+  });

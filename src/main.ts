@@ -29,13 +29,11 @@ client.on('interactionCreate', async (interaction) => {
     return;
   }
 
-  if (interaction.channel?.isDMBased()) {
-    logger.info(`${interaction.user.tag}: ${interaction.toString()} [DM]`);
-  } else {
-    logger.info(
-      `${interaction.user.tag}: ${interaction.toString()} [${interaction.guild?.name}]`,
-    );
-  }
+  logger.info(
+    interaction.channel?.isDMBased()
+      ? `${interaction.user.tag}: ${interaction.toString()} [DM]`
+      : `${interaction.user.tag}: ${interaction.toString()} [${interaction.guild?.name}]`,
+  );
 
   try {
     await interaction.deferReply();
