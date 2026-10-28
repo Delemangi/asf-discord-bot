@@ -69,9 +69,9 @@ export const sendPrivilegedASFRequest = async (
 
   const output: string[] = [];
 
-  for (const account of accounts.split(',')) {
+  await Array.fromAsync(accounts.split(','), async (account) => {
     if (accounts !== '' && account === '') {
-      continue;
+      return '';
     }
 
     const message = checkASFPermissions(interaction.user.id, account)
@@ -83,7 +83,8 @@ export const sendPrivilegedASFRequest = async (
       : `<${account}> ${getString('noBotPermission')}`;
 
     output.push(message);
-  }
+    return message;
+  });
 
   return output.join('\n');
 };
@@ -101,11 +102,11 @@ export const sendASFOrMailRequest = async (
   const ASF = request.split('\n');
 
   for (const [index, bot] of bots.entries()) {
-    if (checkASFPermissions(interaction.user.id, bot)) {
-      output.push(ASF[index] ?? '');
-    } else {
-      output.push(`<${bot}> ${getString('noBotPermission')}`);
-    }
+    output.push(
+      checkASFPermissions(interaction.user.id, bot)
+        ? (ASF[index] ?? '')
+        : `<${bot}> ${getString('noBotPermission')}`,
+    );
   }
 
   return output.join('\n');
